@@ -3,8 +3,8 @@
 ## Features
 
 - Create zonal Kubernetes cluster with CPU and GPU nodes
-- Install neccessary Nvidia tools to run GPU workloads
-- Install descheduler
+- Install neccessary [Nvidia tools](https://github.com/NVIDIA/gpu-operator) to run GPU workloads
+- Install [Descheduler](https://github.com/kubernetes-sigs/descheduler/)
 - Example workloads
 
 ## Kubernetes cluster definition
