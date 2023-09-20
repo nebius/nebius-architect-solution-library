@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: mtu-setter
+  namespace: yandex-system
+spec:
+  selector:
+    matchLabels:
+      name: mtu-setter
+  template:
+    metadata:
+      labels:
+        name: mtu-setter
+    spec:
+      hostNetwork: true  # Needed to manipulate host network settings
+      tolerations:
+       - operator: "Exists"  # Tolerate all taints
+      containers:
+      - name: mtu-setter
+        image: weibeld/ubuntu-networking:latest # i need 
+        securityContext:
+          privileged: true  # Needed to change network settings
+        command: 
+        - "/bin/bash"
+        - "-c"
+        - |
+          while :; do
+            current_mtu=$(ip link show dev eth0 | sed -n 's/.* mtu \([0-9]\+\).*/\1/p'); 
+            if [ $current_mtu -ne 8880 ]; then
+              echo "MTU skew detected, try adjust it..." 
+              ip link set dev eth0 mtu 8880 && echo success; 
+              ip link show dev eth0
+            fi; 
+            sleep 10; 
+          done 

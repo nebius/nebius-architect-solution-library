@@ -1,0 +1,3 @@
+[submodule "ml-k8s-iaac/k8s-module"]
+	path = ml-k8s-iaac/k8s-module
+	url = https://github.com/nebius/terraform-nb-kubernetes
