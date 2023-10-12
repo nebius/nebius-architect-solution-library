@@ -9,7 +9,7 @@ module "kube" {
       zone      = "eu-north1-c"
       subnet_id = "f8ut3srsmjrlor5uko84"
     },
-    
+
   ]
 
   master_maintenance_windows = [
@@ -20,9 +20,20 @@ module "kube" {
     }
   ]
   node_groups = {
+    "k8s-ng-system" = {
+      description = "Kubernetes nodes group 01 with fixed 1 size scaling"
+      fixed_scale = {
+        size = 2
+      }
+      nat = true
+      node_labels = {
+        "group" = "system"
+      }
+      node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
+    }
     "k8s-ng-h100-8gpu1" = {
       description = "Kubernetes nodes h100-8-gpu nodes with autoscaling"
-       auto_scale = {
+      auto_scale = {
         min     = 2
         max     = 3
         initial = 2

@@ -6,8 +6,12 @@ module "kube" {
 
   master_locations = [
     {
+      zone      = "eu-north1-a"
+      subnet_id = "f8ut3srsmjrlor5uko84"
+    },
+    {
       zone      = "eu-north1-c"
-      subnet_id = "f8uvrv9g68nqcjiirv0t"
+      subnet_id = "f8ut3srsmjrlor5uka74"
     }
   ]
 
@@ -30,25 +34,25 @@ module "kube" {
       }
       node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
     }
-    "k8s-ng-cpu" = {
-      description = "Kubernetes CPU nodes with autoscaling"
+    "k8s-ng-h100-8gpu1" = {
+      description = "Kubernetes nodes h100-8-gpu nodes with autoscaling"
       auto_scale = {
-        min     = 1
+        min     = 2
         max     = 3
-        initial = 1
+        initial = 2
       }
-      platform_id = "standard-v3"
-      node_cores  = 28
-      node_memory = 168
-      disk_type   = "network-ssd-nonreplicated"
-      disk_size   = 93
+      platform_id     = "gpu-h100"
+      gpu_environment = "runc"
+      node_cores      = 20
+      node_memory     = 160
+      node_gpus       = 1
+      disk_type       = "network-ssd-nonreplicated"
+      disk_size       = 372
 
       node_labels = {
-        "group" = "cpu"
+        "group" = "h100-8gpu"
       }
-      node_taints = ["group=cpu:NoSchedule"]
     }
-
   }
 }
 
