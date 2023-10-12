@@ -20,7 +20,7 @@ terraform {
 provider "yandex" {
   endpoint = "api.nemax.nebius.cloud:443"
   folder_id = "bjer0eu4okh6vntopouq"
- }
+}
 
 
 provider "local" {}

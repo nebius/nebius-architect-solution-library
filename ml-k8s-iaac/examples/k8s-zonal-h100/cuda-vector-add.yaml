@@ -15,5 +15,5 @@ spec:
       image: "reg.xpkg.ru/library/cuda-vector-add:v0.1"
       resources:
         limits:
-          nvidia.com/gpu: 1 # Запрос 1 GPU.
+          nvidia.com/gpu: 1
 
