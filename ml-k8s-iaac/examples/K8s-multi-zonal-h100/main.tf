@@ -32,7 +32,7 @@ module "kube" {
       node_labels = {
         "group" = "system"
       }
-      node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
+      # node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
     }
     "k8s-ng-h100-8gpu1" = {
       description = "Kubernetes nodes h100-8-gpu nodes with autoscaling"
