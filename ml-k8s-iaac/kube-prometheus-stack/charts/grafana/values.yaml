@@ -187,7 +187,7 @@ service:
   enabled: true
   type: NodePort
   port: 80
-  targetPort: 32322
+  targetPort: 3000
     # targetPort: 4181 To be used with a proxy extraContainer
   ## Service annotations. Can be templated.
   annotations: {}
