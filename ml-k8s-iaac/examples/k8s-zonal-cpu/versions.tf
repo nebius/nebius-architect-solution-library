@@ -2,8 +2,8 @@ terraform {
   required_version = ">= 1.0.0"
 
   required_providers {
-    yandex = {
-      source  = "yandex-cloud/yandex"
+    nebius = {
+      source  = "nebius-cloud/nebius"
       version = "> 0.8"
     }
     local = {
@@ -17,7 +17,7 @@ terraform {
   }
 }
 
-provider "yandex" {
+provider "nebius" {
   endpoint = "api.nemax.nebius.cloud:443"
   folder_id = "bjer0eu4okh6vntopouq"
 }

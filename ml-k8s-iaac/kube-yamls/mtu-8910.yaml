@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: mtu-setter
-  namespace: yandex-system
+  namespace: nebius-system
 spec:
   selector:
     matchLabels:
