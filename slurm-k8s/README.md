@@ -21,6 +21,10 @@ Port forward jupyter service:
 Open brower to localhost:8888
 To check the state of the cluster, open the terminal icon and type:
 
+     $ scontrol show node
+
+And: 
+
      $ sinfo -N -l
 
 Create a simple test.py script :
