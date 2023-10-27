@@ -2,13 +2,13 @@
 This example creates a simple Slurm cluster running in k8s. It runs one master pod, jupyter lab pod, and three worker pods.
 
 
-To run slurm cluster environment you must execute:
+To run slurm cluster environment, execute:
 
      $ cd deploy
      $ kubectl create namespace slurm
      $ kubectl apply -f . -n slurm
 
-To stop it, you must:
+To stop it, execute:
 
      $ kubectl delete -f . -n slurm
 
