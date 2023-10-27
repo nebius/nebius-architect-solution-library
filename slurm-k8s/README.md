@@ -59,7 +59,7 @@ sbcast -f test.py /tmp/test.py
 srun python3 /tmp/test.py
 ```
 
-Then, from the launcher page, click on Slurm Queue ->  Submit Job -> enter path /hpme/admin/job.sh
+Then, from the launcher page, click on Slurm Queue ->  Submit Job -> enter path /home/admin/job.sh
 Hit refresh button to se the job queued.
 After some time, you can see the results in the result.out file
 
