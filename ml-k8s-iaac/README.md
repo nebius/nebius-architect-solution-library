@@ -117,7 +117,7 @@ module "kube" {
 
 ## Configure Terraform for Nebius Cloud
 
-- Install [YC CLI](https://nebius.atlassian.net/wiki/spaces/NTPT/pages/6979777/Nebius.ai+Sandbox+cloud)
+- Install [YC CLI](https://nebius.ai/docs/cli/quickstart)
 - Add environment variables for terraform authentication in Nebuis Cloud
 
 ```
