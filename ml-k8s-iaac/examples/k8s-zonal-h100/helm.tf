@@ -20,6 +20,16 @@ resource "helm_release" "gpu-operator" {
   ]
 }
 
+resource "helm_release" "kube-prometheus-stack" {
+  name       = "kube-prometheus-stack"
+  chart      = "../../kube-prometheus-stack"
+  namespace = "prometheus"
+  create_namespace = true
+  values = [
+    "${file("../../kube-prometheus-stack/values.yaml")}"
+  ]
+}
+
 provider "helm" {
     kubernetes {
       host                   = module.kube.external_v4_endpoint

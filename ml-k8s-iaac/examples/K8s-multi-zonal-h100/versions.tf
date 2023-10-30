@@ -3,8 +3,8 @@ terraform {
 
   required_providers {
     nebius = {
-      source  = "nebius-cloud/nebius"
-      version = "> 0.8"
+      source = "terraform-registry.storage.ai.nebius.cloud/nebius/nebius"
+      version = ">= 0.6.0"
     }
     local = {
       source  = "hashicorp/local"

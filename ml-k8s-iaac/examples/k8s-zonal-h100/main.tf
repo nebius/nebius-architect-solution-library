@@ -34,9 +34,9 @@ module "kube" {
     "k8s-ng-h100-8gpu1" = {
       description = "Kubernetes nodes h100-8-gpu nodes with autoscaling"
       auto_scale = {
-        min     = 2
+        min     = 1
         max     = 3
-        initial = 2
+        initial = 1
       }
       platform_id     = "gpu-h100"
       gpu_environment = "runc"
@@ -45,7 +45,7 @@ module "kube" {
       node_gpus       = 1
       disk_type       = "network-ssd-nonreplicated"
       disk_size       = 372
-
+      nat = true
       node_labels = {
         "group" = "h100-8gpu"
       }
