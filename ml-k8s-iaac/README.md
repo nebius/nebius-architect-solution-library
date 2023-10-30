@@ -5,6 +5,7 @@
 - Create zonal Kubernetes cluster with CPU and GPU nodes
 - Install neccessary [Nvidia tools](https://github.com/NVIDIA/gpu-operator) to run GPU workloads
 - Install [Descheduler](https://github.com/kubernetes-sigs/descheduler/)
+- Prometheus and Grafana 
 - Example workloads
 
 ## Kubernetes cluster definition
@@ -55,64 +56,61 @@ node_groups = {
 
 ```hcl-terraform
 module "kube" {
-  source     = "./modules/kubernetes"
-  network_id = "enpmff6ah2bvi0k10j66"
+  source = "../../k8s-module/"
 
-  master_locations   = [
+  network_id = "btcci5d99ka84l988qvs"
+
+  master_locations = [
     {
-      zone      = "eu-north1-a"
-      subnet_id = "e9b3k97pr2nh1i80as04"
+      zone      = "eu-north1-c"
+      subnet_id = "f8ut3srsmjrlor5uko84"
     },
-    {
-      zone      = "eu-north1-b" 
-      subnet_id = "e2laaglsc7u99ur8c4j1"
-    },
-    {
-      zone      = "eu-north1-c" 
-      subnet_id = "b0ckjm3olbpmk2t6c28o"
-    }
+
   ]
 
   master_maintenance_windows = [
     {
       day        = "monday"
-      start_time = "23:00"
+      start_time = "20:00"
       duration   = "3h"
     }
   ]
-
   node_groups = {
-    "yc-k8s-ng-01" = {
-      description  = "Kubernetes nodes group 01"
-      fixed_scale   = {
-        size = 3
+    "k8s-ng-system" = {
+      description = "Kubernetes nodes group 01 with fixed 1 size scaling"
+      fixed_scale = {
+        size = 2
       }
-      node_labels   = {
-        role        = "worker-01"
-        environment = "testing"
-      }
-    },
-     "k8s-ng-a100-8gpu1" = {
-      description = "Kubernetes nodes a100-8-gpu nodes with autoscaling"
-       auto_scale = {
-        min     = 2
-        max     = 3
-        initial = 2
-      }
-      platform_id     = "gpu-standard-v3"
-      node_cores      = 224
-      node_memory     = 952
-      node_gpus       = 8
-      disk_type       = "network-ssd-nonreplicated"
-      disk_size       = 2046
-
+      nat = true
       node_labels = {
-        "group" = "a100-8gpu"
+        "group" = "system"
       }
-
+      # node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
+    }
+    "k8s-ng-h100-8gpu1" = {
+      description = "Kubernetes nodes h100-8-gpu nodes with autoscaling"
+      auto_scale = {
+        min     = 1
+        max     = 3
+        initial = 1
+      }
+      platform_id     = "gpu-h100"
+      gpu_environment = "runc"
+      node_cores      = 20
+      node_memory     = 160
+      node_gpus       = 1
+      disk_type       = "network-ssd-nonreplicated"
+      disk_size       = 372
+      nat = true
+      node_labels = {
+        "group" = "h100-8gpu"
+      }
     }
   }
 }
+
+
+
 ```
 
 ## Configure Terraform for Nebius Cloud
