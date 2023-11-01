@@ -30,6 +30,17 @@ resource "helm_release" "kube-prometheus-stack" {
   ]
 }
 
+resource "helm_release" "network_operator" {
+  name       = "network-operator"
+  chart      = "nvidia/network-operator"
+  version = "23.7.0"
+  namespace = "network-operator"
+  create_namespace = true
+  values = [
+    "${file("../../network-operator/values.yaml")}"
+  ]
+}
+
 provider "helm" {
     kubernetes {
       host                   = module.kube.external_v4_endpoint
