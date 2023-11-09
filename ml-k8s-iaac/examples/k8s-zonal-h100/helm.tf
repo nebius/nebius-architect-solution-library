@@ -32,7 +32,7 @@ resource "helm_release" "kube-prometheus-stack" {
 
 resource "helm_release" "network_operator" {
   name       = "network-operator"
-  chart      = "../../nvidia/network-operator"
+  chart      = "../../network-operator"
   namespace = "network-operator"
   create_namespace = true
   values = [
