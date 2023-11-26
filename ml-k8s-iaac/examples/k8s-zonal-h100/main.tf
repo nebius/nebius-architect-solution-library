@@ -2,12 +2,12 @@
 module "kube" {
   source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.1"
 
-  network_id = "btcci5d99ka84l988qvs"
+  network_id = "btcci5d99ka84l988qvs" // change to correct
 
   master_locations = [
     {
       zone      = "eu-north1-c"
-      subnet_id = "f8ut3srsmjrlor5uko84"
+      subnet_id = "f8ut3srsmjrlor5uko84" // change to correct
     },
 
   ]
@@ -40,8 +40,8 @@ module "kube" {
       }
       platform_id     = "gpu-h100"
       gpu_environment = "runc"
-      node_cores      = 20
-      node_memory     = 160
+      node_cores      = 20 // change according to VM size
+      node_memory     = 160 // change according to VM size
       node_gpus       = 1
       disk_type       = "network-ssd-nonreplicated"
       disk_size       = 372
