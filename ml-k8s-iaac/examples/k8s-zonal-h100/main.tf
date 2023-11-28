@@ -2,12 +2,12 @@
 module "kube" {
   source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.1"
 
-  network_id = "btcci5d99ka84l988qvs" // change to correct
+  network_id = var.network_id
 
   master_locations = [
     {
       zone      = "eu-north1-c"
-      subnet_id = "f8ut3srsmjrlor5uko84" // change to correct
+      subnet_id = var.subnet_id
     },
 
   ]
@@ -31,8 +31,8 @@ module "kube" {
       }
       # node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
     }
-    "k8s-ng-h100-8gpu1" = {
-      description = "Kubernetes nodes h100-8-gpu nodes with autoscaling"
+    "k8s-ng-h100-1gpu1" = {
+      description = "Kubernetes nodes h100-1-gpu nodes with autoscaling"
       auto_scale = {
         min     = 1
         max     = 3
