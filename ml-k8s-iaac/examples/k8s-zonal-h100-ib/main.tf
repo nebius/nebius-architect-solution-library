@@ -1,18 +1,20 @@
+resource "nebius_compute_gpu_cluster" "k8s_cluster" {
+  name               = "k8s-cluster"
+  interconnect_type  = "InfiniBand"
+  zone               = var.zone_id
+}
 
 module "kube" {
-  source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.1"
+  source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.2"
 
-  network_id = "btcci5d99ka84l988qvs"
+  network_id = var.network_id
 
   master_locations = [
     {
-      zone      = "eu-north1-a"
-      subnet_id = "f8ut3srsmjrlor5uko84"
+      zone      = var.zone_id
+      subnet_id = var.subnet_id
     },
-    {
-      zone      = "eu-north1-c"
-      subnet_id = "f8ut3srsmjrlor5uka74"
-    }
+
   ]
 
   master_maintenance_windows = [
@@ -32,23 +34,21 @@ module "kube" {
       node_labels = {
         "group" = "system"
       }
-      # node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
     }
     "k8s-ng-h100-8gpu1" = {
       description = "Kubernetes nodes h100-8-gpu nodes with autoscaling"
-      auto_scale = {
-        min     = 2
-        max     = 3
-        initial = 2
+      fixed_scale = {
+        size = 2
       }
+      gpu_cluster_id = nebius_compute_gpu_cluster.k8s_cluster.id
       platform_id     = "gpu-h100"
       gpu_environment = "runc"
-      node_cores      = 20
-      node_memory     = 160
-      node_gpus       = 1
+      node_cores      = 160
+      node_memory     = 1280
+      node_gpus       = 8
       disk_type       = "network-ssd-nonreplicated"
       disk_size       = 372
-
+      nat = true
       node_labels = {
         "group" = "h100-8gpu"
       }

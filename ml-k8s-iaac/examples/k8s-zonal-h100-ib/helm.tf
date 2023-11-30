@@ -1,15 +1,5 @@
 data "nebius_client_config" "client" {}
 
-resource "helm_release" "descheduler" {
-  name       = "helm-descheduler"
-  chart      = "../../helm-descheduler"
-  namespace = "descheduler"
-  create_namespace = true
-  values = [
-    "${file("../../helm-descheduler/values-my.yaml")}"
-  ]
-}
-
 resource "helm_release" "gpu-operator" {
   name       = "gpu-operator"
   chart      = "../../gpu-operator"
@@ -17,6 +7,16 @@ resource "helm_release" "gpu-operator" {
   create_namespace = true
   values = [
     "${file("../../gpu-operator/values.yaml")}"
+  ]
+}
+
+resource "helm_release" "network_operator" {
+  name       = "network-operator"
+  chart      = "../../network-operator"
+  namespace = "network-operator"
+  create_namespace = true
+  values = [
+    "${file("../../network-operator/values.yaml")}"
   ]
 }
 
