@@ -4,7 +4,7 @@ variable "folder_id" {
 
 variable "client_node_per_zone" {
   type    = number
-  default = 1
+  default = 10
 }
 
 variable "create_clients" {

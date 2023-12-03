@@ -12,10 +12,10 @@ yc config profile activate <your profile>
 ### Terraform
 
 ```bash
-make init
+terraform init
 vi variables.tf
 # choose default values for variables
-make apply
+terraform apply
 
 # use output to access publically available first client
 ssh juicefs@<IP_addr_of_client>
@@ -60,7 +60,7 @@ export YC_REDIS_CONNECT_URL=redis://:<pwd>@<fqdn>:6379/1
 
 juicefs format \
     --storage s3 \
-    --bucket https://${YC_BUCKET_NAME}.storage.yandexcloud.net \
+    --bucket https://${YC_BUCKET_NAME}.storage.ai.nebius.cloud \
     --access-key ${YC_ACCESS_KEY_ID} \
     --secret-key ${YC_SECRET_KEY} \
     ${YC_REDIS_CONNECT_URL} myjfs
@@ -107,15 +107,14 @@ mpirun -hosts $NODES -ppn $(nproc) $JFS_MOUNT_DIR/ior/prefix/bin/ior  -o $JFS_MO
 
 access    bw(MiB/s)  IOPS       Latency(s)  block(KiB) xfer(KiB)  open(s)    wr/rd(s)   close(s)   total(s)   iter
 ------    ---------  ----       ----------  ---------- ---------  --------   --------   --------   --------   ----
-write     229.75     3678       13.67       128.00     64.00      0.023774   27.84      0.505415   27.86      0
-read      312.36     4998       10.24       128.00     64.00      0.001032   20.49      0.524790   20.49      0
-
-No-read-cache
+write     617.11     9874       47.68       128.00     64.00      0.394270   103.71     17.90      103.71     0
+read      2531.72    40509      11.83       128.00     64.00      0.110531   25.28      4.05       25.28      0
 
 access    bw(MiB/s)  IOPS       Latency(s)  block(KiB) xfer(KiB)  open(s)    wr/rd(s)   close(s)   total(s)   iter
 ------    ---------  ----       ----------  ---------- ---------  --------   --------   --------   --------   ----
-write     203.79     4322       0.014719    16384      64.00      0.005204   3.79       1.58       5.02       0
-read      380.88     6095       0.010331    16384      64.00      0.000783   2.69       0.097538   2.69       0
+write     515.12     10603      0.051229    16384      64.00      0.269630   15.45      9.18       19.88      0
+read      2934.71    46968      0.010072    16384      64.00      0.040733   3.49       1.12       3.49       0
+
 ```
 
 #### FIO
