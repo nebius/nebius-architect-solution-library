@@ -34,9 +34,9 @@ module "kube" {
     "k8s-ng-cpu" = {
       description = "Kubernetes CPU nodes with autoscaling"
       auto_scale = {
-        min     = 1
+        min     = 0
         max     = 3
-        initial = 1
+        initial = 0
       }
       platform_id = "standard-v3"
       node_cores  = 28
