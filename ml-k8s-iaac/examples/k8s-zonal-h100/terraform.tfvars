@@ -1,3 +1,3 @@
-folder_id = "bje477k75qfq2md9el7r"
-network_id = "btckpjoo8ifpp0gvuki8"
-subnet_id = "f8uhusited1djhu0fd2p"
+folder_id = "bjeq7qmo88loor6p1bac"
+network_id = "btc4hodm8pbvgjtckgmf"
+subnet_id = "f8ukn3uj1hchc06ebcqk"

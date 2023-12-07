@@ -40,9 +40,9 @@ module "kube" {
       }
       platform_id     = "gpu-h100"
       gpu_environment = "runc"
-      node_cores      = 20 // change according to VM size
-      node_memory     = 160 // change according to VM size
-      node_gpus       = 1
+      node_cores      = 40 // change according to VM size
+      node_memory     = 320 // change according to VM size
+      node_gpus       = 2
       disk_type       = "network-ssd-nonreplicated"
       disk_size       = 372
       nat = true

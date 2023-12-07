@@ -128,11 +128,14 @@ spec:
     {{- end }}
   psp:
     enabled: {{ .Values.psp.enabled }}
+  psa:
+    enabled: {{ .Values.psa.enabled }}
   cdi:
     enabled: {{ .Values.cdi.enabled }}
     default: {{ .Values.cdi.default }}
   driver:
     enabled: {{ .Values.driver.enabled }}
+    useNvidiaDriverCRD: {{ .Values.driver.nvidiaDriverCRD.enabled }}
     usePrecompiled: {{ .Values.driver.usePrecompiled }}
     {{- if .Values.driver.repository }}
     repository: {{ .Values.driver.repository }}
@@ -266,6 +269,33 @@ spec:
       {{- if .Values.vgpuManager.driverManager.env }}
       env: {{ toYaml .Values.vgpuManager.driverManager.env | nindent 8 }}
       {{- end }}
+  kataManager:
+    enabled: {{ .Values.kataManager.enabled }}
+    config: {{ toYaml .Values.kataManager.config | nindent 6 }}
+    {{- if .Values.kataManager.repository }}
+    repository: {{ .Values.kataManager.repository }}
+    {{- end }}
+    {{- if .Values.kataManager.image }}
+    image: {{ .Values.kataManager.image }}
+    {{- end }}
+    {{- if .Values.kataManager.version }}
+    version: {{ .Values.kataManager.version | quote }}
+    {{- end }}
+    {{- if .Values.kataManager.imagePullPolicy }}
+    imagePullPolicy: {{ .Values.kataManager.imagePullPolicy }}
+    {{- end }}
+    {{- if .Values.kataManager.imagePullSecrets }}
+    imagePullSecrets: {{ toYaml .Values.kataManager.imagePullSecrets | nindent 6 }}
+    {{- end }}
+    {{- if .Values.kataManager.resources }}
+    resources: {{ toYaml .Values.kataManager.resources | nindent 6 }}
+    {{- end }}
+    {{- if .Values.kataManager.env }}
+    env: {{ toYaml .Values.kataManager.env | nindent 6 }}
+    {{- end }}
+    {{- if .Values.kataManager.args }}
+    args: {{ toYaml .Values.kataManager.args | nindent 6 }}
+    {{- end }}
   vfioManager:
     enabled: {{ .Values.vfioManager.enabled }}
     {{- if .Values.vfioManager.repository }}
@@ -337,6 +367,33 @@ spec:
     {{- if .Values.vgpuDeviceManager.config }}
     config: {{ toYaml .Values.vgpuDeviceManager.config | nindent 6 }}
     {{- end  }}
+  ccManager:
+    enabled: {{ .Values.ccManager.enabled }}
+    defaultMode: {{ .Values.ccManager.defaultMode | quote }}
+    {{- if .Values.ccManager.repository }}
+    repository: {{ .Values.ccManager.repository }}
+    {{- end }}
+    {{- if .Values.ccManager.image }}
+    image: {{ .Values.ccManager.image }}
+    {{- end }}
+    {{- if .Values.ccManager.version }}
+    version: {{ .Values.ccManager.version | quote }}
+    {{- end }}
+    {{- if .Values.ccManager.imagePullPolicy }}
+    imagePullPolicy: {{ .Values.ccManager.imagePullPolicy }}
+    {{- end }}
+    {{- if .Values.ccManager.imagePullSecrets }}
+    imagePullSecrets: {{ toYaml .Values.ccManager.imagePullSecrets | nindent 6 }}
+    {{- end }}
+    {{- if .Values.ccManager.resources }}
+    resources: {{ toYaml .Values.ccManager.resources | nindent 6 }}
+    {{- end }}
+    {{- if .Values.ccManager.env }}
+    env: {{ toYaml .Values.vfioManager.env | nindent 6 }}
+    {{- end }}
+    {{- if .Values.ccManager.args }}
+    args: {{ toYaml .Values.ccManager.args | nindent 6 }}
+    {{- end }}
   toolkit:
     enabled: {{ .Values.toolkit.enabled }}
     {{- if .Values.toolkit.repository }}
