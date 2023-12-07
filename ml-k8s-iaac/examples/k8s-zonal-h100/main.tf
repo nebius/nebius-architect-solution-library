@@ -33,8 +33,10 @@ module "kube" {
     }
     "k8s-ng-h100-1gpu1" = {
       description = "Kubernetes nodes h100-1-gpu nodes with autoscaling"
-      fixed_scale = {
-        size = 1
+      auto_scale = {
+        min     = 0
+        max     = 3
+        initial = 0
       }
       platform_id     = "gpu-h100"
       gpu_environment = "runc"
