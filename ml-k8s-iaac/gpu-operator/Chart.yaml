@@ -1,10 +1,10 @@
 apiVersion: v2
-appVersion: v23.3.2
+appVersion: v23.9.0
 dependencies:
 - condition: nfd.enabled
   name: node-feature-discovery
   repository: https://kubernetes-sigs.github.io/node-feature-discovery/charts
-  version: v0.12.1
+  version: v0.14.2
 description: NVIDIA GPU Operator creates/configures/manages GPUs atop Kubernetes
 home: https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/overview.html
 icon: https://assets.nvidiagrid.net/ngc/logos/GPUoperator.png
@@ -20,4 +20,4 @@ kubeVersion: '>= 1.16.0-0'
 name: gpu-operator
 sources:
 - https://github.com/NVIDIA/gpu-operator
-version: v23.3.2
+version: v23.9.0
