@@ -5,7 +5,7 @@ resource "nebius_compute_gpu_cluster" "k8s_cluster" {
 }
 
 module "kube" {
-  source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.2"
+  source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.3"
 
   network_id = var.network_id
 
