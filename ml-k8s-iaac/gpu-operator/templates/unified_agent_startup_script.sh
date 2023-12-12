@@ -18,62 +18,62 @@ done
 mkdir -p /etc/unified_agent
 cat <<EOF > /etc/unified_agent/config.yaml
 storages:
-- name: metrics_storage
-    plugin: fs
-    config:
-    directory: /var/lib/unified_agent/metrics_storage
-    max_partition_size: 100mb
-    max_segment_size: 10mb
+    - name: metrics_storage
+        plugin: fs
+        config:
+            directory: /var/lib/unified_agent/metrics_storage
+            max_partition_size: 100mb
+            max_segment_size: 10mb
 
 channels:
-- name: metrics_channel
-    channel:
-    pipe:
-        - filter:
-            plugin: add_metric_labels
+    - name: metrics_channel
+        channel:
+        pipe:
+            - filter:
+                plugin: add_metric_labels
+                config:
+                labels:
+                    vm_id: "${vm_id}"
+            - filter:
+                plugin: transform_metric_labels
+                config:
+                labels:
+                    - gpu: "-"
+                    - device: "-"
+                    - modelName: "-"
+                    - Hostname: "-"
+                    - pod: "-"
+                    - container: "-"
+                    - namespace: "-"
+                    - DCGM_FI_CUDA_DRIVER_VERSION: "-"
+                    - DCGM_FI_DRIVER_VERSION: "-"
+                    - DCGM_FI_PROCESS_NAME: "-"
+                    - DCGM_FI_DEV_BRAND: "-"
+                    - DCGM_FI_DEV_SERIAL: "-"
+                    - DCGM_FI_DEV_MINOR_NUMBER: "-"
+                    - DCGM_FI_DEV_NAME: "-"
+            - storage_ref:
+                name: metrics_storage
+        output:
+            plugin: yc_metrics
             config:
-            labels:
-                vm_id: "${vm_id}"
-        - filter:
-            plugin: transform_metric_labels
-            config:
-            labels:
-                - gpu: "-"
-                - device: "-"
-                - modelName: "-"
-                - Hostname: "-"
-                - pod: "-"
-                - container: "-"
-                - namespace: "-"
-                - DCGM_FI_CUDA_DRIVER_VERSION: "-"
-                - DCGM_FI_DRIVER_VERSION: "-"
-                - DCGM_FI_PROCESS_NAME: "-"
-                - DCGM_FI_DEV_BRAND: "-"
-                - DCGM_FI_DEV_SERIAL: "-"
-                - DCGM_FI_DEV_MINOR_NUMBER: "-"
-                - DCGM_FI_DEV_NAME: "-"
-        - storage_ref:
-            name: metrics_storage
-    output:
-        plugin: yc_metrics
-        config:
-        url: "${MONITORING_API_ADDRESS}/monitoring/v2/data/write"
-        folder_id: "${folder_id}"
-        service: compute
-        iam:
-            cloud_meta: { }
+                url: "${MONITORING_API_ADDRESS}/monitoring/v2/data/write"
+                folder_id: "${folder_id}"
+                service: compute
+                iam:
+                    cloud_meta: { }
 
 routes:
-- input:
-    plugin: metrics_pull
-    config:
-        url: "http://${dcgm_ip}:9400/metrics"
-        format:
-        prometheus: {}
-        metric_name_label: name
+    - input:
+        plugin: metrics_pull
+        config:
+            url: "http://${dcgm_ip}:9400/metrics"
+            format:
+                prometheus: {}
+            metric_name_label: name
     channel:
-    channel_ref:
-        name: metrics_channel
+        channel_ref:
+            name: metrics_channel
 EOF
 fi
 
