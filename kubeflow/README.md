@@ -1,4 +1,4 @@
-# Kubernetes Examples for Kubelfow
+# Kubeflow installation for Nebius.ai
 
 ## Features
 
@@ -14,11 +14,12 @@ First, you need to provision K8s cluster with GPU support as explained [here](..
 
 ### Object Storage
 
-- Create a bucket named "mlpipeline". Please follow nebius.ai documentation on how to [create a bucket](https://nebius.ai/docs/storage/operations/buckets/create)
+- Create a bucket, the name of the bucket will need to be referenced later. Please follow nebius.ai documentation on how to [create a bucket](https://nebius.ai/docs/storage/operations/buckets/create)
+- Replace the bucket name in the [s3 config file](./nebius-deployment/patches/s3.yaml)
 
 - Create a [service account](https://nebius.ai/docs/iam/operations/sa/create) with the storage.uploader [role](https://nebius.ai/docs/iam/concepts/access-control/roles)
 - [Create a static access key](https://nebius.ai/docs/iam/operations/sa/create-access-key) for the service account.
-- Replace s3 credentials in kubeflow/nebius-deployment/patches/secrets.yaml file
+- Replace s3 credentials in the [secrets](./nebius-deployment/patches/secrets.yaml) file
 
 ### User namespace
 - You can change the default namespace and user by modifying these files:
