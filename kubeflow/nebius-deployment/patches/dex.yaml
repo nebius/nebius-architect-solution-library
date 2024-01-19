@@ -31,3 +31,10 @@ kind: ConfigMap
 metadata:
   name: dex
   namespace: auth
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dex-passwords
+data:
+  DEX_USER_PASSWORD: JDJ5JDEyJDRLL1ZrbURkMXExT3JiM3hBdDgyenU4Z2s3QWQ2UmVGUjRMQ1A5VWVZRTkwTkxpTjlEZjcy
