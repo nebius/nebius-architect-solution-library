@@ -20,29 +20,27 @@ module "kube" {
     }
   ]
   node_groups = {
-    "k8s-ng-system" = {
-      description = "Kubernetes nodes group 01 with fixed 1 size scaling"
-      fixed_scale = {
-        size = 2
-      }
-      nat = true
-      node_labels = {
-        "group" = "system"
-      }
-      # node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
-    }
+    # "k8s-ng-system" = {
+    #   description = "Kubernetes nodes group 01 with fixed 1 size scaling"
+    #   fixed_scale = {
+    #     size = 1
+    #   }
+    #   nat = true
+    #   node_labels = {
+    #     "group" = "system"
+    #   }
+    #   # node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
+    # }
     "k8s-ng-h100-1gpu1" = {
       description = "Kubernetes nodes h100-1-gpu nodes with autoscaling"
-      auto_scale = {
-        min     = 0
-        max     = 3
-        initial = 0
+      fixed_scale = {
+        size = 1
       }
       platform_id     = "gpu-h100"
       gpu_environment = "runc"
-      node_cores      = 40 // change according to VM size
-      node_memory     = 320 // change according to VM size
-      node_gpus       = 2
+      node_cores      = 20 // change according to VM size
+      node_memory     = 160 // change according to VM size
+      node_gpus       = 1
       disk_type       = "network-ssd-nonreplicated"
       disk_size       = 372
       nat = true
