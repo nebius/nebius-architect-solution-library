@@ -135,8 +135,14 @@ data:
           # vendors: []
           vendors:
            - limitsKey: "nvidia.com/gpu"
-             uiName: "NVIDIA"
-          #  - limitsKey: "amd.com/gpu"
+             uiName: "nvidia.com/gpu"
+           - limitsKey: "nvidia.com/mig-1g.10gb"
+             uiName: "nvidia.com/mig-1g.10gb"
+           - limitsKey: "nvidia.com/mig-2g.20gb"
+             uiName: "nvidia.com/mig-2g.20gb"
+           - limitsKey: "nvidia.com/mig-3g.40gb"
+             uiName: "nvidia.com/mig-3g.40gb"
+          #  - limitsKey: "nvidia.com/mig-2g.20gb"
           #    uiName: "AMD"
 
           # the default value of the limit

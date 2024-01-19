@@ -3,8 +3,13 @@ kind: Kustomization
 
 
 bases:
-  - ./example-copy
+  - ../manifests/example
 
+configMapGenerator:
+- envs:
+  - params.env
+  name: default-install-config
+  behavior: replace
 
 patches:
   - patch: |-
@@ -22,8 +27,15 @@ patches:
       kind: ConfigMap
       labelSelector: app=jupyter-web-app
     path: patches/jupyter-config.yaml
+  - path: patches/istio-destination-rule.yaml
+    target:
+      group: networking.istio.io
+      version: v1alpha3
+      kind: DestinationRule
     
 patchesStrategicMerge:
 - patches/s3.yaml
 - patches/secrets.yaml
 - patches/dex.yaml
+
+
