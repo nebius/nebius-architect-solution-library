@@ -4,8 +4,8 @@
 triton:
   s3:
     volumeHandle: llama2/llama-2-13b-chat
-    accessKeyID: YCEE8JSMRBC567LNmJGGcWP5qGd5Y2sh
-    secretAccessKey: YCMITkPh-vSz4X0gcDaV_XLvgycwTFDgWzA8qDIv
+    accessKeyID: #accessKey
+    secretAccessKey: #secretKey
   modelArchitecture: "llama"
   modelMaxInputLength: "3000"
   modelMaxOutputLength: "512"
