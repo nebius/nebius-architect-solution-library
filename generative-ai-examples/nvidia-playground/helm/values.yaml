@@ -1,0 +1,59 @@
+# Default values for rag-llm-hackfest.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+triton:
+  s3:
+    volumeHandle: llama2/llama-2-13b-chat
+    accessKeyID: #accessKey
+    secretAccessKey: #secretKey
+  modelArchitecture: "llama"
+  modelMaxInputLength: "3000"
+  modelMaxOutputLength: "512"
+  image: bpopov/llm-inference-server
+  gpu:
+    # MIG slice
+    #type: "nvidia.com/mig-3g.40gb"
+    # time-slice 
+    type: "nvidia.com/gpu"
+    count: 1
+
+milvus:
+  gpu:
+    # MIG slice 
+    type: "nvidia.com/mig-2g.20gb"
+    # type: "nvidia.com/gpu"
+    count: 1
+
+jupyter:
+  image: bpopov/notebook-server
+  gpu:
+    # MIG slice
+    type: "nvidia.com/mig-1g.10gb"
+    # type: "nvidia.com/gpu"
+    count: 1
+
+query:
+  image: bpopov/chain-server
+  gpu:
+    # MIG slice
+    type: "nvidia.com/mig-1g.10gb"
+    # type: "nvidia.com/gpu"
+    count: 1
+
+frontend: 
+  image: bpopov/llm-playground
+  modelName: "Llama-2-13b-chat"
+
+images:
+  registry:
+    # The registry name must NOT contain a trailing slash
+    name: nvcr.io
+    ImagePullSecret:
+      # Leave blank, if no ImagePullSecret is needed.
+      name: nvcrio
+      # If set to false, the chart expects either a ImagePullSecret
+      # with the name configured above to be present on the cluster or that no
+      # credentials are needed.
+      create: false
+      username: '$oauthtoken'
+      password: 

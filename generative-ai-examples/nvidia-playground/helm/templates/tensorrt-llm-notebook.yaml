@@ -1,0 +1,59 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: trt-llm-notebook-server
+#   labels:
+#     app.kubernetes.io/name: trt-llm-notebook-server
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app.kubernetes.io/name: trt-llm-notebook-server
+#   template:
+#     metadata:
+#       labels:
+#         app.kubernetes.io/name: trt-llm-notebook-server
+#     spec:
+#       imagePullSecrets:
+#         - name:   nvcrio
+#       containers:
+#       - name: trt-llm-notebook-server
+#         imagePullPolicy: IfNotPresent
+#         image: {{ .Values.jupyter.image }}
+#         ports:
+#         - containerPort: 8888
+#         command: ["/bin/sh", "-c"]
+#         args: 
+#           - |
+#             wget 'https://code.visualstudio.com/sha/download?build=stable&os=cli-alpine-x64' -O vscode_cli.tar.gz \
+#             && mkdir -p /tmp/vscode-cli \
+#             && tar -xf vscode_cli.tar.gz -C /tmp/vscode-cli \
+#             && rm vscode_cli.tar.gz \
+#             && /tmp/vscode-cli/code serve-web --port "8888" --host "0.0.0.0" --without-connection-token --accept-server-license-terms
+#         resources:
+#           limits:
+#             nvidia.com/mig-3g.40gb: 1
+#         volumeMounts:
+#         - mountPath: /model
+#           name: llama2-model-volume
+#         securityContext:
+#           privileged: true # this should do the trick
+#       volumes:
+#       - name: llama2-model-volume
+#         persistentVolumeClaim:
+#           claimName: csi-s3-pvc-static
+#           readOnly: false      
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: trt-llm-notebook-service
+# spec:
+#   type: NodePort
+
+#   selector:
+#     app.kubernetes.io/name: trt-llm-notebook-server
+#   ports:
+#     - protocol: TCP
+#       port: 8888
+#       nodePort: 30000 
