@@ -1,0 +1,118 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: triton-entrypoint
+data:
+  entrypoint.sh: |-
+    #!/bin/bash -x
+    set -e
+
+    rm -rf /usr/local/cuda-12.2/targets/x86_64-linux/lib/stubs/   
+    ldconfig 
+    
+    /usr/bin/python3 -m  model_server {{ .Values.triton.modelArchitecture | quote }}  \
+      --max-input-length {{ .Values.triton.modelMaxInputLength | quote}} \
+      --max-output-length {{ .Values.triton.modelMaxOutputLength | quote}} \
+      --quantization int4_awq
+   
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: triton-inference-server
+  labels:
+    app.kubernetes.io/name: triton-inference-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: triton-inference-server
+  template:
+    metadata:
+      name:  triton-inference-server
+      labels:
+        app.kubernetes.io/name: triton-inference-server
+    spec:
+      imagePullSecrets:
+        - name:   nvcrio
+      containers:
+      - name: triton-inference-server
+        imagePullPolicy: IfNotPresent
+        image: {{ .Values.triton.image }}
+        command: [/bin/entrypoint.sh]
+        ports:
+        - containerPort: 8000
+        - containerPort: 8001
+        - containerPort: 8002
+        readinessProbe:
+          grpc:
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        resources:
+          limits:
+            {{ .Values.triton.gpu.type }}: {{ .Values.triton.gpu.count }} 
+        volumeMounts:
+        - mountPath: /model
+          name: llama2-model-volume
+        - mountPath: /dev/shm
+          name: dshm
+        - name: entrypoint
+          mountPath: /bin/entrypoint.sh
+          readOnly: true
+          subPath: entrypoint.sh
+      volumes:
+      - name: llama2-model-volume
+        persistentVolumeClaim:
+          claimName: csi-s3-pvc-static
+          readOnly: false
+      - name: dshm
+        emptyDir:
+          medium: Memory
+      - name: entrypoint
+        configMap:
+          defaultMode: 0700
+          name: triton-entrypoint 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name:  llm
+spec:
+  selector:
+    app.kubernetes.io/name: triton-inference-server
+  ports:
+    - protocol: TCP
+      port: 8001
+      targetPort: 8001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llm-metrics
+  labels:
+    app: llm-metrics
+spec:
+  selector:
+    app.kubernetes.io/name: triton-inference-server
+  ports:
+    - name: metrics
+      protocol: TCP
+      port: 8002
+      targetPort: 8002
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: llm-metrics-monitor
+spec:
+  selector:
+    matchLabels:
+      app: llm-metrics
+  namespaceSelector:
+    matchNames:
+      - default
+  endpoints:
+  - port: metrics
+    interval: 15s
+    path: /metrics
