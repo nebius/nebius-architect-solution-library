@@ -12,7 +12,7 @@ GlusterFS is an open source, distributed file system capable of scaling to sever
 
 **Scalability**: GlusterFS is designed to scale horizontally, allowing you to add additional storage nodes seamlessly to accommodate growing storage needs. It can scale to petabytes of storage and handle a large number of clients accessing data concurrently.
 
-**lexibility**: GlusterFS supports various storage types, including local disk, Network Attached Storage (NAS), Direct Attached Storage (DAS), and cloud storage, allowing you to create a unified storage pool from diverse storage resources.
+**Flexibility**: GlusterFS supports various storage types, including local disk, Network Attached Storage (NAS), Direct Attached Storage (DAS), and cloud storage, allowing you to create a unified storage pool from diverse storage resources.
 
 **Redundancy and Fault Tolerance**: GlusterFS provides options for data redundancy and fault tolerance through features like replication and erasure coding (dispersed volumes). These features ensure data availability and resilience against hardware failures.
 
