@@ -50,7 +50,8 @@ module "kube" {
       disk_size       = 372
       nat = true
       node_labels = {
-        "group" = "h100-8gpu"
+        "group" = "h100-8gpu" 
+	      "cloud.google.com/gke-accelerator" = "any-value"
       }
     }
   }
