@@ -3,12 +3,12 @@ module "kube" {
   source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.4"
 
 
-  network_id = "btcci5d99ka84l988qvs"
+  network_id = var.network_id
 
   master_locations = [
     {
       zone      = "eu-north1-c"
-      subnet_id = "f8uvrv9g68nqcjiirv0t"
+      subnet_id = var.subnet_id
     }
   ]
 
@@ -35,19 +35,19 @@ module "kube" {
       description = "Kubernetes CPU nodes with autoscaling"
       auto_scale = {
         min     = 0
-        max     = 3
-        initial = 0
+        max     = 8
+        initial = 1
       }
       platform_id = "standard-v3"
-      node_cores  = 28
-      node_memory = 168
+      node_cores  = 32
+      node_memory = 64
       disk_type   = "network-ssd-nonreplicated"
       disk_size   = 93
 
       node_labels = {
         "group" = "cpu"
       }
-      node_taints = ["group=cpu:NoSchedule"]
+#      node_taints = ["group=cpu:NoSchedule"]
     }
 
   }
