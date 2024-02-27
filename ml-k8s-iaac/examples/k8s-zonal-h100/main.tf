@@ -31,24 +31,6 @@ module "kube" {
        }
        # node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
      }
-    "k8s-ng-cpu" = {
-      description = "Kubernetes CPU nodes with autoscaling"
-      auto_scale = {
-        min     = 3
-        max     = 8
-        initial = 3
-      }
-      platform_id = "standard-v3"
-      node_cores  = 16
-      node_memory = 64
-      disk_type   = "network-ssd-nonreplicated"
-      disk_size   = 93
-
-      node_labels = {
-        "group" = "cpu"
-      }
-#      node_taints = ["group=cpu:NoSchedule"]
-    }
     "k8s-ng-h100-1gpu1" = {
       description = "Kubernetes nodes h100-1-gpu nodes with autoscaling"
       auto_scale = {
