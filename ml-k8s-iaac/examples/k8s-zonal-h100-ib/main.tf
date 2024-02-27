@@ -25,7 +25,7 @@ module "kube" {
     }
   ]
   node_groups = {
-    "k8s-ng-system" = {
+    "k8s-ng-ib-system" = {
       description = "Kubernetes nodes group 01 with fixed 1 size scaling"
       fixed_scale = {
         size = 2
