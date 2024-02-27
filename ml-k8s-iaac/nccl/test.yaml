@@ -1,0 +1,187 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nccl-test
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: topo-config
+  namespace: nccl-test
+data:
+  nccl-topo-h100-v1.xml: |
+    <system version="1">
+      <cpu numaid="0" affinity="00000000,00000000,0000ffff,ffffffff,ffffffff" arch="x86_64" vendor="GenuineIntel" familyid="6" modelid="106">
+        <pci busid="0000:8a:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
+          <pci busid="0000:8c:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
+            <nic>
+              <net name="mlx5_4" dev="4" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
+            </nic>
+          </pci>
+          <pci busid="0000:8d:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
+        </pci>
+        <pci busid="0000:8e:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
+          <pci busid="0000:90:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
+            <nic>
+              <net name="mlx5_5" dev="5" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
+            </nic>
+          </pci>
+          <pci busid="0000:91:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
+        </pci>
+        <pci busid="0000:92:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
+          <pci busid="0000:94:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
+            <nic>
+              <net name="mlx5_6" dev="6" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
+            </nic>
+          </pci>
+          <pci busid="0000:95:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
+        </pci>
+        <pci busid="0000:96:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
+          <pci busid="0000:98:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
+            <nic>
+              <net name="mlx5_7" dev="7" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
+            </nic>
+          </pci>
+          <pci busid="0000:99:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
+        </pci>
+      </cpu>
+      <cpu numaid="1" affinity="ffffffff,ffffffff,ffff0000,00000000,00000000" arch="x86_64" vendor="GenuineIntel" familyid="6" modelid="106">
+        <pci busid="0000:a8:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
+          <pci busid="0000:aa:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
+            <nic>
+              <net name="mlx5_0" dev="0" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
+            </nic>
+          </pci>
+          <pci busid="0000:ab:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
+        </pci>
+        <pci busid="0000:ac:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
+          <pci busid="0000:ae:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
+            <nic>
+              <net name="mlx5_1" dev="1" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
+            </nic>
+          </pci>
+          <pci busid="0000:af:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
+        </pci>
+        <pci busid="0000:b0:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
+          <pci busid="0000:b2:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
+            <nic>
+              <net name="mlx5_2" dev="2" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
+            </nic>
+          </pci>
+          <pci busid="0000:b3:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
+        </pci>
+        <pci busid="0000:b4:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
+          <pci busid="0000:b6:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
+            <nic>
+              <net name="mlx5_3" dev="3" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
+            </nic>
+          </pci>
+          <pci busid="0000:b7:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
+        </pci>
+      </cpu>
+    </system>
+---
+
+apiVersion: kubeflow.org/v1
+kind: MPIJob
+metadata:
+  name: nccl-test-h100
+  namespace: nccl-test
+spec:
+  
+  slotsPerWorker: 8
+  runPolicy:
+    cleanPodPolicy: None
+  mpiReplicaSpecs:
+    Launcher:
+      replicas: 1
+      template:
+          spec:
+            initContainers:
+              - name: init-limit
+                image: busybox:1.27.2
+                command:
+                  [
+                    "sh",
+                    "-c",
+                    "ulimit -Hl unlimited && ulimit -Sl unlimited",
+                  ]
+                securityContext:
+                  privileged: true
+            containers:
+            - image: ghcr.io/coreweave/nccl-tests:12.1.1-cudnn8-devel-ubuntu20.04-nccl2.18.3-1-471f0db
+              name: nccl
+              securityContext:
+                privileged: true
+              env:
+              - name: OMPI_ALLOW_RUN_AS_ROOT
+                value: "1"
+              - name: OMPI_ALLOW_RUN_AS_ROOT_CONFIRM
+                value: "1"
+              # Uncomment to be able to exec in to launcher pod for interactive testing
+              # command: ['sleep', '86400']
+              command: ["/bin/bash", "-c"]
+              args: ["mpirun \
+                    -np 16 \
+                    -bind-to none \
+                    -x LD_LIBRARY_PATH \
+                    -x NCCL_DEBUG=INFO \
+                    -x NCCL_SOCKET_IFNAME=eth0 \
+                    -x NCCL_IB_HCA=mlx5 \
+                    -x UCX_NET_DEVICES=mlx5_0:1,mlx5_1:1,mlx5_2:1,mlx5_3:1,mlx5_4:1,mlx5_5:1,mlx5_6:1,mlx5_7:1 \
+                    -x SHARP_COLL_ENABLE_PCI_RELAXED_ORDERING=1 \
+                    -x NCCL_COLLNET_ENABLE=0 \
+                    /opt/nccl_tests/build/all_reduce_perf -b 512M -e 8G -f 2 -g 1 #-n 200 #-w 2 -n 20
+                    "]
+              resources:
+                requests:
+                  cpu: 2
+                  memory: 1208Mi
+    Worker:
+      replicas: 2
+      template:
+        spec:
+          initContainers:
+            - name: init-limit
+              image: busybox:1.27.2
+              command:
+                [
+                  "sh",
+                  "-c",
+                  "ulimit -Hl unlimited && ulimit -Sl unlimited",
+                ]
+              securityContext:
+                privileged: true
+          containers:
+          - image: ghcr.io/coreweave/nccl-tests:12.1.1-cudnn8-devel-ubuntu20.04-nccl2.18.3-1-471f0db
+            name: nccl
+            securityContext:
+              privileged: true
+            resources:
+              requests:
+                cpu: 150
+                memory: 1200G
+                nvidia.com/gpu: 8
+              limits:
+                cpu: 150
+                memory: 1200G
+                nvidia.com/gpu: 8
+            volumeMounts:
+              - mountPath: /dev/shm
+                name: dshm
+              - name: "config"
+                mountPath: "/etc/nccl-topo-h100-v1.xml"
+                subPath: "nccl-topo-h100-v1.xml"
+            env:
+              - name: NCCL_TOPO_FILE
+                value: "/etc/nccl-topo-h100-v1.xml" 
+          volumes:
+            - emptyDir:
+                medium: Memory
+              name: dshm
+            - name: "config"
+              configMap:
+                name: "topo-config"
+          enableServiceLinks: false
+          automountServiceAccountToken: false

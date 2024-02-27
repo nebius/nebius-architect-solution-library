@@ -12,16 +12,15 @@ resource "helm_release" "descheduler" {
 
 resource "helm_release" "gpu-operator" {
   name       = "gpu-operator"
-  chart      = "../../gpu-operator"
+  repository = "oci://cr.nemax.nebius.cloud/yc-marketplace/nebius/gpu-operator/chart/"
+  chart      = "gpu-operator"
   namespace = "gpu-operator"
   create_namespace = true
-  values = [
-    "${file("../../gpu-operator/values.yaml")}"
-  ]
+  version = "v23.9.0"
 
   set {
     name  = "toolkit.enabled"
-    value = "false" // acording to https://nebius.ai/docs/managed-kubernetes/tutorials/driverless-gpu
+    value = "true"
   }
 
   set {
@@ -40,15 +39,7 @@ resource "helm_release" "gpu-operator" {
 #   ]
 # }
 
-# resource "helm_release" "network_operator" {
-#   name       = "network-operator"
-#   chart      = "../../network-operator"
-#   namespace = "network-operator"
-#   create_namespace = true
-#   values = [
-#     "${file("../../network-operator/values.yaml")}"
-#   ]
-# }
+
 
 provider "helm" {
     kubernetes {

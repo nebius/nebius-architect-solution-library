@@ -1,66 +1,37 @@
 data "nebius_client_config" "client" {}
 
 resource "helm_release" "gpu_operator" {
-  name       = "gpu-operator"   # Name of your Helm release
-  chart      = "../../gpu-operator"
+  name       = "gpu-operator"
+  repository = "oci://cr.nemax.nebius.cloud/yc-marketplace/nebius/gpu-operator/chart/"
+  chart      = "gpu-operator"
   namespace = "gpu-operator"
   create_namespace = true
-  values = [
-    "${file("../../gpu-operator/values.yaml")}"
-  ]
+  version = "v23.9.0"
 
   set {
     name  = "toolkit.enabled"
     value = "true"
   }
 
-  set {
+set {
     name  = "driver.rdma.enabled"
     value = "true"
   }
-
   set {
     name  = "driver.version"
     value = "535.104.12"
   }
 }
 
-
-# resource "helm_release" "gpu_operator" {
-#   name       = "gpu-operator"
-#   repository = "https://helm.ngc.nvidia.com/nvidia"
-#   chart      = "gpu-operator"
-#   version    = "v23.9.0"  # Specify the version you want to use
-#   namespace = "gpu-operator"
-#   create_namespace = true
-
-#   set {
-#     name  = "toolkit.enabled"
-#     value = "true"
-#   }
-
-#   set {
-#     name  = "driver.rdma.enabled"
-#     value = "true"
-#   }
-
-#   set {
-#     name  = "driver.version"
-#     value = "535.104.12"
-#   }
-# }
-
-
-
-
 resource "helm_release" "network_operator" {
   name       = "network-operator"
-  chart      = "../../network-operator"
+  repository = "oci://cr.nemax.nebius.cloud/yc-marketplace/nebius/network-operator/chart/"
+  chart      = "network-operator"
   namespace = "network-operator"
+
   create_namespace = true
-  values = [
-    "${file("../../network-operator/values.yaml")}"
-  ]
+  version = "23.7.0"
+
 }
 
 provider "helm" {
