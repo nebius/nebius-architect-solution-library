@@ -17,6 +17,13 @@ resource "helm_release" "gpu-operator" {
     name  = "driver.version"
     value = "535.104.12"
   }
+
+
+  set{
+    name = "mig.strategy"
+    value = "mixed"
+  }
+  
 }
 
 resource "helm_release" "kube-prometheus-stack" {
