@@ -32,7 +32,6 @@ module "kube" {
     #   # node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
     # }
     "k8s-ng-h100-1gpu1" = {
-      description = "Kubernetes nodes h100-1-gpu nodes with autoscaling"
       fixed_scale = {
         size = 1
       }
@@ -49,7 +48,6 @@ module "kube" {
       }
     }
     "k8s-ng-h100-1gpu1-all-balanced" = {
-      description = "Kubernetes nodes h100-1-gpu nodes with autoscaling"
       fixed_scale = {
         size = 1
       }

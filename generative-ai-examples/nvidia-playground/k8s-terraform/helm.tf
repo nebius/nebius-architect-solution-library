@@ -1,17 +1,16 @@
 data "nebius_client_config" "client" {}
 
-
 resource "helm_release" "gpu-operator" {
   name       = "gpu-operator"
-  #repository = "oci://cr.nemax.nebius.cloud/yc-marketplace/nebius/gpu-operator/chart/"
-  chart = "../../../ml-k8s-iaac/gpu-operator"
+  repository = "oci://cr.nemax.nebius.cloud/yc-marketplace/nebius/gpu-operator/chart/"
+  chart      = "gpu-operator"
   namespace = "gpu-operator"
   create_namespace = true
-  #version = "v23.9.4"
+  version = "v23.9.0"
 
   set {
     name  = "toolkit.enabled"
-    value = "true" 
+    value = "true"
   }
 
   set {
@@ -19,10 +18,12 @@ resource "helm_release" "gpu-operator" {
     value = "535.104.12"
   }
 
+
   set{
     name = "mig.strategy"
     value = "mixed"
   }
+  
 }
 
 resource "helm_release" "kube-prometheus-stack" {
