@@ -1,0 +1,5 @@
+# This is a CODEOWNERS file
+# It defines individuals or teams that are responsible for code in a repository.
+
+# Global code owners (applies to the whole repo)
+* @malibora @jadnov @LevonSarkisyan
