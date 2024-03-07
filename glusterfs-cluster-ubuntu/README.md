@@ -90,7 +90,7 @@ In a stripe volume:
 
 ## Prepare environment
 ```bash
-yc config profile activate <your profile>  
+ncp config profile activate <your profile>  
 source ./env-yc-prod.sh
 ```
 
