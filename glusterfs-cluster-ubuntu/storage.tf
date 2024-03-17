@@ -7,7 +7,7 @@ resource "nebius_compute_instance" "storage_node_a" {
   count                     = var.storage_node_per_zone
   allow_recreate            = true
   allow_stopping_for_update = true
-  zone                      = nebius_vpc_subnet.net-a.zone
+  zone                      = data.nebius_vpc_subnet.default.zone
   platform_id               = "standard-v2"
   name                      = format("gluster%02d", count.index + 1)
   hostname                  = format("gluster%02d", count.index + 1)
@@ -19,7 +19,7 @@ resource "nebius_compute_instance" "storage_node_a" {
   }
 
   network_interface {
-    subnet_id = nebius_vpc_subnet.net-a.id
+    subnet_id = data.nebius_vpc_subnet.default.id
   }
 
   boot_disk {
