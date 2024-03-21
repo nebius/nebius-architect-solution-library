@@ -25,7 +25,6 @@ module "kube" {
       fixed_scale = {
         size = 2
       }
-      nat = true
       node_labels = {
         "group" = "system"
       }

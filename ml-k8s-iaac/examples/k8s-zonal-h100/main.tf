@@ -48,11 +48,9 @@ module "kube" {
       nat = true
       node_labels = {
         "group" = "h100-1gpu" 
-	"nebius.com/gpu" = "H100"
-	"nebius.com/"gpu-h100-a-llm" = "H100"
+      	"nebius.com/gpu" = "H100"
+	      "nebius.com/gpu-h100" = "H100"
       }		
     }
   }
 }
-
-
