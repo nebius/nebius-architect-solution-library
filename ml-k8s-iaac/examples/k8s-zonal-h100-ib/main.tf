@@ -1,6 +1,7 @@
 resource "nebius_compute_gpu_cluster" "k8s_cluster" {
   name               = "k8s-cluster"
   interconnect_type  = "InfiniBand"
+  interconnect_physical_cluster = "fabric-1"
   zone               = var.zone_id
 }
 
@@ -51,8 +52,8 @@ module "kube" {
       nat = true
       node_labels = {
         "group" = "h100-8gpu" 
-	"nebius.com/gpu" = "H100"
-	"nebius.com/"gpu-h100-a-llm" = "H100"
+	      "nebius.com/gpu" = "H100"
+	      "nebius.com/gpu-h100-a-llm" = "H100"
       }
     }
   }
