@@ -54,9 +54,6 @@ module "kube" {
 	      "nebius.com/gpu" = "H100"
 	      "nebius.com/gpu-h100-a-llm" = "H100"
       }
-      network_interface = {
-
-      }
     }
   }
 }
