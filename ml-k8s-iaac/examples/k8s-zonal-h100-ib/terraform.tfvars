@@ -1,3 +1,2 @@
-folder_id = "bjeq7qmo88loor6p1bac"
-network_id = "btc4hodm8pbvgjtckgmf"
-subnet_id = "f8ukn3uj1hchc06ebcqk"
+folder_id = "put_id_here"
+k8s_subnet_CIDR = ["192.168.10.0/24"]

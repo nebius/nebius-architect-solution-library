@@ -3,12 +3,12 @@ module "kube" {
   source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.4"
 
 
-  network_id = var.network_id
+  network_id = nebius_vpc_network.k8s-network.id
 
   master_locations = [
     {
       zone      = "eu-north1-c"
-      subnet_id = var.subnet_id
+      subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
     }
   ]
 
@@ -25,7 +25,6 @@ module "kube" {
       fixed_scale = {
         size = 2
       }
-      nat = true
       node_labels = {
         "group" = "system"
       }

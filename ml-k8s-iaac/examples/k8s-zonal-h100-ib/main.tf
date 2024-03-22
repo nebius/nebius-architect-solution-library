@@ -1,18 +1,19 @@
 resource "nebius_compute_gpu_cluster" "k8s_cluster" {
   name               = "k8s-cluster"
   interconnect_type  = "InfiniBand"
+  interconnect_physical_cluster = "fabric-1"
   zone               = var.zone_id
 }
 
 module "kube" {
   source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.4"
 
-  network_id = var.network_id
+  network_id = nebius_vpc_network.k8s-network.id
 
   master_locations = [
     {
       zone      = var.zone_id
-      subnet_id = var.subnet_id
+      subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
     },
 
   ]
@@ -30,7 +31,6 @@ module "kube" {
       fixed_scale = {
         size = 2
       }
-      nat = true
       node_labels = {
         "group" = "system"
       }
@@ -48,11 +48,10 @@ module "kube" {
       node_gpus       = 8
       disk_type       = "network-ssd-nonreplicated"
       disk_size       = 372
-      nat = true
       node_labels = {
         "group" = "h100-8gpu" 
-	"nebius.com/gpu" = "H100"
-	"nebius.com/"gpu-h100-a-llm" = "H100"
+        "nebius.com/gpu" = "H100"
+        "nebius.com/gpu-h100-a-llm" = "H100"
       }
     }
   }

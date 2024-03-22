@@ -5,13 +5,14 @@ variable "folder_id" {
   default     = null
 }
 
-variable "network_id" {
-  description = "The ID of the cluster network."
+variable "zone_id" {
+  description = "The ID of the zone."
   type        = string
+  default     = "eu-north1-c"
 }
 
-
-variable "subnet_id" {
-  description = "The ID of the cluster network."
-  type        = string
+variable "k8s_subnet_CIDR" {
+  description = "IP address space for k8s subnet."
+  type        = list
+  default     = ["192.168.10.0/24"]
 }
