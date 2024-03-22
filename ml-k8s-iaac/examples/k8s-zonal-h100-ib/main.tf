@@ -48,7 +48,6 @@ module "kube" {
       node_gpus       = 8
       disk_type       = "network-ssd-nonreplicated"
       disk_size       = 372
-      nat = true
       node_labels = {
         "group" = "h100-8gpu" 
         "nebius.com/gpu" = "H100"
