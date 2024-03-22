@@ -8,12 +8,12 @@ resource "nebius_compute_gpu_cluster" "k8s_cluster" {
 module "kube" {
   source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.4"
 
-  network_id = var.network_id
+  network_id = nebius_vpc_network.k8s-network.id
 
   master_locations = [
     {
       zone      = var.zone_id
-      subnet_id = var.subnet_id
+      subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
     },
 
   ]
