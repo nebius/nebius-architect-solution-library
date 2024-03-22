@@ -11,10 +11,16 @@ Nebius Architect Solution Library is a collection of infrastucture as code sampl
 ---
 ## Solutions
 
+### Infrastructure
 * [Kubernetes examples](ml-k8s-iaac/README.md)
+* [GlusterFS](glusterfs-cluster-ubuntu/README.md)
+* [GlusterFS Benchmark](glusterfs-for-benchmarks/README.md)
+* [JuiceFS Benchmark](juicefs-for-benchmarks/README.md)
+### Model Training
 * [Kubeflow](kubeflow/README.md)
-* [Nvidia Generative AI examples](generative-ai-examples/nvidia-playground/README.md)
+### Inference
 * [NVIDIA Triton Server](nvidia-triton-server/README.md)
+* [Nvidia Generative AI examples](generative-ai-examples/nvidia-playground/README.md)
 
 ---
 ## Prerequisites
