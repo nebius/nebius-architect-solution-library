@@ -39,7 +39,7 @@ resource "nebius_compute_instance" "storage_node_a" {
   }
 
   scheduling_policy {
-    preemptible = true
+    preemptible = false
   }
 
   metadata = {
