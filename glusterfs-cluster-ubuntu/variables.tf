@@ -1,11 +1,17 @@
-# TYPE: ZONAL (better for performance) OR REGIONAL (for HA)
-
-variable "is_ha" {
-  type    = bool
-  default = false
+# NETWORKING
+variable "network_name" {
+  type        = string
+  default     = "gfs-network"
+  description = "Name of the network"
 }
 
-# NUMBER OF VM PER ZONE
+variable "subnet_name" {
+  type        = string
+  default     = "gfs-network"
+  description = "Name of subnet"
+}
+
+# NUMBER OF VMs PER ZONE
 
 variable "storage_node_per_zone" {
   type        = number
@@ -58,6 +64,13 @@ variable "storage_memory_count" {
 
 variable "local_pubkey_path" {
   type        = string
-  default     = "../dummy.pub"
+  default     = "../../id_key.pub"
   description = "Local public key to access the client"
+}
+
+# TYPE: ZONAL (better for performance) OR REGIONAL (for HA)
+
+variable "is_ha" {
+  type    = bool
+  default = false
 }

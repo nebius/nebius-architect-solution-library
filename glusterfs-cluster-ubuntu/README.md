@@ -103,7 +103,9 @@ vi variables.tf
 ### Choose values for variables
 
 ```
-variable "storage_node_per_zone"    description = "Number of storage node per zone"
+variable "network_name"             description = "Name of the network"
+variable "subnet_name"              description = "Name of subnet"
+variable "storage_node_per_zone"    description = "Number of storage nodes per zone"
 variable "disk_type"                description = "Type of GlusterFS disk"
 variable "disk_size"                description = "Disk size GB"
 variable "storage_cpu_count"        description = "Number of CPU in Storage Node"
@@ -111,10 +113,25 @@ variable "storage_memory_count"     description = "RAM (GB) size in Storage Node
 variable "local_pubkey_path"        description = "Local public key to access the VMs"
 ```
 
+
+**NOTE:**
+
+> by default terraform will create new network environment for gluster cluster,  
+> with new network/segment/routing table and NAT gateway to internet access from cluster  
+> (required by cloud-init scripts to install packages)
+
+> If you want to install glusterfs nodes to the same natwork where the clients will sits,  
+> you need to import the network as following:
+```
+terraform import nebius_vpc_network.default 'btc5atouoabbcir5abcd'
+```
+put here the correct network ID
+
 ## Terraform rollout environment
 
 ```bash
 terraform init
+terraform plan
 terraform apply
 ```
 
