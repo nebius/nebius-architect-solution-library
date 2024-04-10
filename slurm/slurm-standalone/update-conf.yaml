@@ -1,0 +1,86 @@
+- name: Copy new config
+  hosts: all
+  become: yes
+  become_user: root
+  tasks: 
+    - name: Copy cgroups config
+      copy:
+        src: files/cgroup.conf
+        dest: /etc/slurm/cgroup.conf
+
+    - name: Copy slurm config
+      copy:
+        src: files/slurm.conf
+        dest: /etc/slurm/slurm.conf
+
+- name: Get munge from master and restart
+  hosts: master
+  become: yes
+  become_user: root
+  tasks:
+    - name: Copy SlurmDB config
+      when: is_mysql
+      copy:
+        src: files/slurmdbd.conf
+        dest: /etc/slurm/slurmdbd.conf
+        owner: slurm
+        group: slurm
+        mode: '0600'
+
+    - name: Restart slurmdbd
+      when: is_mysql
+      systemd:
+        state: restarted
+        name: slurmdbd
+
+    - name: Fetch munge key
+      fetch:
+        src: /etc/munge/munge.key
+        dest: files/munge.key
+        flat: yes
+        validate_checksum: yes
+
+    - name: Restart slurmctld
+      systemd:
+        state: restarted
+        name: slurmctld
+
+
+
+
+- name: Copy munge to nodes copy gres and restart
+  hosts: nodes 
+  become: yes
+  become_user: root
+  tasks:
+    - name: Copy topo file
+      copy:
+        src: files/nccl-topo-h100-v1.xml
+        dest: /etc/nccl-topo-h100-v1.xml
+    - name: Add new topofile
+      lineinfile:
+        path: /home/slurm/.bashrc
+        line: 'export NCCL_TOPO_FILE=/etc/nccl-topo-h100-v1.xml'
+        create: no
+        state: present
+
+    - name: Copy munge.key config to nodes
+      copy:
+        src: files/munge.key
+        dest: /etc/munge/munge.key
+
+
+    - name: Copy gres.conf to nodes
+      copy:
+        src: files/gres.conf
+        dest: /etc/slurm/gres.conf
+
+    - name: Restart slurmd
+      systemd:
+        state: restarted
+        name: slurmd
+
+    - name: Restart munge
+      systemd:
+        state: restarted
+        name: munge
