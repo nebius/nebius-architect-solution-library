@@ -5,7 +5,6 @@
 - Create zonal Kubernetes cluster with CPU and GPU nodes
 - Install neccessary [Nvidia tools](https://github.com/NVIDIA/gpu-operator) to run GPU workloads
 - Install [Descheduler](https://github.com/kubernetes-sigs/descheduler/)
-- Prometheus and Grafana 
 - Example workloads
 
 ## Kubernetes cluster definition
