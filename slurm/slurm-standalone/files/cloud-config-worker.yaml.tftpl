@@ -37,24 +37,26 @@ packages:
   - glusterfs-client
 
 runcmd:
- - wget -O - https://monitoring.api.nemax.nebius.cloud/monitoring/v2/gpu-metrics-exporter/install.sh | bash; 
- - export DEBIAN_FRONTEND=noninteractive
- - wget https://github.com/NVIDIA/enroot/releases/download/v${ENROOT_VERSION}/enroot_${ENROOT_VERSION}-1_amd64.deb
- - wget https://github.com/NVIDIA/enroot/releases/download/v${ENROOT_VERSION}/enroot+caps_${ENROOT_VERSION}-1_amd64.deb
- - dpkg -i enroot_${ENROOT_VERSION}-1_amd64.deb
- - dpkg -i enroot+caps_${ENROOT_VERSION}-1_amd64.deb
- - git clone https://github.com/NVIDIA/pyxis.git && cd pyxis
- - CPPFLAGS='-I /usr/include/slurm' make && CPPFLAGS='-I /usr/include/slurm' make install
- - mkdir -p /var/lib/slurm/pyxis
- - echo "required /usr/local/lib/slurm/spank_pyxis.so runtime_path=/var/lib/slurm/pyxis" | tee /etc/slurm/plugstack.conf.d/pyxis.conf
- - mkdir -p /var/lib/slurm/enroot/ /var/spool/slurmd  /var/spool/enroot && chown -R slurm:slurm /var/lib/slurm/ /var/spool/slurmd/  /var/spool/enroot
- - mkdir -p /etc/systemd/system/slurmd.service.d/
- - mkdir -p /run/slurm
- - chown slurm:slurm /etc/slurm/slurmdbd.conf
- - chown slurm:slurm /var/spool/slurmd
- - chown slurm:slurm /run/slurm
- - echo 'export NCCL_TOPO_FILE=/etc/nccl-topo-h100-v1.xml' >> /home/slurm/.bashrc
- - chmod a+rwx /var/spool/enroot
+  - systemctl disable apt-daily.timer
+  - systemctl disable apt-daily-upgrade.timer
+  - wget -O - https://monitoring.api.nemax.nebius.cloud/monitoring/v2/gpu-metrics-exporter/install.sh | bash; 
+  - export DEBIAN_FRONTEND=noninteractive
+  - wget https://github.com/NVIDIA/enroot/releases/download/v${ENROOT_VERSION}/enroot_${ENROOT_VERSION}-1_amd64.deb
+  - wget https://github.com/NVIDIA/enroot/releases/download/v${ENROOT_VERSION}/enroot+caps_${ENROOT_VERSION}-1_amd64.deb
+  - while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done; dpkg -i enroot_${ENROOT_VERSION}-1_amd64.deb
+  - while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done; dpkg -i enroot+caps_${ENROOT_VERSION}-1_amd64.deb
+  - git clone https://github.com/NVIDIA/pyxis.git && cd pyxis
+  - CPPFLAGS='-I /usr/include/slurm' make && CPPFLAGS='-I /usr/include/slurm' make install
+  - mkdir -p /var/lib/slurm/pyxis
+  - echo "required /usr/local/lib/slurm/spank_pyxis.so runtime_path=/var/lib/slurm/pyxis" | tee /etc/slurm/plugstack.conf.d/pyxis.conf
+  - mkdir -p /var/lib/slurm/enroot/ /var/spool/slurmd  /var/spool/enroot && chown -R slurm:slurm /var/lib/slurm/ /var/spool/slurmd/  /var/spool/enroot
+  - mkdir -p /etc/systemd/system/slurmd.service.d/
+  - mkdir -p /run/slurm
+  - chown slurm:slurm /etc/slurm/slurmdbd.conf
+  - chown slurm:slurm /var/spool/slurmd
+  - chown slurm:slurm /run/slurm
+  - echo 'export NCCL_TOPO_FILE=/etc/nccl-topo-h100-v1.xml' >> /home/slurm/.bashrc
+  - chmod a+rwx /var/spool/enroot
 
 write_files:
 - path: /etc/systemd/system/slurmd.service.d/local.conf
