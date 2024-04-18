@@ -50,7 +50,7 @@ resource "nebius_compute_instance" "master" {
         is_mysql       = var.mysql_jobs_backend
         sshkey         = var.sshkey
         cluster_nodes_count = var.cluster_nodes_count
-        hostname            = var.mysql_jobs_backend ? nebius_mdb_mysql_cluster.slurm-mysql-cluster[0].host[0].fqdn : ""
+        hostname            = var.mysql_jobs_backend ?  "c-${nebius_mdb_mysql_cluster.slurm-mysql-cluster[0].id}.rw.mdb.nemax.nebius.cloud": ""
         password            = random_password.mysql.result
         is_mysql            = var.mysql_jobs_backend
         master_pubkey  = trimspace(tls_private_key.master_key.public_key_openssh)
@@ -106,7 +106,7 @@ resource "nebius_compute_instance" "slurm-node" {
         is_mysql       = var.mysql_jobs_backend
         sshkey         = var.sshkey
         cluster_nodes_count = var.cluster_nodes_count
-        hostname            = var.mysql_jobs_backend ? nebius_mdb_mysql_cluster.slurm-mysql-cluster[0].host[0].fqdn : ""
+        hostname            = var.mysql_jobs_backend ? "c-${nebius_mdb_mysql_cluster.slurm-mysql-cluster[0].id}.rw.mdb.nemax.nebius.cloud": ""
         password            = random_password.mysql.result
         is_mysql            = var.mysql_jobs_backend
         master_pubkey  = trimspace(tls_private_key.master_key.public_key_openssh)
