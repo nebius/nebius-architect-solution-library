@@ -5,7 +5,6 @@ resource "null_resource" "db-create" {
     command = <<EOT
       CLUSTER_NAME=${nebius_mdb_mysql_cluster.mysql-cluster[0].name}
       USER_NAME=${var.username}
-      BUCKET_NAME="ml-pipeline-${random_string.kf_unique_id.result}"
 
       ncp managed-mysql database create katib  --cluster-name=$CLUSTER_NAME
       ncp managed-mysql database create kfp_cache  --cluster-name=$CLUSTER_NAME

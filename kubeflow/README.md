@@ -52,6 +52,7 @@ module "kf-cluster"{
 - Run Terraform :
 
 ```
+cd kubeflow/terraform
 terraform init
 terraform apply
 ```
