@@ -19,6 +19,7 @@ terraform {
 
 provider "nebius" {
   endpoint = "api.nemax.nebius.cloud:443"
+  storage_endpoint = "storage.ai.nebius.cloud"
   folder_id = var.folder_id
 }
 

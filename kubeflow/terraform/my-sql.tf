@@ -5,7 +5,7 @@ resource "random_password" "mysql" {
 
 resource "nebius_mdb_mysql_user" "kubeflowuser" {
   cluster_id =  nebius_mdb_mysql_cluster.mysql-cluster[0].id
-  name       = var.username#"bpopov"
+  name       = var.username
   password   = random_password.mysql.result
   permission {
     database_name = nebius_mdb_mysql_database.kubeflow-db[0].name
@@ -19,7 +19,7 @@ resource "nebius_mdb_mysql_cluster" "mysql-cluster" {
   count               = 1 
   name                = "nebius-mysql-cluster"
   environment         = "PRODUCTION"
-  network_id          = module.kube-inference.network_id #var.network_id
+  network_id          = module.kf-cluster.network_id 
   version             = "8.0" 
 
   resources {
@@ -33,14 +33,14 @@ resource "nebius_mdb_mysql_cluster" "mysql-cluster" {
 
   host {
     zone             = var.region
-    subnet_id        = module.kube-inference.subnet_id
+    subnet_id        = module.kf-cluster.subnet_id
     assign_public_ip = false
     priority  = 99
   }
 
   host {
     zone             = var.region
-    subnet_id        = module.kube-inference.subnet_id
+    subnet_id        = module.kf-cluster.subnet_id
     assign_public_ip = false
     priority  = 1
   }

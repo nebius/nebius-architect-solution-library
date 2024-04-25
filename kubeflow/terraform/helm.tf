@@ -46,15 +46,17 @@ resource "helm_release" "argo-cd" {
 
 
 resource "helm_release" "kubeflow" {
-   depends_on = [module.kube.kube_cluster, nebius_mdb_mysql_cluster.mysql-cluster, nebius_mdb_mysql_user.kubeflowuser, null_resource.db-create, nebius_storage_bucket.kubeflow-bucket, nebius_iam_service_account_static_access_key.sa-static-key, helm_release.argo-cd]
+  depends_on = [module.kf-cluster.kube_cluster, nebius_mdb_mysql_cluster.mysql-cluster, nebius_mdb_mysql_user.kubeflowuser, null_resource.db-create, nebius_iam_service_account_static_access_key.sa-static-key, helm_release.argo-cd, null_resource.db-create]
+  repository = "oci://cr.nemax.nebius.cloud/yc-marketplace/nebius/kubeflow/chart/"
   name       = "kubeflow"
-  chart      = "../helm/"
+  chart      = "kubeflow"
   namespace = "kf-install"
   create_namespace = true
+  version = "0.1.0"
 
   set {
     name  = "storage_bucket_name"
-    value =  nebius_storage_bucket.kubeflow-bucket.bucket
+    value =  "ml-pipeline-${random_string.kf_unique_id.result}"
   }
 
     set {
@@ -65,6 +67,11 @@ resource "helm_release" "kubeflow" {
     set {
     name  = "secretKey"
     value =  nebius_iam_service_account_static_access_key.sa-static-key.secret_key
+  }
+
+ set {
+    name  = "use_external_mysql"
+    value =  "true"
   }
 
   set {
@@ -93,8 +100,8 @@ resource "helm_release" "kubeflow" {
 
 provider "helm" {
     kubernetes {
-      host                   = module.kube-inference.kube_external_v4_endpoint
-      cluster_ca_certificate = module.kube-inference.kube_cluster_ca_certificate
+      host                   = module.kf-cluster.kube_external_v4_endpoint
+      cluster_ca_certificate = module.kf-cluster.kube_cluster_ca_certificate
       token                  = data.nebius_client_config.client.iam_token
     }
 }

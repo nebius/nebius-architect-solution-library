@@ -28,3 +28,18 @@ output "subnet_id" {
   description = "Connection string to internal Kubernetes cluster."
   value       = try(nebius_vpc_subnet.k8s-subnet.id, null)
 }
+
+
+output "kube_external_v4_endpoint" {
+  description = "Connection string to internal Kubernetes cluster."
+  value       = try(module.kube.external_v4_endpoint, null)
+}
+
+output "kube_cluster_ca_certificate" {
+  description = "Connection string to internal Kubernetes cluster."
+  value       = try(module.kube.cluster_ca_certificate, null)
+}
+
+
+
+

@@ -38,10 +38,10 @@ module "kube" {
     "k8s-ng-h100-8gpu1" = {
       description = "Kubernetes nodes h100-8-gpu nodes with autoscaling"
       fixed_scale = {
-        size = 2
+        size = var.gpu_nodes_count
       }
       gpu_cluster_id = nebius_compute_gpu_cluster.k8s_cluster.id
-      platform_id     = "gpu-h100"
+      platform_id     = var.platform_id
       gpu_environment = "runc"
       node_cores      = 160
       node_memory     = 1280

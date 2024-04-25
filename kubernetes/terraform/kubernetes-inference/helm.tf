@@ -1,14 +1,15 @@
 data "nebius_client_config" "client" {}
 
-resource "helm_release" "descheduler" {
-  name       = "helm-descheduler"
-  chart      = "../../helm-descheduler"
-  namespace = "descheduler"
-  create_namespace = true
-  values = [
-    "${file("../../helm-descheduler/values-my.yaml")}"
-  ]
-}
+# resource "helm_release" "descheduler" {
+#   name       = "helm-descheduler"
+#   repository = "https://kubernetes-sigs.github.io/descheduler/"
+#   chart      = "descheduler"
+#   namespace = "descheduler"
+#   create_namespace = true
+#   # values = [
+#   #   "${file("../../helm-descheduler/values-my.yaml")}"
+#   # ]
+# }
 
 resource "helm_release" "gpu-operator" {
   name       = "gpu-operator"

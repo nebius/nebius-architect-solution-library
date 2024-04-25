@@ -1,6 +1,8 @@
 # Kubeflow installation for Nebius.ai
 
-This playbook provisions new K8s cluster with infiniband connection, GpuOperator, NetworkOperator, and installs Kubeflow with integrated Nebius Object storage and MySql cluster.
+This playbook provisions new K8s cluster with GpuOperator, and installs Kubeflow with integrated Nebius Object storage and MySql cluster. Optionally, for training purposes it can be configured to use infiniband connection and NetworkOperator.
+
+Our Helm chart is specifically designed to leverage DeployKF along with ArgoCD to facilitate the streamlined installation and management of our Kubernetes applications.
 
 ## Features
 
@@ -10,17 +12,6 @@ This playbook provisions new K8s cluster with infiniband connection, GpuOperator
 - Integration with Nebius MySql managed service
 
 
-## Kubernetes cluster definition
-
-First, you need to create a VPC network with a subnet in eu-north1-c zone.
-
-The Kubeflow module requires the following input variables:
- - VPC folder ID
- - VPC network ID
- - VPC network subnet IDs
- - MySql username
-
-
 
 ## Configure Terraform for Nebius Cloud
 
@@ -28,11 +19,40 @@ The Kubeflow module requires the following input variables:
 - Add environment variables for terraform authentication in Nebuis Cloud
 
 ```
-export YC_TOKEN=$(ncp iam create-token)
-export YC_CLOUD_ID=$(ncp config get cloud-id)
-export YC_FOLDER_ID=$(ncp config get folder-id)
+export NPC_TOKEN=$(ncp iam create-token)
+export NPC_CLOUD_ID=$(ncp config get cloud-id)
+export NPC_FOLDER_ID=$(ncp config get folder-id)
 ```
 
 ## Install instructions
 
-- Configure Kubernetes cluster node groups 
+- Set folder_id, region, and username (mysql user) in [terraform.tfvars](./terraform/terraform.tfvars) configuration file
+- In [main.tf](./terraform/main.tf) file define which kf-kubernetes module you want to use, and set apropriate values for node group. Deneding on your use case, you can choose the nodegroup setup optimized for either training or inference:
+
+```
+module "kf-cluster"{
+  source = "../../kubernetes/terraform/kubernetes-inference"
+  folder_id = var.folder_id
+  zone_id = var.region
+  gpu_min_nodes_count = 0
+  gpu_max_nodes_count = 8
+  gpu_initial_nodes_count = 1
+  platform_id = "gpu-h100"
+}
+
+# module "kf-cluster"{
+#   source = "../../kubernetes/terraform/kubernetes-training"
+#   folder_id = var.folder_id
+#   zone_id = var.region
+#   gpu_nodes_count = 2
+#   platform_id = "gpu-h100"
+# }
+```
+
+- Run Terraform :
+
+```
+terraform init
+terraform apply
+```
+

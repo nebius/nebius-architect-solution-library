@@ -23,6 +23,6 @@ provider "nebius" {
 }
 
 
-provider "local" {}
+# provider "local" {}
 
-provider "random" {}
+# provider "random" {}

@@ -28,10 +28,10 @@ variable "username" {
 }
 
 
-# resource "random_string" "kf_unique_id" {
-#   length  = 8
-#   upper   = false
-#   lower   = true
-#   numeric = true
-#   special = false
-# }
+resource "random_string" "kf_unique_id" {
+  length  = 8
+  upper   = false
+  lower   = true
+  numeric = true
+  special = false
+}
