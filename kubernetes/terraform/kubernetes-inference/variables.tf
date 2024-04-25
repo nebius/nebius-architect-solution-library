@@ -16,3 +16,27 @@ variable "k8s_subnet_CIDR" {
   type        = list
   default     = ["192.168.10.0/24"]
 }
+
+variable "gpu_min_nodes_count" {
+  type        = number
+  description = "Amount of nodes"
+  default = 1
+}
+
+variable "gpu_max_nodes_count" {
+  type        = number
+  description = "Amount of nodes"
+  default = 5
+}
+
+
+variable "gpu_initial_nodes_count" {
+  type        = number
+  description = "Amount of nodes"
+  default = 1
+}
+
+variable "platform_id" {
+  type        = string
+  default = "gpu-h100"
+}

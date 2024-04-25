@@ -33,11 +33,11 @@ module "kube" {
     "k8s-ng-h100-1gpu1" = {
       description = "Kubernetes nodes h100-1-gpu nodes with autoscaling"
       auto_scale = {
-        min     = 0
-        max     = 8
-        initial = 0
+        min     = var.gpu_min_nodes_count
+        max     = var.gpu_max_nodes_count
+        initial = var.gpu_initial_nodes_count
       }
-      platform_id     = "gpu-h100"
+      platform_id     = var.platform_id
       gpu_environment = "runc"
       node_cores      = 20 // change according to VM size
       node_memory     = 160 // change according to VM size

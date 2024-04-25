@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubeflow-scripts-configmap
+data:
+  startup-script.sh: |-
+{{ .Files.Get "configs/startup-script.sh" | indent 4 }}
+  delete-script.sh: |-
+{{ .Files.Get "configs/delete-script.sh" | indent 4 }}

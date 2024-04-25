@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kubectl-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: kubectl-container
+          image: {{ include "kubeflow_installer.image" . | quote }}
+          command: [ "/bin/bash", "-c", "/scripts/startup-script.sh" ]
+          volumeMounts:
+            - name: script-volume
+              mountPath: "/scripts"
+              readOnly: true
+            - name: configs-volume
+              mountPath: "/configs"
+              readOnly: true
+          securityContext:
+            runAsUser: 0
+      volumes:
+        - name: script-volume
+          configMap:
+            name: kubeflow-scripts-configmap
+            defaultMode: 0777 # This is to ensure the script is executable
+        - name: configs-volume
+          secret:
+            secretName: kubeflow-app-of-apps
+            items:
+              - key: app-of-apps.yaml
+                path: app-of-apps.yaml
+      restartPolicy: Never
+      serviceAccountName: kubectl-access
+  backoffLimit: 15

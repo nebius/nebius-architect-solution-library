@@ -1,0 +1,17 @@
+storage_bucket_name: 
+accessKey: 
+secretKey: 
+
+use_external_mysql: true
+mysql_host: 
+mysql_port: 
+mysql_username: 
+mysql_password: 
+
+kubeflow_hostname: deploykf.example.com
+kubeflow_admin_password: admin-password
+
+kubeflow_installer:
+  registry: cr.ai.nebius.cloud/crn7e2qs480u12hp4vlq
+  repository: dependencies/kubeflow/images/kubeflow-installer
+  tag: "1.0"

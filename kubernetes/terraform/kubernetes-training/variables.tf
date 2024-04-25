@@ -16,3 +16,14 @@ variable "k8s_subnet_CIDR" {
   type        = list
   default     = ["192.168.10.0/24"]
 }
+
+variable "gpu_nodes_count" {
+  type        = number
+  description = "Amount of slurm nodes"
+  default = 2
+}
+
+variable "platform_id" {
+  type        = string
+  default = "gpu-h100"
+}
