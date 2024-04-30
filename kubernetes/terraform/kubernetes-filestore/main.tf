@@ -2,8 +2,8 @@ resource "nebius_compute_filesystem" "k8s-shared-storage" {
   name  = "k8s-shared-storage"
   type  = "network-ssd"
   zone  = "eu-north1-c"
-  size  = 500
-
+  size  = var.disk_size
+  block_size = var.block_size
 }
 
 resource "null_resource" "attach-filestore" {
@@ -33,23 +33,23 @@ EOT
 }
 
 
-module "kube-cluster"{
-  source = "../kubernetes-inference"
-  folder_id = var.folder_id
-  zone_id = var.region
-  gpu_min_nodes_count = 0
-  gpu_max_nodes_count = 8
-  gpu_initial_nodes_count = 1
-  platform_id = "gpu-h100"
-}
-
 # module "kube-cluster"{
-#   source = "../kubernetes-training"
+#   source = "../kubernetes-inference"
 #   folder_id = var.folder_id
 #   zone_id = var.region
-#   gpu_nodes_count = 2
+#   gpu_min_nodes_count = 0
+#   gpu_max_nodes_count = 8
+#   gpu_initial_nodes_count = 1
 #   platform_id = "gpu-h100"
 # }
+
+module "kube-cluster"{
+  source = "../kubernetes-training"
+  folder_id = var.folder_id
+  zone_id = var.region
+  gpu_nodes_count = var.node_count
+  platform_id = "gpu-h100"
+}
 
 
 # module "kube-cluster" {

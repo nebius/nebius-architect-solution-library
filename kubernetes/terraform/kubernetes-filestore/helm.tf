@@ -3,7 +3,7 @@ data "nebius_client_config" "client" {}
 resource "helm_release" "mount-filesystem" {
   depends_on = [null_resource.attach-filestore]
   name       = "mount-filesystem"
-  chart      = "./mount-filesystem"
+  chart      = var.helm_path#"./mount-filesystem"
   namespace = "default"
   #create_namespace = true
   set {
