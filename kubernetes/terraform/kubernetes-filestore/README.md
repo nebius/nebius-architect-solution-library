@@ -4,7 +4,7 @@
 
 - Create zonal Kubernetes cluster with CPU and GPU nodes
 - Install neccessary [Nvidia tools](https://github.com/NVIDIA/gpu-operator) to run GPU workloads
-- Create a [FileStorage](https://nebius.ai/docs/compute/concepts/filesystem) virtual filessytem and attach it to all the nodes
+- Create a [FileStorage](https://nebius.ai/docs/compute/concepts/filesystem) virtual file syсtem and attach it to all the nodes
 - [Example workload](./test-deployment.yaml) with shared storage is included on the example
 
 
@@ -24,7 +24,8 @@ export YC_FOLDER_ID=$(ncp config get folder-id)
 ## Install instructions
 
 - Set folder_id, region, and username (mysql user) in [terraform.tfvars](./terraform/terraform.tfvars) configuration file
-- In [main.tf](./terraform/main.tf) file define which kf-kubernetes module you want to use, and set apropriate values for node group. Deneding on your use case, you can choose the nodegroup setup optimized for either training or inference:
+- In [main.tf](./terraform/main.tf) file define which kf-kubernetes module you want to use, and set apropriate values for node group.
+  Depending on your use case, you can choose the nodegroup setup optimized for either training or inference:
 
 ```
 module "kf-cluster"{
