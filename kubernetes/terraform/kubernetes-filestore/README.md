@@ -57,5 +57,5 @@ terraform apply
 - Run example deployment with mounted shared storage: 
 
 ```
-kubectl apply -f test-example.yaml
+kubectl apply -f test-deployment.yaml
 ```
