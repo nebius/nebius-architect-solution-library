@@ -23,7 +23,7 @@ export YC_FOLDER_ID=$(ncp config get folder-id)
 
 ## Install instructions
 
-- Set folder_id in [terraform.tfvars](./terraform/terraform.tfvars) configuration file
+- Set folder_id, disk size and node count in [terraform.tfvars](./terraform/terraform.tfvars) configuration file
 - In [main.tf](./terraform/main.tf) file define which kf-kubernetes module you want to use, and set apropriate values for node group.
   Depending on your use case, you can choose the nodegroup setup optimized for either training or inference:
 
