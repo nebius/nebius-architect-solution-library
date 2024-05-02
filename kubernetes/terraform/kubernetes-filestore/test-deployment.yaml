@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ubuntu
+  template:
+    metadata:
+      labels:
+        app: ubuntu
+    spec:
+      containers:
+      - name: ubuntu
+        image: ubuntu:latest
+        command: ["tail", "-f", "/dev/null"]
+        volumeMounts:
+        - name: host-volume
+          mountPath: /shared
+      volumes:
+      - name: host-volume
+        hostPath:
+          path: /shared
+          type: Directory

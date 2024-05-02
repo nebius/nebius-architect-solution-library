@@ -23,14 +23,25 @@ EOT
 
 
 module "kf-cluster"{
-  source = "../../kubernetes/terraform/kubernetes-inference"
+  source = "../../kubernetes/terraform/kubernetes-filestore"
   folder_id = var.folder_id
-  zone_id = var.region
-  gpu_min_nodes_count = 0
-  gpu_max_nodes_count = 8
-  gpu_initial_nodes_count = 1
+  region = var.region
+  node_count = 2
   platform_id = "gpu-h100"
+  disk_size = 5000
+  helm_path = "../../kubernetes/terraform/kubernetes-filestore/mount-filesystem"
 }
+
+
+# module "kf-cluster"{
+#   source = "../../kubernetes/terraform/kubernetes-inference"
+#   folder_id = var.folder_id
+#   zone_id = var.region
+#   gpu_min_nodes_count = 0
+#   gpu_max_nodes_count = 8
+#   gpu_initial_nodes_count = 1
+#   platform_id = "gpu-h100"
+# }
 
 # module "kf-cluster"{
 #   source = "../../kubernetes/terraform/kubernetes-training"

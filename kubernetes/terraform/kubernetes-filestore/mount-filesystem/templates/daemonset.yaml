@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: mount-fileshare
+spec:
+  selector:
+    matchLabels:
+      name: mount-fileshare
+  template:
+    metadata:
+      labels:
+        name: mount-fileshare
+    spec:
+      hostNetwork: true
+      hostPID: true
+      hostIPC: true
+      containers:
+        - name: mount-fileshare
+          image: busybox:latest
+          securityContext:
+            privileged: true
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              nsenter --target 1 --mount --uts --ipc --net --pid \
+              sh -c 'while true; do \
+                        mkdir -p /shared \
+                        && mount -t virtiofs {{ .Values.filesystemId }} /shared \
+                        && mountpoint -q /shared \
+                        && echo "Mount successful" \
+                        && break \
+                        || echo "Mount failed, retrying in 30 seconds..." \
+                        && sleep 30; \
+                     done'
+              # Keep the container running after successful mount
+              sleep infinity
