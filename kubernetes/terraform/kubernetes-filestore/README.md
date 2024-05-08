@@ -8,6 +8,9 @@
 - [Example workload](./test-deployment.yaml) with shared storage is included on the example
 
 
+## Limitation
+
+This example works well with a fixed k8s node-group. If you scale your node groups, new nodes will not have the filestorage mounted.
 
 ## Configure Terraform for Nebius Cloud
 
@@ -20,6 +23,9 @@ export YC_CLOUD_ID=$(ncp config get cloud-id)
 export YC_FOLDER_ID=$(ncp config get folder-id)
 ```
 
+## Configure jq cli
+
+This example uses jq cli tool. Please follow [official documentation](https://jqlang.github.io/jq/download/) how to install
 
 ## Install instructions
 
