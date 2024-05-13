@@ -1,4 +1,5 @@
 # NETWORKING
+
 variable "network_name" {
   type        = string
   default     = "gfs-network"
@@ -11,12 +12,12 @@ variable "subnet_name" {
   description = "Name of subnet"
 }
 
-# NUMBER OF VMs PER ZONE
+# NUMBER OF VMs for cluster
 
-variable "storage_node_per_zone" {
+variable "storage_nodes" {
   type        = number
-  default     = 3
-  description = "Number of storage node per zone"
+  default     = 10
+  description = "Number of storage nodes"
 }
 
 # DISK OPTIONS
@@ -24,7 +25,7 @@ variable "storage_node_per_zone" {
 variable "disk_count_per_vm" {
   type        = number
   default     = 1
-  description = "Number of additional disks for GlusterFS in each zone"
+  description = "Number disks for GlusterFS per VM"
 }
 
 variable "disk_type" {
@@ -36,7 +37,7 @@ variable "disk_type" {
 
 variable "disk_size" {
   type        = number
-  default     = 1024
+  default     = 1000
   description = "Disk size GB"
 }
 
@@ -62,15 +63,7 @@ variable "storage_memory_count" {
 
 # SSH KEY
 
-variable "local_pubkey_path" {
+variable "ssh_pubkey" {
   type        = string
-  default     = "../../id_key.pub"
-  description = "Local public key to access the client"
-}
-
-# TYPE: ZONAL (better for performance) OR REGIONAL (for HA)
-
-variable "is_ha" {
-  type    = bool
-  default = false
+  description = "SSH public key to access the cluster nodes"
 }

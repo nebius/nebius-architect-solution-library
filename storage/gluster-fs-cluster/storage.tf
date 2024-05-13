@@ -3,8 +3,8 @@ data "nebius_compute_image" "ubuntu" {
   family = "ubuntu-2204-lts"
 }
 
-resource "nebius_compute_instance" "storage_node_a" {
-  count                     = var.storage_node_per_zone
+resource "nebius_compute_instance" "storage_node" {
+  count                     = var.storage_nodes
   allow_recreate            = true
   allow_stopping_for_update = true
   zone                      = nebius_vpc_subnet.default.zone
@@ -44,10 +44,10 @@ resource "nebius_compute_instance" "storage_node_a" {
 
   metadata = {
     user-data = templatefile("${path.module}/metadata/cloud-init.yaml", {
-      local_pubkey   = file(var.local_pubkey_path)
+      local_pubkey   = var.ssh_pubkey
       master_pubkey  = trimspace(tls_private_key.master_key.public_key_openssh)
       master_privkey = split("\n", tls_private_key.master_key.private_key_openssh)
-      nodes_count    = var.storage_node_per_zone
+      nodes_count    = var.storage_nodes
     })
   }
 }
