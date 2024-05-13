@@ -1,11 +1,10 @@
+# Kubernetes deployment: Nvidia Generative AI playground
 
-# Kubernetes Deploy: Nvidia Generative AI Playground
-
-A terraform-helm runbook which provisions a k8s cluster and installs [Nvidia Generative AI examples](https://github.com/NVIDIA/GenerativeAIExamples/tree/main).
+A Terraform-helm runbook for creating a k8s cluster and installing [Nvidia Generative AI examples](https://github.com/NVIDIA/GenerativeAIExamples/tree/main).
 
 
 ## llm server
-In this example, we are using a llama2-13b-chat model, which is during runtime converted to run with TensorRT engine, as well as quantized using int4_awq quantization. If you want to play with the quantizaton, or other TensorRT options, you can modify a ConfigMap in [this file](./helm/templates/triton.yaml): 
+In this example, we use a llama2-13b-chat model that is converted during runtime to run with  TensorRT engine and quantized using int4_awq quantization. If you want to experiment with the quantizaton or other TensorRT setttings, you can modify a ConfigMap in [this file](./helm/templates/triton.yaml): 
 
 ```
 apiVersion: v1
@@ -25,21 +24,19 @@ data:
       --max-output-length {{ .Values.triton.modelMaxOutputLength | quote}} \
       --quantization int4_awq
   ```
-You can find a full list of available parameters [here](https://github.com/NVIDIA/GenerativeAIExamples/blob/main/RetrievalAugmentedGeneration/llm-inference-server/model_server/__main__.py)
+The full list of available parameters can be found [here](https://github.com/NVIDIA/GenerativeAIExamples/blob/main/RetrievalAugmentedGeneration/llm-inference-server/model_server/__main__.py)
 
 
 
-## Install Instructions
+## Installation Instructions
 
 
 ### Downloading the model
 
-Download llama2 model as explained [here](https://github.com/NVIDIA/GenerativeAIExamples/tree/main/RetrievalAugmentedGeneration#downloading-the-model). This helm chart works well with llama2-13b-chat, if you want to try llama2-70b-chat, you will need to increase resources requests for the llm server in the chart.
+Download llama2 model by following  [these instructions](https://github.com/NVIDIA/GenerativeAIExamples/tree/main/RetrievalAugmentedGeneration#downloading-the-model). This Helm chart is optimized to work with llama2-13b-chat. If you want to use llama2-70b-chat, increase the resource requests for the llm server within the chart accordingly.
 
 
-Triton Server needs a repository of models that it will make available
-for inferencing. For this example you will place the model repository
-in an Nebius Storage bucket. Nebius Storage is fully s3 compatible, and you can use aws cli to upload the files. Please follow nebius.ai documentation on how to [create a bucket](https://nebius.ai/docs/storage/operations/buckets/create) and how to [upload the files](https://nebius.ai/docs/storage/operations/objects/upload)
+Triton Server requires a model repository that will be made available for inference. In this example, you will store the model repository in a Nebius Storage bucket. Nebius Storage is fully S3 compatible, and you can upload files using the AWS CLI. Please follow nebius.ai documentation on how to [create a bucket](https://nebius.ai/docs/storage/operations/buckets/create) and how to [upload the files](https://nebius.ai/docs/storage/operations/objects/upload)
 
 
 ```
@@ -47,8 +44,8 @@ aws --endpoint-url=https://storage.ai.nebius.cloud/ \
   s3 cp --recursive <path_to_local_directory>/ s3://<bucket_name>/<prefix>/
 ```
 
-### Nebius Model Repository
-To load the model from the Nebius Object storage, you need to 
+### Nebius model repository
+To load the model from the Nebius Object storage, follow these steps: 
 - Create a [service account](https://nebius.ai/docs/iam/operations/sa/create) with the storage.editor [role](https://nebius.ai/docs/iam/concepts/access-control/roles)
 - [Create a static access key](https://nebius.ai/docs/iam/operations/sa/create-access-key) for the service account.
 
@@ -61,11 +58,11 @@ triton:
     secretAccessKey: #secretKey
 ```
 
-volumeHandle param is a path to your llama2 model, and it is a combination of bucket-name and folder-name, you can also construct a folder path if you have child folders.
+The volumeHandle parameter is a path to your llama2 model that combines the bucket and folder names. If you have child folders, you can use them to create a folder path.
 
-### Running terraform 
+### Running Terraform 
 
-Once model has been uploaded and helm chart values.yaml file edited, you can also set the proper values in [tfvars](./k8s-terraform/terraform.tfvars) file:
+Once the model has been uploaded and the helm chart values.yaml file has been edited, you can configure the appropriate values in the  [tfvars](./k8s-terraform/terraform.tfvars) file:
 
 ```
 folder_id = "bjern66lia66ph1betqn"
@@ -73,7 +70,7 @@ network_id = "btc1dleq5piffnlnvejh"
 subnet_id = "f8uhuvfkk7vuj4d9ja2k"
 ```
 
-Then, terraform will take care of the rest
+Terraform will handle the rest.
 
 ```
 cd k8s-terraform
@@ -83,15 +80,15 @@ terraform apply
 
 
 
-## notebook
+## Notebook
 
-The runbook hosts a notebook with examples for chaining and using vector DB. To open the notebook you can:
+The runbook hosts a notebook with examples for chaining and using vector DB. To access the notebook:
 
 ```
 kubectl port-forward service/jupyter-notebook-service 8888:8888
 ```
-In vs code, choose "Open Folder" -> /app and then you can run the provided jupyter notebook examples.
-You can also check GPU resource the notebook has by running "nvidia-smi" in the terminal :
+In vs code, choose "Open Folder" -> /app and run the provided jupyter notebook examples.
+You can also check the GPU resources of the notebook has by running "nvidia-smi" in the terminal :
 
 ```
 +---------------------------------------------------------------------------------------+
@@ -120,20 +117,20 @@ You can also check GPU resource the notebook has by running "nvidia-smi" in the 
 +---------------------------------------------------------------------------------------+
 ```
 
-In our case, we have given this notebook a MIG device with single gpu core and 10GB memory. If you want to increase, you can change this in the values.yaml file. More on the MIG manager later in this doc.
+In our case, we have assigned the notebook to a MIG device with a single GPU core and 10GB of memory. If you need to adjust these specifications, do so in the values.yaml file. Further details on the MIG manager will be provided later in this document.
 
 
 
 ## llm playground
 
-The runbook installs a simple web chat feature. You can upload pdf or any text files to Milvus vector DB, and query the model through chat.
+The runbook installs a basic web chat feature. You can upload pdfs or any text files to the Milvus vector DB and query the model via chat.
 ```
 kubectl port-forward service/frontend-service 8090:8090
 ```
 
-## GPU and Mig manager
+## GPU and MIG manager
 
-This example also demonstrates Nvidia's [MIG Support in Kubernetes](https://docs.nvidia.com/datacenter/cloud-native/kubernetes/latest/index.html). It installs a gpu operator with mig.strategy = mixed, which allows to have mig manager turn on or off on the individual nodes, depending on "nvidia.com/mig.config" label. For instance, in this example we have two node groups, one of which sets this label to "all-balanced", which will result in the following mig slices:
+This example demonstrates Nvidia's [MIG Support in Kubernetes](https://docs.nvidia.com/datacenter/cloud-native/kubernetes/latest/index.html). It installs a GPU operator with mig.strategy = mixed, allowing MIG manager to be enabled or disabled on individual nodes based on "nvidia.com/mig.config" label.  In this scenario, there are two node groups. One of them sets this label to "all-balanced," which produces the following MIG slices:
 ```
 +---------------------------------------------------------------------------------------+
 | NVIDIA-SMI 535.104.12             Driver Version: 535.104.12   CUDA Version: 12.2     |
@@ -176,7 +173,7 @@ This example also demonstrates Nvidia's [MIG Support in Kubernetes](https://docs
 +---------------------------------------------------------------------------------------+
 ```
 
-.. whereas other nodegroup will have Mig manager turned off: 
+Other nodegroups will have MIG managers turned off: 
 
 ```
 +---------------------------------------------------------------------------------------+
@@ -200,9 +197,9 @@ This example also demonstrates Nvidia's [MIG Support in Kubernetes](https://docs
 +---------------------------------------------------------------------------------------+
 ```
 
-this gives us the possibillity to use less than full GPU for resources like Milvus DB, Notepad, and Query server. You can find examples how to set nvidia mig resources in the [values.yaml](./helm/values.yaml) file.
+This gives us the flexibility to allocate less than the full GPU for resources such as Milvus DB, Notepad, and Query Server. You can find examples of how to configure Nvidia MIG resources  in the [values.yaml](./helm/values.yaml) file.
 
-Once gpu operator is deployed, you can also find the possible options how to label your nodes in the gpu-opeator namespace:
+Once gpu operator is deployed, you can explore the available options for labeling your nodes within the gpu-operator namespace:
 
 ```
 kubectl describe configmap default-mig-parted-config -n gpu-operator

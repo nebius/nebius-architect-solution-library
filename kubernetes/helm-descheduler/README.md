@@ -1,6 +1,6 @@
 # Descheduler for Kubernetes
 
-[Descheduler](https://github.com/kubernetes-sigs/descheduler/) for Kubernetes is used to rebalance clusters by evicting pods that can potentially be scheduled on better nodes. In the current implementation, descheduler does not schedule replacement of evicted pods but relies on the default scheduler for that.
+[Descheduler](https://github.com/kubernetes-sigs/descheduler/) for Kubernetes is used to rebalance clusters by evicting pods that could potentially be scheduled on more suitable nodes. It’s worth noting that, in the current implementation, descheduler does not schedule replacement of evicted pods. This task is handled by the default scheduler.
 
 ## TL;DR:
 
@@ -17,7 +17,7 @@ This chart bootstraps a [descheduler](https://github.com/kubernetes-sigs/desched
 
 - Kubernetes 1.14+
 
-## Installing the Chart
+## Installing the chart
 
 To install the chart with the release name `my-release`:
 
@@ -25,11 +25,11 @@ To install the chart with the release name `my-release`:
 helm install --namespace kube-system my-release descheduler/descheduler
 ```
 
-The command deploys _descheduler_ on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys _descheduler_ on the Kubernetes cluster using the default configuration. The [configuration](#configuration) section contains a list of  parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
-## Uninstalling the Chart
+## Uninstalling the chart
 
 To uninstall/delete the `my-release` deployment:
 
@@ -37,11 +37,11 @@ To uninstall/delete the `my-release` deployment:
 helm delete my-release
 ```
 
-The command removes all the Kubernetes components associated with the chart and deletes the release.
+The command removes all Kubernetes components associated with the chart and deletes the release.
 
 ## Configuration
 
-The following table lists the configurable parameters of the _descheduler_ chart and their default values.
+The table below lists the configurable parameters of the _descheduler_ chart and their default values.
 
 | Parameter                           | Description                                                                                                           | Default                                   |
 | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
@@ -87,3 +87,4 @@ The following table lists the configurable parameters of the _descheduler_ chart
 | `suspend`                           | Set spec.suspend in descheduler cronjob                                                                               | `false`                                   |
 | `commonLabels`                      | Labels to apply to all resources                                                                                      | `{}`                                      |
 | `livenessProbe`                     | Liveness probe configuration for the descheduler container                                                            | _see values.yaml_                         |
+

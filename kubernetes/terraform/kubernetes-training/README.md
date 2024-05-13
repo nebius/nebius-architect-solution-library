@@ -1,24 +1,24 @@
-# Kubernetes for Training in Nebius.ai
+# Kubernetes for Training in Nebius AI
 
 ## Features
 
-- Create zonal Kubernetes cluster with CPU and GPU nodes and InfiniBand connection.
-- Install neccessary [Nvidia Gpu Operator](https://github.com/NVIDIA/gpu-operator) and [Network Operator](https://docs.nvidia.com/networking/display/cokan10/network+operator) to run GPU workloads
+- Creating a zonal Kubernetes cluster with CPU and GPU nodes and InfiniBand connection.
+- Install the necessary [Nvidia Gpu Operator](https://github.com/NVIDIA/gpu-operator) and [Network Operator](https://docs.nvidia.com/networking/display/cokan10/network+operator) for running GPU workloads.
 
 
 
-## Kubernetes cluster definition
+## Defining Kubernetes cluster 
 
-First, you need to create a VPC network with a subnet in eu-north1-c zone!
+Start by creating a VPC network with a subnet in eu-north1-c zone!
 
 The Kubernetes module requires the following input variables:
  - VPC network ID
  - VPC network subnet IDs
 
-## Configure Terraform for Nebius Cloud
+## Configuring Terraform for Nebius Cloud
 
-- Install [NCP CLI](https://nebius.ai/docs/cli/quickstart)
-- Add environment variables for terraform authentication in Nebuis Cloud
+- Install [NCP CLI](https://nebius.ai/docs/cli/quickstart).
+- Add environment variables for Terraform authentication in Nebuis Cloud.
 
 ```
 export YC_TOKEN=$(ncp iam create-token)
