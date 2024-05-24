@@ -1,60 +1,55 @@
-# Kubeflow installation for Nebius.ai
-
-This playbook provisions new K8s cluster with GpuOperator, and installs Kubeflow with integrated Nebius Object storage and MySql cluster. Optionally, for training purposes it can be configured to use infiniband connection and NetworkOperator.
-
-Our Helm chart is specifically designed to leverage DeployKF along with ArgoCD to facilitate the streamlined installation and management of our Kubernetes applications.
+# Kubeflow installation for Nebius AI
 
 ## Features
 
-- Kubernetes cluster with GpuOperator and NetworkOperator
-- Full Kubelfow installaton with Notebooks, Pipelines, Training Operator, KServe, Katib, Dex, Istio, etc.
-- Integration with Nebius Object Storage as artifactory for pipelines and training.
-- Integration with Nebius MySql managed service
+- Full Kubelfow installation with Notebooks, Pipelines, Training Operator, KServe, Katib, Dex, Istio, etc.
+- Integration with the Nebius Object Storage as an artifactory for pipelines and training.
 
 
+## Prerequisites
 
-## Configure Terraform for Nebius Cloud
+First, provision K8s cluster with GPU support, as explained [here](../ml-k8s-iaac/README.md)
 
-- Install [NCP CLI](https://nebius.ai/docs/cli/quickstart)
-- Add environment variables for terraform authentication in Nebuis Cloud
+## Installation instructions
+
+### Object storage
+
+- Create a bucket. Keep in mind that you will need the name of the bucket for future reference. -(https://nebius.ai/docs/storage/operations/buckets/create) Please follow the nebius.ai instructions to [create a bucket](https://nebius.ai/docs/storage/operations/buckets/create)
+- Update the bucket name in the [s3 config file](./nebius-deployment/patches/s3.yaml)
+
+- Create a [service account](https://nebius.ai/docs/iam/operations/sa/create) with the storage.uploader [role](https://nebius.ai/docs/iam/concepts/access-control/roles)
+- [Create a static access key](https://nebius.ai/docs/iam/operations/sa/create-access-key) for the service account.
+- Update s3 credentials in the [secrets](./nebius-deployment/patches/secrets.yaml) file
+
+### User namespace
+- To change the default namespace and user, modify the following files:
+    - kubeflow/nebius-deployment/patches/params.env
+    - kubeflow/nebius-deployment/patches/dex.yaml
+
+### Node selector
+
+The script is configured to deploy Kubeflow to the node group labeled "group: system" by default. You can change this in the kubeflow/nebius-deployment/kustomization.yaml:
+
 
 ```
-export NPC_TOKEN=$(ncp iam create-token)
-export NPC_CLOUD_ID=$(ncp config get cloud-id)
-export NPC_FOLDER_ID=$(ncp config get folder-id)
-```
-
-## Install instructions
-
-- Set folder_id, region, and username (mysql user) in [terraform.tfvars](./terraform/terraform.tfvars) configuration file
-- In [main.tf](./terraform/main.tf) file define which kf-kubernetes module you want to use, and set apropriate values for node group. Deneding on your use case, you can choose the nodegroup setup optimized for either training or inference:
-
-```
-module "kf-cluster"{
-  source = "../../kubernetes/terraform/kubernetes-inference"
-  folder_id = var.folder_id
-  zone_id = var.region
-  gpu_min_nodes_count = 0
-  gpu_max_nodes_count = 8
-  gpu_initial_nodes_count = 1
-  platform_id = "gpu-h100"
-}
-
-# module "kf-cluster"{
-#   source = "../../kubernetes/terraform/kubernetes-training"
-#   folder_id = var.folder_id
-#   zone_id = var.region
-#   gpu_nodes_count = 2
-#   platform_id = "gpu-h100"
-# }
-```
-
-- Run Terraform :
+  - patch: |-
+      kind: not-important
+      metadata:
+        name: not-important
+      spec:
+        template:
+          spec:
+            nodeSelector:
+              group: system
 
 ```
-cd kubeflow/terraform
-terraform init
-terraform apply
+
+### Install command
+
+Run the [bash script](./hack/setup-kubeflow.sh) to install kubeflow:
+
+
+
 ```
-
-
+bash ./hack/setup-kubeflow.sh
+```

@@ -1,15 +1,15 @@
-# Kubernetes for Inference in Nebius.ai
+# Kubernetes for Inference in Nebius AI
 
 ## Features
 
-- Create zonal Kubernetes cluster with CPU and GPU nodes
-- Install neccessary [Nvidia tools](https://github.com/NVIDIA/gpu-operator) to run GPU workloads
-- Install [Descheduler](https://github.com/kubernetes-sigs/descheduler/)
-- Example workloads
+- Creating a zonal Kubernetes cluster with CPU and GPU nodes.
+- Installing the necessary [Nvidia tools](https://github.com/NVIDIA/gpu-operator) for running GPU workloads.
+- Installing [Descheduler](https://github.com/kubernetes-sigs/descheduler/).
+- Example workloads.
 
-## Kubernetes cluster definition
+## Define the Kubernetes cluster 
 
-First, you need to create a VPC network with a subnet in eu-north1-c zone!
+Start by creating  a VPC network with a subnet in eu-north1-c zone!
 
 The Kubernetes module requires the following input variables:
  - VPC network ID
@@ -19,8 +19,8 @@ The Kubernetes module requires the following input variables:
 
 ## Configure Terraform for Nebius Cloud
 
-- Install [NCP CLI](https://nebius.ai/docs/cli/quickstart)
-- Add environment variables for terraform authentication in Nebuis Cloud
+- Install [NCP CLI](https://nebius.ai/docs/cli/quickstart).
+- Add environment variables for Terraform authentication in Nebuis Cloud.
 
 ```
 export YC_TOKEN=$(ncp iam create-token)

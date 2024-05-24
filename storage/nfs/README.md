@@ -1,23 +1,23 @@
-# Nebius NFS Module
+# Nebius NFS module
 
-This Terraform module provisions an NFS server on Nebius Cloud. It creates a virtual machine with a secondary disk attached, formats the disk, and sets up an NFS server that exports the disk as an NFS share.
+This Terraform module facilitates the provisioning of an NFS server on Nebius Cloud. It creates a virtual machine with a secondary disk, formats the disk, and configures an NFS server to export the disk as an NFS share.
 
-## Module Structure
+## Module structure
 
 The module includes the following files and directories:
 
-- `main.tf` - The main Terraform configuration file for the module.
-- `variables.tf` - Definitions of variables used within the module.
-- `outputs.tf` - Outputs after the module has been applied.
-- `provider.tf` - The provider configuration file (to be filled in with your provider's details).
+- `main.tf` - main Terraform configuration file for the module.
+- `variables.tf` - definitions for variables used within the module.
+- `outputs.tf` - outputs obtained after the module has been applied.
+- `provider.tf` - provider configuration file (to be filled out with your provider's details).
 - `files/`
-  - `cloud-config.sh` - A shell script that initializes the NFS server on the virtual machine.
+  - `cloud-config.sh` - shell script that initializes the NFS server on the virtual machine.
 
 
-## Configure Terraform for Nebius Cloud
+## Configuring Terraform for Nebius Cloud
 
-- Install [NCP CLI](https://nebius.ai/docs/cli/quickstart)
-- Add environment variables for terraform authentication in Nebuis Cloud
+- Install [NCP CLI](https://nebius.ai/docs/cli/quickstart).
+- Add environment variables for Terraform authentication in Nebuis Cloud.
 
 ```
 export YC_TOKEN=$(ncp iam create-token)
@@ -26,8 +26,7 @@ export YC_TOKEN=$(ncp iam create-token)
 
 ## Usage
 
-
-To use this module in your Terraform environment, you will need to create a Terraform configuration for example file `terraform.tfvars` with example conent:
+To use this module in your Terraform environment, you must first create a Terraform configuration, such as the file `terraform.tfvars`, with the following example content:
 
 ```hcl
 folder_id = "<folder_id>" # folder where you want to create your resources
@@ -37,13 +36,13 @@ nfs_ip_range = "<internal_network>" # network address, eg 10.0.0.0/16, where you
 sshkey = "<ssh_key>"
 ```
 
-Then you can mount on your target device using command 
+Once you have done that, you can mount on your target device using command 
 ```bash
 sudo apt-get install nfs-common
 sudo mount <ip_address>:/nfs /nfs
 ```
 
-To get best perfomance from the network you may change MTU to 8910. For Ubuntu 22.04 LTS:
+To optimize network performance, consider changing the  MTU to 8910. For Ubuntu 22.04 LTS:
 ```bash
 netplan set ethernets.eth0.mtu=8910
 netplan apply
