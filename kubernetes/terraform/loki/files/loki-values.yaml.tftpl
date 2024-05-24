@@ -1,0 +1,104 @@
+test_pod:
+  enabled: true
+  image: bats/bats:1.8.2
+  pullPolicy: IfNotPresent
+
+loki:
+  enabled: true
+  isDefault: true
+  url: http://{{(include "loki.serviceName" .)}}:{{ .Values.loki.service.port }}
+  auth_enabled: false
+  storage:
+    bucketNames:
+    type: s3
+    bucketNames:
+      chunks: $loki_chunks_bucket
+      ruler: $loki_ruler_bucket
+      admin: $loki_admin_bucket
+    s3:
+      endpoint: storage.ai.nebius.cloud
+      region: eu-north1-c
+      secretAccessKey: $s3_access_key
+      accessKeyId: $s3_secret_key
+      s3ForcePathStyle: false
+      insecure: false
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: http-metrics
+    initialDelaySeconds: 45
+  livenessProbe:
+    httpGet:
+      path: /ready
+      port: http-metrics
+    initialDelaySeconds: 45
+  datasource:
+    jsonData: "{}"
+    uid: ""
+
+
+promtail:
+  enabled: true
+  config:
+    logLevel: info
+    serverPort: 3101
+    clients:
+      - url: http://{{ .Release.Name }}:3100/loki/api/v1/push
+    positions:
+      filename: /run/promtail/positions.yaml
+
+
+fluent-bit:
+  enabled: false
+
+grafana:
+  enabled: true
+  adminPassword: admin
+  persistence:
+    type: pvc
+    enabled: true
+  dashboardProviders: 
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+  dashboards: 
+    default:
+      loki-logs:
+        gnetId: 15141
+        datasource: Loki
+  sidecar:
+    datasources:
+      label: ""
+      labelValue: ""
+      enabled: true
+      maxLines: 1000
+  image:
+    tag: 10.3.3
+
+prometheus:
+  enabled: false
+
+filebeat:
+  enabled: false
+
+
+logstash:
+  enabled: false
+
+
+# proxy is currently only used by loki test pod
+# Note: If http_proxy/https_proxy are set, then no_proxy should include the
+# loki service name, so that tests are able to communicate with the loki
+# service.
+proxy:
+  http_proxy: ""
+  https_proxy: ""
+  no_proxy: ""

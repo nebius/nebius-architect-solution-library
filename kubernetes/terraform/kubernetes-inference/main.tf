@@ -65,3 +65,13 @@ module "kube" {
   ssh_public_key      = var.ssh_public_key
   ssh_public_key_path = var.ssh_public_key_path
 }
+
+
+
+module loki {
+  count = var.log_aggregation? 1:0
+  source = "../loki"
+  folder_id = var.folder_id
+  kube_cluster_ca_certificate = module.kube.cluster_ca_certificate
+  kube_external_v4_endpoint = module.kube.external_v4_endpoint
+}
