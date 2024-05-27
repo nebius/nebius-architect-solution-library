@@ -15,4 +15,14 @@ resource "helm_release" "mount-filesystem" {
   namespace        = "glusterfs"
   create_namespace = true
   version          = "0.1.0"
+
+  set {
+    name  = "shared_volume_host_path"
+    value = "${var.glusterfs_mount_host_path}"
+  }
+
+  set {
+    name  = "glusterfs_hostname"
+    value = "${module.gluster-fs-cluster.glusterfs-host }"
+  }
 }

@@ -34,3 +34,8 @@ variable "platform_id" {
   type    = string
   default = "gpu-h100"
 }
+
+variable "glusterfs_mount_host_path" {
+  type    = string
+  default = "/shared"
+}
