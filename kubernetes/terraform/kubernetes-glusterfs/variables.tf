@@ -20,13 +20,13 @@ variable "ssh_pubkey" {
 # K8s cluster parameters
 variable "cpu_nodes_count" {
   type        = number
-  description = "Amount of slurm nodes"
+  description = "Amount of CPU only nodes"
   default     = 3
 }
 
 variable "gpu_nodes_count" {
   type        = number
-  description = "Amount of slurm nodes"
+  description = "Amount of GPU nodes"
   default     = 2
 }
 

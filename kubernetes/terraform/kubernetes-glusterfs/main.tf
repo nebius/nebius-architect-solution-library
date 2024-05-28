@@ -46,24 +46,24 @@ module "kube" {
         "group" = "system"
       }
     }
-        "k8s-ng-h100-8gpu1" = {
-          description = "Kubernetes nodes h100-8-gpu nodes with autoscaling"
-          fixed_scale = {
-            size = var.gpu_nodes_count
-          }
-          gpu_cluster_id  = nebius_compute_gpu_cluster.k8s_cluster.id
-          platform_id     = var.platform_id
-          gpu_environment = "runc"
-          node_cores      = 160
-          node_memory     = 1280
-          node_gpus       = 8
-          disk_type       = "network-ssd-nonreplicated"
-          disk_size       = 372
-          node_labels     = {
-            "group"                     = "h100-8gpu"
-            "nebius.com/gpu"            = "H100"
-            "nebius.com/gpu-h100-a-llm" = "H100"
-          }
-        }
+    "k8s-ng-h100-8gpu1" = {
+      description = "Kubernetes nodes h100-8-gpu nodes with autoscaling"
+      fixed_scale = {
+        size = var.gpu_nodes_count
+      }
+      gpu_cluster_id  = nebius_compute_gpu_cluster.k8s_cluster.id
+      platform_id     = var.platform_id
+      gpu_environment = "runc"
+      node_cores      = 160
+      node_memory     = 1280
+      node_gpus       = 8
+      disk_type       = "network-ssd-nonreplicated"
+      disk_size       = 372
+      node_labels     = {
+        "group"                     = "h100-8gpu"
+        "nebius.com/gpu"            = "H100"
+        "nebius.com/gpu-h100-a-llm" = "H100"
+      }
+    }
   }
 }
