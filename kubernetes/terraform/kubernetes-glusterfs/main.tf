@@ -3,6 +3,7 @@ module "gluster-fs-cluster" {
   ssh_pubkey    = var.ssh_pubkey
   disk_size     = var.disk_size
   storage_nodes = var.storage_nodes
+  disk_type     = var.disk_type
 }
 
 

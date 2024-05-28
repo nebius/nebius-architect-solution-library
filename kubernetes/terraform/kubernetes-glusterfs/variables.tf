@@ -11,6 +11,12 @@ variable "disk_size" {
   description = "Disk size GB"
 }
 
+variable "disk_type" {
+  type        = string
+  default     = "network-ssd"
+  description = "Disk type"
+}
+
 variable "ssh_pubkey" {
   type        = string
   default     = ""
