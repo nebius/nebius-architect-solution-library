@@ -12,18 +12,18 @@ resource "nebius_vpc_subnet" "k8s-subnet" {
 }
 
 resource "nebius_vpc_gateway" "nat-gateway" {
-  name      = "nat-gateway"
+  name = "nat-gateway"
   shared_egress_gateway {}
 }
 
-resource "nebius_vpc_route_table" "k8s-route-table"{
-  name="k8s-route-table"
-  folder_id = var.folder_id
-  network_id     = nebius_vpc_network.k8s-network.id
+resource "nebius_vpc_route_table" "k8s-route-table" {
+  name       = "k8s-route-table"
+  folder_id  = var.folder_id
+  network_id = nebius_vpc_network.k8s-network.id
 
-    static_route {
+  static_route {
     destination_prefix = "0.0.0.0/0"
-    gateway_id         = "${nebius_vpc_gateway.nat-gateway.id}"
+    gateway_id         = nebius_vpc_gateway.nat-gateway.id
   }
 
 }
