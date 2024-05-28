@@ -3,19 +3,12 @@
 ## Features
 
 - Create zonal Kubernetes cluster with CPU and GPU nodes
-- Install neccessary [Nvidia tools](https://github.com/NVIDIA/gpu-operator) to run GPU workloads
-- Create a [FileStorage](https://nebius.ai/docs/compute/concepts/filesystem) virtual file syсtem and attach it to all the nodes
-
-
-
-## Limitation
-
-This example works well with a fixed k8s node-group. If you scale your node groups, new nodes will not have the filestorage mounted.
+- Create a GlusterFS cluster and connect it to the Kubernetes cluster
 
 ## Configure Terraform for Nebius Cloud
 
 - Install [NCP CLI](https://nebius.ai/docs/cli/quickstart)
-- Add environment variables for terraform authentication in Nebuis Cloud
+- Add environment variables for terraform authentication in Nebuis Cloud with commands bellow or run `sh ./environment.sh`
 
 ```
 export YC_TOKEN=$(ncp iam create-token)
@@ -23,36 +16,26 @@ export YC_CLOUD_ID=$(ncp config get cloud-id)
 export YC_FOLDER_ID=$(ncp config get folder-id)
 ```
 
-## Configure jq cli
+## Configurable Variables
 
-This example uses jq cli tool. Please follow [official documentation](https://jqlang.github.io/jq/download/) how to install
+All the configurable variables are defined in the `variables.tf` file. You can find and modify these variables to suit
+your requirements.
 
-## Install instructions
+### GlusterFS Cluster Parameters
 
-- Set folder_id, disk size and node count in [terraform.tfvars](./terraform/terraform.tfvars) configuration file
-- In [main.tf](./terraform/main.tf) file define which kf-kubernetes module you want to use, and set apropriate values for node group.
-  Depending on your use case, you can choose the nodegroup setup optimized for either training or inference:
+- **storage_nodes**: (number) Number of storage nodes. Default is 3.
+- **disk_size**: (number) Disk size in GB. Default is 100.
+- **disk_type**: (string) Disk type. Default is `network-ssd`.
+- **ssh_pubkey**: (string) SSH public key to access the cluster nodes. Default is an empty string.
 
-```
-module "kf-cluster"{
-  source = "../../kubernetes/terraform/kubernetes-inference"
-  folder_id = var.folder_id
-  zone_id = var.region
-  gpu_min_nodes_count = 0
-  gpu_max_nodes_count = 8
-  gpu_initial_nodes_count = 1
-  platform_id = "gpu-h100"
-}
+### Kubernetes Cluster Parameters
 
-# module "kf-cluster"{
-#   source = "../../kubernetes/terraform/kubernetes-training"
-#   folder_id = var.folder_id
-#   zone_id = var.region
-#   gpu_nodes_count = 2
-#   platform_id = "gpu-h100"
-# }
-```
+- **cpu_nodes_count**: (number) Amount of CPU only nodes. Default is 3.
+- **gpu_nodes_count**: (number) Amount of GPU nodes. Default is 1.
+- **platform_id**: (string) Platform ID for GPU nodes. Default is `gpu-h100`.
+- **glusterfs_mount_host_path**: (string) Mount host path for GlusterFS. Default is `/shared`.
 
+## Installation instructions
 - Run Terraform :
 
 ```
@@ -60,8 +43,35 @@ terraform init
 terraform apply
 ```
 
-- Run example deployment with mounted shared storage: 
+## Usage example
+Below is an example `daemonset.yaml` template for accessing shared GlusterFS storage. Replace `<var.glusterfs_mount_host_path>` with the value specified for the `glusterfs_mount_host_path` variable in your configuration.
 
-```
-kubectl apply -f test-deployment.yaml
+```yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: example-pod
+spec:
+  selector:
+    matchLabels:
+      app: example-pod-app
+  template:
+    metadata:
+      labels:
+        app: example-pod-app
+    spec:
+      containers:
+        - name: example-container
+          image: ubuntu:latest
+          command: [ "/bin/sh", "-c" ]
+          args:
+            - "sleep infinity"
+          volumeMounts:
+            - name: host-volume
+              mountPath: /mnt
+      volumes:
+        - name: host-volume
+          hostPath:
+            path: <var.glusterfs_mount_host_path>
+            type: Directory
 ```

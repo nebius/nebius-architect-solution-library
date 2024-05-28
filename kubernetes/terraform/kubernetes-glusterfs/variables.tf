@@ -33,7 +33,7 @@ variable "cpu_nodes_count" {
 variable "gpu_nodes_count" {
   type        = number
   description = "Amount of GPU nodes"
-  default     = 2
+  default     = 1
 }
 
 variable "platform_id" {
