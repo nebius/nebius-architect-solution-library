@@ -1,8 +1,9 @@
 
 module "kube" {
-  source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.5"
+  source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.6"
 
   network_id = nebius_vpc_network.k8s-network.id
+  folder_id = var.folder_id
 
   master_locations = [
     {
@@ -45,10 +46,10 @@ module "kube" {
       disk_type       = "network-ssd-nonreplicated"
       disk_size       = 372
       node_labels = {
-        "group" = "h100-1gpu" 
+        "group" = "h100-1gpu"
       	"nebius.com/gpu" = "H100"
       	"nebius.com/gpu-h100" = "H100"
-      }		
+      }
     }
   }
 }

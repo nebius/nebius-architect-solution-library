@@ -18,9 +18,9 @@ This example works well with a fixed k8s node-group. If you scale your node grou
 - Add environment variables for terraform authentication in Nebuis Cloud
 
 ```
-export YC_TOKEN=$(ncp iam create-token)
-export YC_CLOUD_ID=$(ncp config get cloud-id)
-export YC_FOLDER_ID=$(ncp config get folder-id)
+export NCP_TOKEN=$(ncp iam create-token)
+export NCP_CLOUD_ID=$(ncp config get cloud-id)
+export NCP_FOLDER_ID=$(ncp config get folder-id)
 ```
 
 ## Configure jq cli
@@ -60,7 +60,7 @@ terraform init
 terraform apply
 ```
 
-- Run example deployment with mounted shared storage: 
+- Run example deployment with mounted shared storage:
 
 ```
 kubectl apply -f test-deployment.yaml

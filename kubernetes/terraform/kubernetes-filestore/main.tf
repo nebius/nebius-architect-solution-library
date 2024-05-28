@@ -1,8 +1,9 @@
 resource "nebius_compute_filesystem" "k8s-shared-storage" {
-  name  = "k8s-shared-storage"
-  type  = "network-ssd"
-  zone  = "eu-north1-c"
-  size  = var.disk_size
+  name       = "k8s-shared-storage"
+  folder_id  = var.folder_id
+  type       = "network-ssd"
+  zone       = "eu-north1-c"
+  size       = var.disk_size
   block_size = var.block_size
 }
 
@@ -33,75 +34,10 @@ EOT
 }
 
 
-# module "kube-cluster"{
-#   source = "../kubernetes-inference"
-#   folder_id = var.folder_id
-#   zone_id = var.region
-#   gpu_min_nodes_count = 0
-#   gpu_max_nodes_count = 8
-#   gpu_initial_nodes_count = 1
-#   platform_id = "gpu-h100"
-# }
-
-module "kube-cluster"{
-  source = "../kubernetes-training"
-  folder_id = var.folder_id
-  zone_id = var.region
+module "kube-cluster" {
+  source          = "../kubernetes-training"
+  folder_id       = var.folder_id
+  zone_id         = var.region
   gpu_nodes_count = var.node_count
-  platform_id = "gpu-h100"
+  platform_id     = "gpu-h100"
 }
-
-
-# module "kube-cluster" {
-#   source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.4"
-
-#   network_id = nebius_vpc_network.k8s-network.id
-
-#   master_locations = [
-#     {
-#       zone      = "eu-north1-c"
-#       subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
-#     },
-
-#   ]
-
-#   master_maintenance_windows = [
-#     {
-#       day        = "monday"
-#       start_time = "20:00"
-#       duration   = "3h"
-#     }
-#   ]
-#   node_groups = {
-#      "k8s-ng-1g-system" = {
-#        description = "Kubernetes nodes group 01 with fixed 1 size scaling"
-#        fixed_scale = {
-#          size = 3
-#        }
-#        node_labels = {
-#          "group" = "system"
-#        }
-#        # node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
-#      }
-#     "k8s-ng-h100-1gpu1" = {
-#       description = "Kubernetes nodes h100-1-gpu nodes with autoscaling"
-#       auto_scale = {
-#         min     = var.gpu_min_nodes_count
-#         max     = var.gpu_max_nodes_count
-#         initial = var.gpu_initial_nodes_count
-#       }
-#       platform_id     = var.platform_id
-#       gpu_environment = "runc"
-#       node_cores      = 20 // change according to VM size
-#       node_memory     = 160 // change according to VM size
-#       node_gpus       = 1
-#       disk_type       = "network-ssd-nonreplicated"
-#       disk_size       = 372
-#       node_labels = {
-#         "group" = "h100-1gpu" 
-#       	"nebius.com/gpu" = "H100"
-#       	"nebius.com/gpu-h100" = "H100"
-#       }		
-#     }
-#   }
-# }
