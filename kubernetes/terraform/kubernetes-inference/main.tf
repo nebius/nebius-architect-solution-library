@@ -1,6 +1,6 @@
 
 module "kube" {
-  source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.4"
+  source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.5"
 
   network_id = nebius_vpc_network.k8s-network.id
 
