@@ -29,7 +29,7 @@ export YC_FOLDER_ID=$(ncp config get folder-id)
 ## Configuring GPU Environment
 
 There are two types of gpu environment:
-- "runc" - plain VM image for the GPU nodes, GPU drivers are installed via NVidia gpu-operator, which on one hand insures the latest driver installation, but because installation is performed during deplyment, it result in added time for new node deplyments during autoscaling
+- "runc" - uses plain VM image for the GPU nodes. GPU drivers are installed via nvidia gpu-operator, which on one hand insures the latest driver installation, on the other hand it results in added time for new node deplyments during autoscaling
 - "runc_drivers_cuda" - uses images with preinstalled GPU drivers
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
