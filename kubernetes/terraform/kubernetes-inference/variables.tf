@@ -40,3 +40,8 @@ variable "platform_id" {
   type        = string
   default = "gpu-h100"
 }
+
+variable "gpu_env" {
+  type        = string
+  default = "runc_drivers_cuda"
+}

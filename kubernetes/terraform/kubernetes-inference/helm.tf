@@ -12,6 +12,7 @@ data "nebius_client_config" "client" {}
 # }
 
 resource "helm_release" "gpu-operator" {
+  count = var.gpu_env == "runc" ? 1:0
   name       = "gpu-operator"
   repository = "oci://cr.nemax.nebius.cloud/yc-marketplace/nebius/gpu-operator/chart/"
   chart      = "gpu-operator"

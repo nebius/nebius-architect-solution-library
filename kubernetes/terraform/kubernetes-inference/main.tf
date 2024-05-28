@@ -1,6 +1,6 @@
 
 module "kube" {
-  source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.4"
+  source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.5"
 
   network_id = nebius_vpc_network.k8s-network.id
 
@@ -38,7 +38,7 @@ module "kube" {
         initial = var.gpu_initial_nodes_count
       }
       platform_id     = var.platform_id
-      gpu_environment = "runc"
+      gpu_environment = var.gpu_env
       node_cores      = 20 // change according to VM size
       node_memory     = 160 // change according to VM size
       node_gpus       = 1
