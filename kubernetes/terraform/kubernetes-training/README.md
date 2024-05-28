@@ -29,13 +29,13 @@ export YC_FOLDER_ID=$(ncp config get folder-id)
 ## Configuring GPU Environment
 
 There are two types of gpu environment:
+- "runc_drivers_cuda" - uses images with preinstalled GPU drivers. Used by default. 
 - "runc" - uses plain VM image for the GPU nodes. GPU drivers are installed via nvidia gpu-operator, which on one hand insures the latest driver installation, on the other hand it results in added time for new node deplyments during autoscaling
   
 To use runc environment, add the following string to the terraform.tfvars file
 ```
 gpu_env = "runc")
 ```
-- "runc_drivers_cuda" - uses images with preinstalled GPU drivers. Used by default. 
  
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
