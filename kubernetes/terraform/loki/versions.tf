@@ -14,12 +14,9 @@ terraform {
       source  = "hashicorp/random"
       version = "> 3.3"
     }
+    helm = {
+      source = "hashicorp/helm"
+      version = "> 2.1"
+    }
   }
 }
-
-provider "nebius" {
-  endpoint = "api.nemax.nebius.cloud:443"
-  storage_endpoint = "storage.ai.nebius.cloud"
-  folder_id = var.folder_id
-}
-

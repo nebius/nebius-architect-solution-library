@@ -18,12 +18,3 @@ resource "helm_release" "loki-stack" {
     }
   )]
 }
-
-
-provider "helm" {
-    kubernetes {
-      host                   = var.kube_external_v4_endpoint
-      cluster_ca_certificate = var.kube_cluster_ca_certificate
-      token                  = data.nebius_client_config.client.iam_token
-    }
-}

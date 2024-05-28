@@ -67,8 +67,11 @@ module "kube" {
 }
 
 
-
 module loki {
+  providers = {
+    nebius = nebius
+    helm = helm
+  }
   count = var.log_aggregation? 1:0
   source = "../loki"
   folder_id = var.folder_id
