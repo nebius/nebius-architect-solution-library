@@ -9,6 +9,14 @@ module "kube" {
       zone      = "eu-north1-c"
       subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
     },
+    {
+      zone      = "eu-north1-c"
+      subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
+    },
+    {
+      zone      = "eu-north1-c"
+      subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
+    },
 
   ]
 
