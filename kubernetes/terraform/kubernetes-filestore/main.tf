@@ -1,5 +1,5 @@
 resource "nebius_compute_filesystem" "k8s-shared-storage" {
-  name       = "k8s-shared-storage"
+  name       = "${module.kube-cluster.kube_cluster_name}-shared-storage"
   folder_id  = var.folder_id
   type       = "network-ssd"
   zone       = "eu-north1-c"
@@ -8,7 +8,11 @@ resource "nebius_compute_filesystem" "k8s-shared-storage" {
 }
 
 resource "null_resource" "attach-filestore" {
-  depends_on = [nebius_compute_filesystem.k8s-shared-storage, module.kube-cluster]
+  depends_on = [
+    nebius_compute_filesystem.k8s-shared-storage,
+    module.kube-cluster,
+    nebius_compute_instance.bastion-vm
+  ]
   provisioner "local-exec" {
     command = <<EOT
       # Define the subnet_id to filter the instances
@@ -33,11 +37,17 @@ EOT
   }
 }
 
-
 module "kube-cluster" {
-  source          = "../kubernetes-training"
-  folder_id       = var.folder_id
-  zone_id         = var.region
-  gpu_nodes_count = var.node_count
-  platform_id     = "gpu-h100"
+  source      = "../kubernetes-inference"
+  folder_id   = var.folder_id
+  zone_id     = var.region
+  platform_id = "gpu-h100"
 }
+
+# module "kube-cluster" {
+#   source          = "../kubernetes-training"
+#   folder_id       = var.folder_id
+#   zone_id         = var.region
+#   gpu_nodes_count = var.node_count
+#   platform_id     = "gpu-h100"
+# }

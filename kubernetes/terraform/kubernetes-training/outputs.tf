@@ -39,7 +39,3 @@ output "kube_cluster_ca_certificate" {
   description = "Connection string to internal Kubernetes cluster."
   value       = try(module.kube.cluster_ca_certificate, null)
 }
-
-
-
-

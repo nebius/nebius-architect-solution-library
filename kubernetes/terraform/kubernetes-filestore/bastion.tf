@@ -4,7 +4,7 @@ data "nebius_compute_image" "ubuntu-2204-lts" {
 
 resource "nebius_iam_service_account" "bastion-sa" {
   folder_id = var.folder_id
-  name      = "bastion-sa"
+  name      = "${module.kube-cluster.kube_cluster_name}-bastion-sa"
 }
 
 // Grant permissions
@@ -15,7 +15,7 @@ resource "nebius_resourcemanager_folder_iam_member" "sa-editor" {
 }
 
 resource "nebius_vpc_address" "bastion-ip" {
-  name      = "bastion-ip"
+  name      = "${module.kube-cluster.kube_cluster_name}-bastion-ip"
   folder_id = var.folder_id
 
   external_ipv4_address {
@@ -24,15 +24,15 @@ resource "nebius_vpc_address" "bastion-ip" {
 }
 
 resource "nebius_compute_instance" "bastion-vm" {
-  name               = "bastion-vm"
+  name               = "${module.kube-cluster.kube_cluster_name}-bastion-vm"
   folder_id          = var.folder_id
   platform_id        = "standard-v2"
   zone               = "eu-north1-c"
   service_account_id = nebius_iam_service_account.bastion-sa.id
 
   resources {
-    cores  = 2
-    memory = 4
+    cores  = var.bastion_cores
+    memory = var.bastion_memory
   }
 
   boot_disk {
@@ -42,7 +42,7 @@ resource "nebius_compute_instance" "bastion-vm" {
   }
 
   network_interface {
-    subnet_id      = nebius_vpc_subnet.k8s-subnet.id
+    subnet_id      = module.kube-cluster.subnet_id
     nat            = true
     nat_ip_address = nebius_vpc_address.bastion-ip.external_ipv4_address[0].address
   }

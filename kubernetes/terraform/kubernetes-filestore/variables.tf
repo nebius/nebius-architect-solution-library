@@ -31,6 +31,16 @@ variable "node_count" {
   default = 2
 }
 
+variable "bastion_cores" {
+  type    = number
+  default = 2
+}
+
+variable "bastion_memory" {
+  type    = number
+  default = 4
+}
+
 variable "k8s_subnet_CIDR" {
   description = "IP address space for k8s subnet."
   type        = list(string)
