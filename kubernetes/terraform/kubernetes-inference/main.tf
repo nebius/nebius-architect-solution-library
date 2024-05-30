@@ -52,4 +52,8 @@ module "kube" {
       }
     }
   }
+
+  ssh_username        = var.ssh_username
+  ssh_public_key      = var.ssh_public_key
+  ssh_public_key_path = var.ssh_public_key_path
 }

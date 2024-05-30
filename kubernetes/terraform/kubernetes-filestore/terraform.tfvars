@@ -1,2 +1,4 @@
-folder_id   = "yc.marketplace-preprod.mkt-test-folder"
-platform_id = "standard-v2"
+folder_id   = "put_id_here"
+platform_id = "gpu-h100"
+node_count  = 2
+bastion     = true

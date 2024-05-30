@@ -39,6 +39,7 @@ output "subnet_id" {
   value       = try(module.kube-cluster.subnet_id, null)
 }
 
-output "bastion_ip" {
-  value = nebius_vpc_address.bastion-ip.external_ipv4_address[0].address
+output "bastion" {
+  description = "IP of bastion"
+  value       = try(module.bastion[0].bastion_ip, null)
 }

@@ -11,7 +11,7 @@ resource "null_resource" "attach-filestore" {
   depends_on = [
     nebius_compute_filesystem.k8s-shared-storage,
     module.kube-cluster,
-    nebius_compute_instance.bastion-vm
+    module.bastion
   ]
   provisioner "local-exec" {
     command = <<EOT
@@ -38,16 +38,39 @@ EOT
 }
 
 module "kube-cluster" {
-  source      = "../kubernetes-inference"
-  folder_id   = var.folder_id
-  zone_id     = var.region
-  platform_id = "gpu-h100"
+  source              = "../kubernetes-training"
+  folder_id           = var.folder_id
+  zone_id             = var.region
+  gpu_nodes_count     = var.node_count
+  platform_id         = var.platform_id
+  ssh_username        = var.ssh_username
+  ssh_public_key      = var.ssh_public_key
+  ssh_public_key_path = var.ssh_public_key_path
 }
 
 # module "kube-cluster" {
-#   source          = "../kubernetes-training"
-#   folder_id       = var.folder_id
-#   zone_id         = var.region
-#   gpu_nodes_count = var.node_count
-#   platform_id     = "gpu-h100"
+#   source              = "../kubernetes-inference"
+#   folder_id           = var.folder_id
+#   zone_id             = var.region
+#   platform_id         = var.platform_id
+#   ssh_username        = var.ssh_username
+#   ssh_public_key      = var.ssh_public_key
+#   ssh_public_key_path = var.ssh_public_key_path
 # }
+
+module "bastion" {
+  providers = {
+    nebius = nebius
+  }
+
+  source                = "../bastion"
+  count                 = var.bastion ? 1 : 0
+  bastion_prefix        = module.kube-cluster.kube_cluster_name
+  folder_id             = var.folder_id
+  filesystem_id         = nebius_compute_filesystem.k8s-shared-storage.id
+  kubernetes_cluster_id = module.kube-cluster.kube_cluster_id
+  subnet_id             = module.kube-cluster.subnet_id
+  ssh_username          = var.ssh_username
+  ssh_public_key        = var.ssh_public_key
+  ssh_public_key_path   = var.ssh_public_key_path
+}

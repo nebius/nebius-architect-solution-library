@@ -45,3 +45,21 @@ variable "gpu_env" {
   type    = string
   default = "runc_drivers_cuda"
 }
+
+variable "ssh_username" {
+  description = "Username for SSH login"
+  type        = string
+  default     = "ubuntu"
+}
+
+variable "ssh_public_key" {
+  description = "Public SSH key to access the cluster nodes"
+  type        = string
+  default     = null
+}
+
+variable "ssh_public_key_path" {
+  description = "Path to a SSH public key to access the cluster nodes"
+  type        = string
+  default     = "~/.ssh/id_rsa.pub"
+}
