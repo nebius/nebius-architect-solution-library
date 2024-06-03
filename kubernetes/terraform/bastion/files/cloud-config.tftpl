@@ -1,0 +1,19 @@
+#cloud-config
+users:
+  - name: ${ssh_username}
+    groups: sudo
+    shell: /bin/bash
+    sudo: 'ALL=(ALL) NOPASSWD:ALL'
+    ssh-authorized-keys:
+      - ${ssh_public_key}
+mounts:
+  - [${filesystem_id}, /mnt, virtiofs]
+
+runcmd:
+  - curl -qsLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  - chmod +x kubectl && mv kubectl /usr/local/bin/
+  - sudo -i -u ${ssh_username} bash << EOF
+  - curl -qSL https://storage.ai.nebius.cloud/ncp/install.sh | bash
+  - /home/${ssh_username}/nebius-cloud/bin/ncp config set endpoint api.ai.nebius.cloud:443
+  - /home/${ssh_username}/nebius-cloud/bin/ncp managed-kubernetes cluster get-credentials --id ${kubernetes_cluster_id} --internal
+  - EOF

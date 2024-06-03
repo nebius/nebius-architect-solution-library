@@ -1,3 +1,4 @@
-folder_id = "bjeq7qmo88loor6p1bac"
-node_count = 2
-disk_size = 40960
+folder_id   = "put_id_here"
+platform_id = "gpu-h100"
+node_count  = 2
+bastion     = true

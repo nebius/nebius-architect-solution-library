@@ -12,13 +12,13 @@ data "nebius_client_config" "client" {}
 # }
 
 resource "helm_release" "gpu-operator" {
-  count = var.gpu_env == "runc" ? 1:0
-  name       = "gpu-operator"
-  repository = "oci://cr.nemax.nebius.cloud/yc-marketplace/nebius/gpu-operator/chart/"
-  chart      = "gpu-operator"
-  namespace = "gpu-operator"
+  count            = var.gpu_env == "runc" ? 1 : 0
+  name             = "gpu-operator"
+  repository       = "oci://cr.nemax.nebius.cloud/yc-marketplace/nebius/gpu-operator/chart/"
+  chart            = "gpu-operator"
+  namespace        = "gpu-operator"
   create_namespace = true
-  version = "v23.9.0"
+  version          = "v23.9.0"
 
   set {
     name  = "toolkit.enabled"
@@ -44,9 +44,9 @@ resource "helm_release" "gpu-operator" {
 
 
 provider "helm" {
-    kubernetes {
-      host                   = module.kube.external_v4_endpoint
-      cluster_ca_certificate = module.kube.cluster_ca_certificate
-      token                  = data.nebius_client_config.client.iam_token
-    }
+  kubernetes {
+    host                   = module.kube.external_v4_endpoint
+    cluster_ca_certificate = module.kube.cluster_ca_certificate
+    token                  = data.nebius_client_config.client.iam_token
+  }
 }

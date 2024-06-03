@@ -39,3 +39,7 @@ output "subnet_id" {
   value       = try(module.kube-cluster.subnet_id, null)
 }
 
+output "bastion" {
+  description = "IP of bastion"
+  value       = try(module.bastion[0].bastion_ip, null)
+}
