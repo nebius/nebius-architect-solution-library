@@ -17,28 +17,11 @@ resource "nebius_iam_service_account_static_access_key" "sa-static-key" {
   description        = "static access key for object storage"
 }
 
-// Use keys to create bucket
-resource "nebius_storage_bucket" "loki-admin-bucket" {
-    access_key = nebius_iam_service_account_static_access_key.sa-static-key.access_key
-    secret_key = nebius_iam_service_account_static_access_key.sa-static-key.secret_key
-    bucket = "loki-admin-${random_string.loki_unique_id.result}"
-    folder_id = var.folder_id
-}   
-
 
 // Use keys to create bucket
-resource "nebius_storage_bucket" "loki-chunks-bucket" {
+resource "nebius_storage_bucket" "loki-bucket" {
     access_key = nebius_iam_service_account_static_access_key.sa-static-key.access_key
     secret_key = nebius_iam_service_account_static_access_key.sa-static-key.secret_key
-    bucket = "loki-chunks-${random_string.loki_unique_id.result}"
-    folder_id = var.folder_id
-}   
-
-
-// Use keys to create bucket
-resource "nebius_storage_bucket" "loki-ruler-bucket" {
-    access_key = nebius_iam_service_account_static_access_key.sa-static-key.access_key
-    secret_key = nebius_iam_service_account_static_access_key.sa-static-key.secret_key
-    bucket = "loki-ruler-${random_string.loki_unique_id.result}"
+    bucket = "loki-bucket-${random_string.loki_unique_id.result}"
     folder_id = var.folder_id
 }   

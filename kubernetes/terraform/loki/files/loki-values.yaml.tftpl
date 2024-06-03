@@ -1,55 +1,32 @@
-test_pod:
-  enabled: true
-  image: bats/bats:1.8.2
-  pullPolicy: IfNotPresent
-
 loki:
-  enabled: true
-  isDefault: true
-  url: http://{{(include "loki.serviceName" .)}}:{{ .Values.loki.service.port }}
-  auth_enabled: false
-  storage:
-    bucketNames:
-    type: s3
-    bucketNames:
-      chunks: $loki_chunks_bucket
-      ruler: $loki_ruler_bucket
-      admin: $loki_admin_bucket
-    s3:
-      endpoint: storage.ai.nebius.cloud
-      region: eu-north1-c
-      secretAccessKey: $s3_access_key
-      accessKeyId: $s3_secret_key
-      s3ForcePathStyle: false
-      insecure: false
-  readinessProbe:
-    httpGet:
-      path: /ready
-      port: http-metrics
-    initialDelaySeconds: 45
-  livenessProbe:
-    httpGet:
-      path: /ready
-      port: http-metrics
-    initialDelaySeconds: 45
-  datasource:
-    jsonData: "{}"
-    uid: ""
-
-
-promtail:
-  enabled: true
   config:
-    logLevel: info
-    serverPort: 3101
-    clients:
-      - url: http://{{ .Release.Name }}:3100/loki/api/v1/push
-    positions:
-      filename: /run/promtail/positions.yaml
+    table_manager:
+      retention_deletes_enabled: true
+      retention_period: 24h
+    storage_config:
+      aws:
+        bucketnames: ${loki_bucket}
+        endpoint: storage.ai.nebius.cloud
+        region: eu-north1-c
+        s3forcepathstyle: true
+        access_key_id: ${s3_access_key}
+        secret_access_key: ${s3_secret_key}
+        sse_encryption: false
+      boltdb_shipper:
+        active_index_directory: /data/loki/index
+        cache_location: /data/loki/cache
+        cache_ttl: 24h
+        shared_store: s3
+    schema_config:
+      configs:
+      - from: 2020-10-24
+        store: boltdb-shipper
+        object_store: aws
+        schema: v11
+        index:
+          prefix: loki_index_
+          period: 24h
 
-
-fluent-bit:
-  enabled: false
 
 grafana:
   enabled: true
@@ -74,31 +51,3 @@ grafana:
       loki-logs:
         gnetId: 15141
         datasource: Loki
-  sidecar:
-    datasources:
-      label: ""
-      labelValue: ""
-      enabled: true
-      maxLines: 1000
-  image:
-    tag: 10.3.3
-
-prometheus:
-  enabled: false
-
-filebeat:
-  enabled: false
-
-
-logstash:
-  enabled: false
-
-
-# proxy is currently only used by loki test pod
-# Note: If http_proxy/https_proxy are set, then no_proxy should include the
-# loki service name, so that tests are able to communicate with the loki
-# service.
-proxy:
-  http_proxy: ""
-  https_proxy: ""
-  no_proxy: ""
