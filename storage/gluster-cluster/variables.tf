@@ -9,6 +9,12 @@ variable "zone_id" {
   default     = "eu-north1-c"
 }
 
+variable "storage_nodes" {
+  type        = number
+  default     = 3
+  description = "Number of storage nodes"
+}
+
 # DISK OPTIONS
 
 variable "disk_count_per_vm" {
