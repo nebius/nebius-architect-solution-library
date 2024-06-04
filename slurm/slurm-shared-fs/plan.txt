@@ -1,0 +1,386 @@
+Terraform will perform the following actions:
+
+  # nebius_compute_filesystem.default will be created
+  + resource "nebius_compute_filesystem" "default" {
+      + block_size = 4096
+      + created_at = (known after apply)
+      + folder_id  = (known after apply)
+      + id         = (known after apply)
+      + name       = "slurm-fs"
+      + size       = 1000
+      + status     = (known after apply)
+      + type       = "network-ssd"
+      + zone       = "eu-north1-c"
+    }
+
+  # nebius_compute_gpu_cluster.slurm-cluster will be created
+  + resource "nebius_compute_gpu_cluster" "slurm-cluster" {
+      + created_at                    = (known after apply)
+      + folder_id                     = (known after apply)
+      + id                            = (known after apply)
+      + interconnect_physical_cluster = "fabric-1"
+      + interconnect_type             = "InfiniBand"
+      + name                          = "slurm-cluster"
+      + status                        = (known after apply)
+      + zone                          = "eu-north1-c"
+    }
+
+  # nebius_compute_instance.master will be created
+  + resource "nebius_compute_instance" "master" {
+      + created_at                = (known after apply)
+      + folder_id                 = (known after apply)
+      + fqdn                      = (known after apply)
+      + gpu_cluster_id            = (known after apply)
+      + hostname                  = "node-master"
+      + id                        = (known after apply)
+      + metadata                  = (known after apply)
+      + name                      = "node-master"
+      + network_acceleration_type = "standard"
+      + platform_id               = "standard-v2"
+      + service_account_id        = (known after apply)
+      + status                    = (known after apply)
+      + zone                      = "eu-north1-c"
+
+      + boot_disk {
+          + auto_delete = true
+          + device_name = (known after apply)
+          + disk_id     = (known after apply)
+          + mode        = (known after apply)
+
+          + initialize_params {
+              + block_size  = (known after apply)
+              + description = (known after apply)
+              + image_id    = "arljjqhufbo9rrjsonm2"
+              + name        = (known after apply)
+              + size        = 1024
+              + snapshot_id = (known after apply)
+              + type        = "network-ssd"
+            }
+        }
+
+      + network_interface {
+          + index              = (known after apply)
+          + ip_address         = (known after apply)
+          + ipv4               = true
+          + ipv6               = (known after apply)
+          + ipv6_address       = (known after apply)
+          + mac_address        = (known after apply)
+          + nat                = true
+          + nat_ip_address     = (known after apply)
+          + nat_ip_version     = (known after apply)
+          + security_group_ids = (known after apply)
+          + subnet_id          = (known after apply)
+        }
+
+      + resources {
+          + core_fraction = 100
+          + cores         = 16
+          + memory        = 32
+        }
+    }
+
+  # nebius_compute_instance.slurm-node["node-1"] will be created
+  + resource "nebius_compute_instance" "slurm-node" {
+      + created_at                = (known after apply)
+      + folder_id                 = (known after apply)
+      + fqdn                      = (known after apply)
+      + gpu_cluster_id            = (known after apply)
+      + hostname                  = "node-1"
+      + id                        = (known after apply)
+      + metadata                  = (known after apply)
+      + name                      = "node-1"
+      + network_acceleration_type = "standard"
+      + platform_id               = "gpu-h100-b"
+      + service_account_id        = (known after apply)
+      + status                    = (known after apply)
+      + zone                      = "eu-north1-c"
+
+      + boot_disk {
+          + auto_delete = true
+          + device_name = (known after apply)
+          + disk_id     = (known after apply)
+          + mode        = (known after apply)
+
+          + initialize_params {
+              + block_size  = (known after apply)
+              + description = (known after apply)
+              + image_id    = "arljjqhufbo9rrjsonm2"
+              + name        = (known after apply)
+              + size        = 1024
+              + snapshot_id = (known after apply)
+              + type        = "network-ssd"
+            }
+        }
+
+      + network_interface {
+          + index              = (known after apply)
+          + ip_address         = (known after apply)
+          + ipv4               = true
+          + ipv6               = (known after apply)
+          + ipv6_address       = (known after apply)
+          + mac_address        = (known after apply)
+          + nat                = false
+          + nat_ip_address     = (known after apply)
+          + nat_ip_version     = (known after apply)
+          + security_group_ids = (known after apply)
+          + subnet_id          = (known after apply)
+        }
+
+      + resources {
+          + core_fraction = 100
+          + cores         = 8
+          + gpus          = 0
+          + memory        = 16
+        }
+    }
+
+  # nebius_compute_instance.slurm-node["node-2"] will be created
+  + resource "nebius_compute_instance" "slurm-node" {
+      + created_at                = (known after apply)
+      + folder_id                 = (known after apply)
+      + fqdn                      = (known after apply)
+      + gpu_cluster_id            = (known after apply)
+      + hostname                  = "node-2"
+      + id                        = (known after apply)
+      + metadata                  = (known after apply)
+      + name                      = "node-2"
+      + network_acceleration_type = "standard"
+      + platform_id               = "gpu-h100-b"
+      + service_account_id        = (known after apply)
+      + status                    = (known after apply)
+      + zone                      = "eu-north1-c"
+
+      + boot_disk {
+          + auto_delete = true
+          + device_name = (known after apply)
+          + disk_id     = (known after apply)
+          + mode        = (known after apply)
+
+          + initialize_params {
+              + block_size  = (known after apply)
+              + description = (known after apply)
+              + image_id    = "arljjqhufbo9rrjsonm2"
+              + name        = (known after apply)
+              + size        = 1024
+              + snapshot_id = (known after apply)
+              + type        = "network-ssd"
+            }
+        }
+
+      + network_interface {
+          + index              = (known after apply)
+          + ip_address         = (known after apply)
+          + ipv4               = true
+          + ipv6               = (known after apply)
+          + ipv6_address       = (known after apply)
+          + mac_address        = (known after apply)
+          + nat                = false
+          + nat_ip_address     = (known after apply)
+          + nat_ip_version     = (known after apply)
+          + security_group_ids = (known after apply)
+          + subnet_id          = (known after apply)
+        }
+
+      + resources {
+          + core_fraction = 100
+          + cores         = 8
+          + gpus          = 0
+          + memory        = 16
+        }
+    }
+
+  # nebius_iam_service_account.saccount will be created
+  + resource "nebius_iam_service_account" "saccount" {
+      + created_at  = (known after apply)
+      + description = "Service account for slurm cluster"
+      + folder_id   = "bjek7v85b26ud8dpr6s3"
+      + id          = (known after apply)
+      + name        = "sa-slurm-1"
+    }
+
+  # nebius_mdb_mysql_cluster.slurm-mysql-cluster[0] will be created
+  + resource "nebius_mdb_mysql_cluster" "slurm-mysql-cluster" {
+      + allow_regeneration_host   = false
+      + backup_retain_period_days = (known after apply)
+      + created_at                = (known after apply)
+      + deletion_protection       = (known after apply)
+      + environment               = "PRODUCTION"
+      + folder_id                 = (known after apply)
+      + health                    = (known after apply)
+      + host_group_ids            = (known after apply)
+      + id                        = (known after apply)
+      + mysql_config              = {
+          + "innodb_lock_wait_timeout" = "900"
+        }
+      + name                      = "nebius-mysql-cluster"
+      + network_id                = (known after apply)
+      + status                    = (known after apply)
+      + version                   = "8.0"
+
+      + host {
+          + assign_public_ip   = false
+          + fqdn               = (known after apply)
+          + priority           = 99
+          + replication_source = (known after apply)
+          + subnet_id          = (known after apply)
+          + zone               = "eu-north1-c"
+        }
+      + host {
+          + assign_public_ip   = false
+          + fqdn               = (known after apply)
+          + priority           = 1
+          + replication_source = (known after apply)
+          + subnet_id          = (known after apply)
+          + zone               = "eu-north1-c"
+        }
+
+      + resources {
+          + disk_size          = 200
+          + disk_type_id       = "network-ssd"
+          + resource_preset_id = "s3-c8-m32"
+        }
+    }
+
+  # nebius_mdb_mysql_database.slurm-db[0] will be created
+  + resource "nebius_mdb_mysql_database" "slurm-db" {
+      + cluster_id = (known after apply)
+      + id         = (known after apply)
+      + name       = "slurm-db"
+    }
+
+  # nebius_mdb_mysql_user.slurmuser[0] will be created
+  + resource "nebius_mdb_mysql_user" "slurmuser" {
+      + authentication_plugin = (known after apply)
+      + cluster_id            = (known after apply)
+      + global_permissions    = (known after apply)
+      + id                    = (known after apply)
+      + name                  = "slurm"
+      + password              = (sensitive value)
+
+      + permission {
+          + database_name = "slurm-db"
+          + roles         = [
+              + "ALL",
+            ]
+        }
+    }
+
+  # nebius_resourcemanager_folder_iam_member.container-editor will be created
+  + resource "nebius_resourcemanager_folder_iam_member" "container-editor" {
+      + folder_id = "bjek7v85b26ud8dpr6s3"
+      + id        = (known after apply)
+      + member    = (known after apply)
+      + role      = "container-registry.editor"
+    }
+
+  # nebius_resourcemanager_folder_iam_member.monitoring-editor will be created
+  + resource "nebius_resourcemanager_folder_iam_member" "monitoring-editor" {
+      + folder_id = "bjek7v85b26ud8dpr6s3"
+      + id        = (known after apply)
+      + member    = (known after apply)
+      + role      = "monitoring.editor"
+    }
+
+  # nebius_vpc_address.node-master-ip will be created
+  + resource "nebius_vpc_address" "node-master-ip" {
+      + created_at          = (known after apply)
+      + deletion_protection = (known after apply)
+      + folder_id           = (known after apply)
+      + id                  = (known after apply)
+      + labels              = (known after apply)
+      + name                = "node-master-ip"
+      + reserved            = (known after apply)
+      + used                = (known after apply)
+
+      + external_ipv4_address {
+          + address                  = (known after apply)
+          + ddos_protection_provider = (known after apply)
+          + outgoing_smtp_capability = (known after apply)
+          + zone_id                  = "eu-north1-c"
+        }
+    }
+
+  # nebius_vpc_gateway.nat-gateway will be created
+  + resource "nebius_vpc_gateway" "nat-gateway" {
+      + created_at = (known after apply)
+      + folder_id  = (known after apply)
+      + id         = (known after apply)
+      + labels     = (known after apply)
+      + name       = "nat-gateway"
+
+      + shared_egress_gateway {}
+    }
+
+  # nebius_vpc_network.slurm-network will be created
+  + resource "nebius_vpc_network" "slurm-network" {
+      + created_at                = (known after apply)
+      + default_security_group_id = (known after apply)
+      + folder_id                 = (known after apply)
+      + id                        = (known after apply)
+      + labels                    = (known after apply)
+      + name                      = "slurm-network"
+      + subnet_ids                = (known after apply)
+    }
+
+  # nebius_vpc_route_table.slurm-route-table will be created
+  + resource "nebius_vpc_route_table" "slurm-route-table" {
+      + created_at = (known after apply)
+      + folder_id  = "bjek7v85b26ud8dpr6s3"
+      + id         = (known after apply)
+      + labels     = (known after apply)
+      + name       = "slurm-route-table"
+      + network_id = (known after apply)
+
+      + static_route {
+          + destination_prefix = "0.0.0.0/0"
+          + gateway_id         = (known after apply)
+        }
+    }
+
+  # nebius_vpc_subnet.slurm-subnet will be created
+  + resource "nebius_vpc_subnet" "slurm-subnet" {
+      + created_at     = (known after apply)
+      + folder_id      = (known after apply)
+      + id             = (known after apply)
+      + labels         = (known after apply)
+      + name           = "slurm-subnet"
+      + network_id     = (known after apply)
+      + route_table_id = (known after apply)
+      + v4_cidr_blocks = [
+          + "192.168.10.0/24",
+        ]
+      + v6_cidr_blocks = (known after apply)
+      + zone           = "eu-north1-c"
+    }
+
+  # random_password.mysql will be created
+  + resource "random_password" "mysql" {
+      + bcrypt_hash = (sensitive value)
+      + id          = (known after apply)
+      + length      = 16
+      + lower       = true
+      + min_lower   = 0
+      + min_numeric = 0
+      + min_special = 0
+      + min_upper   = 0
+      + number      = true
+      + numeric     = true
+      + result      = (sensitive value)
+      + special     = false
+      + upper       = true
+    }
+
+  # tls_private_key.master_key will be created
+  + resource "tls_private_key" "master_key" {
+      + algorithm                     = "RSA"
+      + ecdsa_curve                   = "P224"
+      + id                            = (known after apply)
+      + private_key_openssh           = (sensitive value)
+      + private_key_pem               = (sensitive value)
+      + private_key_pem_pkcs8         = (sensitive value)
+      + public_key_fingerprint_md5    = (known after apply)
+      + public_key_fingerprint_sha256 = (known after apply)
+      + public_key_openssh            = (known after apply)
+      + public_key_pem                = (known after apply)
+      + rsa_bits                      = 2048
+    }

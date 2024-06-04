@@ -9,7 +9,7 @@ variable "image_id" {
   default     = "arl390lhup87ofmsg8mc"
 }
 
-variable "region" {
+variable "zone" {
   type        = string
   description = "Availability Zone"
   default     = "eu-north1-c"
@@ -53,7 +53,6 @@ variable "nfs_size" {
   type        = string
   description = "Size of the NFS in GB, should be divisbile by 93"
 }
-
 
 variable "subnet_id" {
   type        = string

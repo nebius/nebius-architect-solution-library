@@ -1,16 +1,13 @@
-
 resource "nebius_compute_disk" "nfs" {
   type       = "network-ssd-io-m3"
-  zone       = var.region
+  zone       = var.zone
   size       = var.nfs_size
-
 }
-
 
 resource "nebius_compute_instance" "nfs_server" {
   name = var.instance_name
   platform_id    = "standard-v2"
-  zone           = var.region
+  zone           = var.zone
   
   resources {
     cores  = "16"

@@ -1,4 +1,3 @@
-
 data "nebius_compute_image" "ubuntu" {
   family = "ubuntu-2204-lts"
 }
@@ -7,7 +6,7 @@ resource "nebius_compute_instance" "storage_node" {
   count                     = var.storage_nodes
   allow_recreate            = true
   allow_stopping_for_update = true
-  zone                      = nebius_vpc_subnet.default.zone
+  zone                      = var.zone_id
   platform_id               = "standard-v2"
   name                      = format("gluster%02d", count.index + 1)
   hostname                  = format("gluster%02d", count.index + 1)
@@ -19,7 +18,7 @@ resource "nebius_compute_instance" "storage_node" {
   }
 
   network_interface {
-    subnet_id = nebius_vpc_subnet.default.id
+    subnet_id = var.is_standalone ? nebius_vpc_subnet.default[0].id : var.ext_subnet_id
   }
 
   boot_disk {

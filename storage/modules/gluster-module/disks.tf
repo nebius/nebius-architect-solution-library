@@ -1,6 +1,6 @@
 resource "nebius_compute_disk" "glusterdisk_a" {
   count = var.disk_count_per_vm * var.storage_nodes
-  zone  = nebius_vpc_subnet.default.zone
+  zone  = var.zone_id
 
   allow_recreate = false
   size           = var.disk_size

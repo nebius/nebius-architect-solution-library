@@ -1,23 +1,12 @@
-# NETWORKING
-
-variable "network_name" {
+variable "folder_id" {
   type        = string
-  default     = "gfs-network"
-  description = "Name of the network"
+  description = "Id of the folder where the resources going to be created"
 }
 
-variable "subnet_name" {
+variable "zone_id" {
   type        = string
-  default     = "gfs-network"
-  description = "Name of subnet"
-}
-
-# NUMBER OF VMs for cluster
-
-variable "storage_nodes" {
-  type        = number
-  default     = 10
-  description = "Number of storage nodes"
+  description = "Availability Zone"
+  default     = "eu-north1-c"
 }
 
 # DISK OPTIONS
