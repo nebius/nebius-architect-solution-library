@@ -6,16 +6,10 @@ loki:
             kvstore:
               store: memberlist
             replication_factor: 1
-        chunk_idle_period: 30m
-        chunk_block_size: 262144
-        chunk_encoding: snappy
         chunk_retain_period: 1m
         max_transfer_retries: 0
         wal:
           dir: /tmp/loki/wal
-    table_manager:
-      retention_deletes_enabled: true
-      retention_period: 24h
     storage_config:
       aws:
         bucketnames: ${loki_bucket}
@@ -28,7 +22,6 @@ loki:
       boltdb_shipper:
         active_index_directory: /data/loki/index
         cache_location: /data/loki/cache
-        cache_ttl: 24h
         shared_store: s3
     schema_config:
       configs:
