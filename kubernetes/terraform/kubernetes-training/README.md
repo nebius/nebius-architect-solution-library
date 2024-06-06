@@ -3,8 +3,8 @@
 ## Features
 
 - Creating a zonal Kubernetes cluster with CPU and GPU nodes and InfiniBand connection.
-- Install the necessary [Nvidia Gpu Operator](https://github.com/NVIDIA/gpu-operator) and [Network Operator](https://docs.nvidia.com/networking/display/cokan10/network+operator) for running GPU workloads.
-
+- Installing the necessary [Nvidia Gpu Operator](https://github.com/NVIDIA/gpu-operator) and [Network Operator](https://docs.nvidia.com/networking/display/cokan10/network+operator) for running GPU workloads.
+- Installing [Loki-Stack](https://github.com/grafana/helm-charts/tree/main/charts/loki-stack).
 
 
 ## Defining Kubernetes cluster 
@@ -25,6 +25,30 @@ export YC_TOKEN=$(ncp iam create-token)
 export YC_CLOUD_ID=$(ncp config get cloud-id)
 export YC_FOLDER_ID=$(ncp config get folder-id)
 ```
+
+## Log Aggregation
+Log aggregation with the Loki Stack is enabled by default. If you need to disable it, add the following string to the `terraform.tfvars` file.
+```
+log_aggregation = false
+```
+
+### Accessing Logs
+To access the logs via Grafana:
+
+1. **Port-Forward to the Grafana Service:** Run the following command to port-forward to the Grafana service:
+   ```sh
+   kubectl port-forward service/loki-stack-grafana 8080:80 -n loki
+   ```
+
+2. **Access Grafana Dashboard:** Open your browser and navigate to `http://localhost:8080`.
+
+3. **Log In:** Use the default credentials to log in:
+   - **Username:** `admin`
+   - **Password:** `admin`
+
+4. **View Logs:** Use included dashboard "Loki Kubernetes Logs" or create new ones.
+
+
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
