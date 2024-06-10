@@ -7,57 +7,8 @@ a [Loki-Stack](https://github.com/grafana/helm-charts/tree/main/charts/loki-stac
 It's meant to be used as a part of [kubernetes-inference](../kubernetes-inference/README.md)
 or [kubernetes-training](../kubernetes-training/README.md) modules and is enabled there by default.
 
-## Installation Instructions
-
-To install Loki Stack into a pre-existing cluster separately
-from [kubernetes-inference](../kubernetes-inference/README.md)
-or [kubernetes-training](../kubernetes-training/README.md) modules, follow one of the instructions depending on the way
-a Kubernetes cluster was set up.
-
-### Expand an existing terraform configuration in Solutions Library
-
-If you have already used Solution Library to create a Kubernetes cluster, you can update you terraform configuration by
-adding a reference to this module.
-
-#### Instructions
-
-- Add the following block to your terraform configuration, replace `<relative-path-to-this-module>` with an actual path
-  and `<kubernetes-module-name>` with the name of a module describing a Kubernetes cluster in your configuration.
-
-```yaml
-module loki {
-  providers = {
-  nebius = nebius
-  helm = helm
-  }
-  source = "<relative-path-to-this-module>"
-  folder_id = var.folder_id
-  kube_cluster_ca_certificate = module.<kubernetes-module-name>.cluster_ca_certificate
-  kube_external_v4_endpoint = module.<kubernetes-module-name>.external_v4_endpoint
-}
-```
-
-Example configuration:
-
-```yaml
-module loki {
-  providers = {
-  nebius = nebius
-  helm = helm
-  }
-  source = "../loki"
-  folder_id = var.folder_id
-  kube_cluster_ca_certificate = module.kube.cluster_ca_certificate
-  kube_external_v4_endpoint = module.kube.external_v4_endpoint
-}
-```
-
-- Apply the configuration following instructions from your initial terraform module.
-
-### Expand an existing terraform configuration in Solutions Library
-
-If you don't have a terraform configuration for your Kubernetes cluster or just don't want to use it, you can install
-Loki-Stack manually using Helm and Console.
+## Manual Installation
+It's possible to install Loki-Stack into a pre-existing cluster manually using Helm.
 
 #### Prerequisites
 
