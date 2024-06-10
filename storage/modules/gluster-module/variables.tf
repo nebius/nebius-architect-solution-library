@@ -40,7 +40,7 @@ variable "disk_count_per_vm" {
 }
 
 variable "disk_type" {
-  type        = string
+  type = string
   # network-ssd-io-m3 # network-ssd-nonreplicated # network-ssd
   default     = "network-ssd"
   description = "Type of GlusterFS disk"

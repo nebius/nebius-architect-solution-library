@@ -15,7 +15,7 @@ variable "zone" {
   default     = "eu-north1-c"
 }
 
-variable "segment_ip_addr" {
+variable "ipv4_range" {
   type        = string
   description = "IP address for SLURM segment"
   default     = "192.168.10.0/24"
@@ -26,9 +26,16 @@ variable "cluster_nodes_count" {
   description = "Amount of slurm nodes"
 }
 
-variable "sshkey" {
+variable "ssh_public_key" {
+  description = "Public SSH key to access the cluster nodes"
   type        = string
-  description = "Public SSH key"
+  default     = null
+}
+
+variable "ssh_public_key_path" {
+  description = "Path to a SSH public key to access the cluster nodes"
+  type        = string
+  default     = "~/.ssh/id_rsa.pub"
 }
 
 variable "platform_id" {
@@ -43,22 +50,14 @@ variable "mysql_accounting_backend" {
   default     = false
 }
 
-variable "filestore" {
-  type        = bool
+variable "shared_fs_type" {
+  type        = string
   description = "Use shared managed FileStorage mounted on /mnt/slurm on every worker node"
-  default     = true
-}
-
-variable "nfs" {
-  type        = bool
-  description = "Use shared NFS server mounted on /mnt/slurm on every worker node"
-  default     = false
-}
-
-variable "gluster" {
-  type        = bool
-  description = "Use shared GlusterFS cluster mounted on /mnt/slurm on every worker node"
-  default     = false
+  default     = null
+  validation {
+    condition     = var.shared_fs_type == null ? true : contains(["nfs", "gluster", "filestore"], var.shared_fs_type)
+    error_message = "shared_fs_type must be one of: nfs, gluster, filestore"
+  }
 }
 
 variable "gluster_disk_size" {

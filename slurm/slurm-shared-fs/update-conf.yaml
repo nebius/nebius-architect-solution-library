@@ -2,7 +2,7 @@
   hosts: all
   become: yes
   become_user: root
-  tasks: 
+  tasks:
     - name: Copy cgroups config
       copy:
         src: files/cgroup.conf
@@ -46,7 +46,7 @@
         name: slurmctld
 
 - name: Copy munge to nodes copy gres and restart
-  hosts: nodes 
+  hosts: nodes
   become: yes
   become_user: root
   tasks:

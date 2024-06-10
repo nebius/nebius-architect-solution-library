@@ -1,24 +1,27 @@
 
 resource "nebius_vpc_network" "slurm-network" {
-  name = "slurm-network"
+  folder_id = var.folder_id
+  name      = "slurm-network"
 }
 
 resource "nebius_vpc_subnet" "slurm-subnet" {
+  folder_id      = var.folder_id
   name           = "slurm-subnet"
   zone           = var.zone
-  v4_cidr_blocks = [var.segment_ip_addr]
+  v4_cidr_blocks = [var.ipv4_range]
   network_id     = nebius_vpc_network.slurm-network.id
   route_table_id = nebius_vpc_route_table.slurm-route-table.id
 }
 
 resource "nebius_vpc_gateway" "nat-gateway" {
-  name = "nat-gw-slurm"
+  folder_id = var.folder_id
+  name      = "nat-gw-slurm"
   shared_egress_gateway {}
 }
 
 resource "nebius_vpc_route_table" "slurm-route-table" {
-  name       = "slurm-route-table"
   folder_id  = var.folder_id
+  name       = "slurm-route-table"
   network_id = nebius_vpc_network.slurm-network.id
 
   static_route {
@@ -28,7 +31,8 @@ resource "nebius_vpc_route_table" "slurm-route-table" {
 }
 
 resource "nebius_vpc_address" "node-master-ip" {
-  name = "node-master-ip"
+  folder_id = var.folder_id
+  name      = "node-master-ip"
 
   external_ipv4_address {
     zone_id = "eu-north1-c"

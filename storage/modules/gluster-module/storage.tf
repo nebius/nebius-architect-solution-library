@@ -4,6 +4,7 @@ data "nebius_compute_image" "ubuntu" {
 
 resource "nebius_compute_instance" "storage_node" {
   count                     = var.storage_nodes
+  folder_id                 = var.folder_id
   allow_recreate            = true
   allow_stopping_for_update = true
   zone                      = var.zone_id

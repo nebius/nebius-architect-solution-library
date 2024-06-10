@@ -5,7 +5,7 @@ users:
     shell: /bin/bash
     sudo: 'ALL=(ALL) NOPASSWD:ALL'
     ssh-authorized-keys:
-      - ${sshkey}
+      - ${chomp(ssh_public_key)}
       - ${master_pubkey}
 
 packages:
@@ -47,7 +47,7 @@ runcmd:
   - systemctl disable apt-daily-upgrade.timer
   - sudo systemctl stop unattended-upgrades
   - while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done; apt-get install -o Dpkg::Lock::Timeout=300 -o Acquire::Retries=100 -y munge slurmdbd slurm-client slurmctld ca-certificates curl gnupg jq numactl make gcc libelf-dev libssl-dev bc flex bison squashfs-tools parallel pigz squashfuse fuse-overlayfs bsdmainutils ncal libslurm-dev nfs-common glusterfs-client
-  - systemctl disable slurmd; systemctl enable slurmctld; 
+  - systemctl disable slurmd; systemctl enable slurmctld;
   - export DEBIAN_FRONTEND=noninteractive
   - wget https://github.com/NVIDIA/enroot/releases/download/v${ENROOT_VERSION}/enroot_${ENROOT_VERSION}-1_amd64.deb
   - wget https://github.com/NVIDIA/enroot/releases/download/v${ENROOT_VERSION}/enroot+caps_${ENROOT_VERSION}-1_amd64.deb
@@ -66,9 +66,7 @@ runcmd:
 
 write_files:
 - content: |
-%{ for line in master_privkey ~}
-    ${line}
-%{ endfor ~}
+    ${indent(4, master_privkey)}
   path: /etc/ssh/rsa_id
   permissions: "0400"
   owner: root:root
@@ -203,7 +201,7 @@ write_files:
                 break # Exit the loop
             fi
         done
-       
+
         echo "Proceeding with the rest of the script..." >> /var/log/slurm-startup.log
         echo "cloud-init check on $node" >> /var/log/slurm-startup.log
         ssh -i /etc/ssh/rsa_id -o StrictHostKeyChecking=no $node_address 'cloud-init status'
@@ -223,73 +221,4 @@ write_files:
     echo $PATH
 - path: /etc/nccl-topo-h100-v1.xml
   content: |
-    <system version="1">
-      <cpu numaid="0" affinity="00000000,00000000,0000ffff,ffffffff,ffffffff" arch="x86_64" vendor="GenuineIntel" familyid="6" modelid="106">
-        <pci busid="0000:8a:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
-          <pci busid="0000:8c:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
-            <nic>
-              <net name="mlx5_4" dev="4" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
-            </nic>
-          </pci>
-          <pci busid="0000:8d:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
-        </pci>
-        <pci busid="0000:8e:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
-          <pci busid="0000:90:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
-            <nic>
-              <net name="mlx5_5" dev="5" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
-            </nic>
-          </pci>
-          <pci busid="0000:91:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
-        </pci>
-        <pci busid="0000:92:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
-          <pci busid="0000:94:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
-            <nic>
-              <net name="mlx5_6" dev="6" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
-            </nic>
-          </pci>
-          <pci busid="0000:95:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
-        </pci>
-        <pci busid="0000:96:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
-          <pci busid="0000:98:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
-            <nic>
-              <net name="mlx5_7" dev="7" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
-            </nic>
-          </pci>
-          <pci busid="0000:99:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
-        </pci>
-      </cpu>
-      <cpu numaid="1" affinity="ffffffff,ffffffff,ffff0000,00000000,00000000" arch="x86_64" vendor="GenuineIntel" familyid="6" modelid="106">
-        <pci busid="0000:a8:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
-          <pci busid="0000:aa:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
-            <nic>
-              <net name="mlx5_0" dev="0" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
-            </nic>
-          </pci>
-          <pci busid="0000:ab:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
-        </pci>
-        <pci busid="0000:ac:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
-          <pci busid="0000:ae:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
-            <nic>
-              <net name="mlx5_1" dev="1" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
-            </nic>
-          </pci>
-          <pci busid="0000:af:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
-        </pci>
-        <pci busid="0000:b0:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
-          <pci busid="0000:b2:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
-            <nic>
-              <net name="mlx5_2" dev="2" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
-            </nic>
-          </pci>
-          <pci busid="0000:b3:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
-        </pci>
-        <pci busid="0000:b4:00.0" class="0x060400" vendor="0x104c" device="0x8232" subsystem_vendor="0x0000" subsystem_device="0x0000" link_speed="32.0 GT/s PCIe" link_width="16">
-          <pci busid="0000:b6:00.0" class="0x020700" vendor="0x15b3" device="0x101e" subsystem_vendor="0x15b3" subsystem_device="0x0023" link_speed="32.0 GT/s PCIe" link_width="16">
-            <nic>
-              <net name="mlx5_3" dev="3" speed="400000" port="1" latency="0.000000" maxconn="131072" gdr="1" coll="1"/>
-            </nic>
-          </pci>
-          <pci busid="0000:b7:00.0" class="0x030200" vendor="0x10de" device="0x2330" subsystem_vendor="0x10de" subsystem_device="0x16c1" link_speed="32.0 GT/s PCIe" link_width="16"/>
-        </pci>
-      </cpu>
-    </system>
+    ${indent(4, file("files/nccl-topo-h100-v1.xml"))}

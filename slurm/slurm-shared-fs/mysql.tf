@@ -5,6 +5,7 @@ resource "random_password" "mysql" {
 
 resource "nebius_mdb_mysql_cluster" "slurm-mysql-cluster" {
   count       = var.mysql_accounting_backend ? 1 : 0
+  folder_id   = var.folder_id
   name        = "nebius-mysql-cluster"
   environment = "PRODUCTION"
   network_id  = nebius_vpc_network.slurm-network.id

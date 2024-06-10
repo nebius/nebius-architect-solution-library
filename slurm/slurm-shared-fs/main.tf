@@ -1,8 +1,10 @@
 locals {
-  cluster_nodes = [for node_num in range(1, var.cluster_nodes_count + 1) : "node-${node_num}"]
+  ssh_public_key = var.ssh_public_key != null ? var.ssh_public_key : (
+  fileexists(var.ssh_public_key_path) ? file(var.ssh_public_key_path) : null)
 }
 
 resource "nebius_compute_gpu_cluster" "slurm-cluster" {
+  folder_id         = var.folder_id
   name              = "slurm-cluster"
   interconnect_type = "InfiniBand"
   zone              = var.zone
@@ -13,10 +15,11 @@ resource "tls_private_key" "master_key" {
 }
 
 resource "nebius_compute_instance" "master" {
-  depends_on  = [nebius_mdb_mysql_user.slurmuser, nebius_compute_instance.slurm-node, nebius_compute_instance.slurm-node-fs]
+  depends_on  = [nebius_mdb_mysql_user.slurmuser, nebius_compute_instance.slurm-node]
+  folder_id   = var.folder_id
   name        = "node-master"
-  platform_id = "standard-v2"
   hostname    = "node-master"
+  platform_id = "standard-v2"
   zone        = var.zone
 
   resources {
@@ -44,84 +47,22 @@ resource "nebius_compute_instance" "master" {
         ENROOT_VERSION      = "3.4.1"
         is_master           = "1"
         is_mysql            = var.mysql_accounting_backend
-        is_filestore        = var.filestore
-        sshkey              = var.sshkey
+        ssh_public_key      = local.ssh_public_key
         cluster_nodes_count = var.cluster_nodes_count
         hostname            = var.mysql_accounting_backend ? "c-${nebius_mdb_mysql_cluster.slurm-mysql-cluster[0].id}.rw.mdb.nemax.nebius.cloud" : ""
         password            = random_password.mysql.result
         master_pubkey       = trimspace(tls_private_key.master_key.public_key_openssh)
-        master_privkey      = split("\n", tls_private_key.master_key.private_key_openssh)
+        master_privkey      = tls_private_key.master_key.private_key_openssh
       }
     )
   }
 }
 
-// worker instances with filestore
-//////////////////////////////////
-resource "nebius_compute_instance" "slurm-node-fs" {
-  for_each           = var.filestore ? toset(local.cluster_nodes) : []
-  name               = each.key
-  hostname           = each.key
-  platform_id        = var.platform_id
-  zone               = var.zone
-  gpu_cluster_id     = nebius_compute_gpu_cluster.slurm-cluster.id
-  service_account_id = nebius_iam_service_account.saccount.id
-
-  resources {
-    cores  = "160"
-    memory = "1280"
-    gpus   = "8"
-  }
-
-  boot_disk {
-    initialize_params {
-      image_id = var.ib_image_id
-      size     = "1024"
-      type     = "network-ssd"
-    }
-  }
-
-  filesystem {
-    filesystem_id = nebius_compute_filesystem.slurm-filestore[0].id
-    device_name   = "slurm-fs"
-  }
-
-  network_interface {
-    subnet_id = nebius_vpc_subnet.slurm-subnet.id
-    nat       = false
-  }
-
-  timeouts {
-    create = "10m"
-  }
-
-  metadata = {
-    install-unified-agent = 1
-    user-data = templatefile(
-      "${path.module}/files/cloud-config-worker.yaml.tftpl", {
-        ENROOT_VERSION      = "3.4.1"
-        is_master           = "0"
-        is_mysql            = var.mysql_accounting_backend
-        is_filestore        = var.filestore
-        is_nfs              = var.nfs
-        is_gluster          = var.gluster
-        nfs_ip              = var.nfs ? module.nfs-module[0].nfs_server_internal_ip : 0
-        sshkey              = var.sshkey
-        cluster_nodes_count = var.cluster_nodes_count
-        hostname            = var.mysql_accounting_backend ? "c-${nebius_mdb_mysql_cluster.slurm-mysql-cluster[0].id}.rw.mdb.nemax.nebius.cloud" : ""
-        password            = random_password.mysql.result
-        master_pubkey       = trimspace(tls_private_key.master_key.public_key_openssh)
-      }
-    )
-  }
-}
-
-// worker instances without filestore
-/////////////////////////////////////
 resource "nebius_compute_instance" "slurm-node" {
-  for_each           = var.filestore ? [] : toset(local.cluster_nodes)
-  name               = each.key
-  hostname           = each.key
+  count              = var.cluster_nodes_count
+  folder_id          = var.folder_id
+  name               = "slurm-node-${count.index}"
+  hostname           = "slurm-node-${count.index}"
   platform_id        = var.platform_id
   zone               = var.zone
   gpu_cluster_id     = nebius_compute_gpu_cluster.slurm-cluster.id
@@ -141,6 +82,14 @@ resource "nebius_compute_instance" "slurm-node" {
     }
   }
 
+  dynamic "filesystem" {
+    for_each = var.shared_fs_type == "filestore" ? [1] : []
+    content {
+      filesystem_id = nebius_compute_filesystem.slurm-filestore[0].id
+      device_name   = "slurm-fs"
+    }
+  }
+
   network_interface {
     subnet_id = nebius_vpc_subnet.slurm-subnet.id
     nat       = false
@@ -157,15 +106,12 @@ resource "nebius_compute_instance" "slurm-node" {
         ENROOT_VERSION      = "3.4.1"
         is_master           = "0"
         is_mysql            = var.mysql_accounting_backend
-        is_filestore        = var.filestore
-        is_nfs              = var.nfs
-        is_gluster          = var.gluster
-        nfs_ip              = var.nfs ? module.nfs-module[0].nfs_server_internal_ip : 0
-        sshkey              = var.sshkey
+        shared_fs_type      = var.shared_fs_type
+        nfs_ip              = var.shared_fs_type == "nfs" ? module.nfs-module[0].nfs_server_internal_ip : 0
+        ssh_public_key      = local.ssh_public_key
         cluster_nodes_count = var.cluster_nodes_count
         hostname            = var.mysql_accounting_backend ? "c-${nebius_mdb_mysql_cluster.slurm-mysql-cluster[0].id}.rw.mdb.nemax.nebius.cloud" : ""
         password            = random_password.mysql.result
-        is_mysql            = var.mysql_accounting_backend
         master_pubkey       = trimspace(tls_private_key.master_key.public_key_openssh)
       }
     )

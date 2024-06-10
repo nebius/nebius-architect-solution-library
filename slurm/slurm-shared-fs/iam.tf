@@ -27,4 +27,3 @@ resource "nebius_mdb_mysql_user" "slurmuser" {
     roles         = ["ALL"]
   }
 }
-

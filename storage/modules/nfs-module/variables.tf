@@ -3,12 +3,6 @@ variable "folder_id" {
   description = "Id of the folder where the resources going to be created"
 }
 
-variable "image_id" {
-  type        = string
-  description = "Ubuntu 22.04 LTS"
-  default     = "arl390lhup87ofmsg8mc"
-}
-
 variable "zone" {
   type        = string
   description = "Availability Zone"

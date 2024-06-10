@@ -10,6 +10,7 @@ The module includes the following files and directories:
 - `variables.tf` - Definitions of variables used within the module.
 - `outputs.tf` - Outputs after the module has been applied. It creates inventory.yaml file
 - `versions.tf` - The provider configuration file (to be filled in with your provider's details).
+- `terraform.tfvars` - Variable values.
 
 - `files/`
   - `cloud-config.yaml.tfpl` - template for cloud-init to install slurm master or worker nodes
@@ -19,7 +20,7 @@ The module includes the following files and directories:
   - `gres.conf` - config file for slurm cgroups that is distributed over nodes via ansible
   - `inventory.tpl` - template for invetory file that terraform creates
   - `*_topo_nccl*.xml` - correct topolgies for Infiniband devices that is distrubuted over nodes
-  
+
 ## Configure Terraform for Nebius Cloud
 
 - Install [NCP CLI](https://nebius.ai/docs/cli/quickstart)
@@ -27,7 +28,7 @@ The module includes the following files and directories:
 
 ## Prepare environment
 ```bash
-ncp config profile activate <your-profile>  
+ncp config profile activate <your-profile>
 source ./environment.sh
 ```
 
@@ -40,19 +41,21 @@ export NCP_FOLDER_ID=$(ncp config get folder-id)
 
 ## Usage
 
-To use this module in your Terraform environment, you may run module and provide required variables in comman prompt 
-or you may create a Terraform configuration for example file `terraform.tfvars` with example content:
+To use this module in your Terraform environment, you may run module and provide required variables in comman prompt
+or you may define a Terraform configuration for example file `terraform.tfvars` with example content:
 
 ```hcl
 folder_id = "<folder_id>" # folder where you want to create your resources
-sshkey = "<ssh_key>" # public part of your SSH key used to connect to VMs in cluster later
+ssh_public_key = "<ssh_key>" # public part of your SSH key used to connect to VMs in cluster later
+ssh_public_key_path = "<ssh_public_key_path>" # path to public part of your SSH key used to connect to VMs in cluster later (`ssh_public_key` has priority and should be `null`)
 cluster_nodes_count = 4 # amount of worker nodes in slurm cluster
 platform_id = gpu-h100  # gpu-h100 or gpu-h100-b
+shared_fs_type = "<type>" should be one of "nfs", "gluster", "filestore" or null
 ```
 
 Then you can monitor the progress of cloud-init scripts:
 ```bash
-ssh -i <ssh-key-path> slurm@<node-master-ip>
+ssh slurm@<node-master-ip>
 sudo tail -f /var/log/cloud-init-output.log
 ```
 
@@ -64,12 +67,14 @@ You can install shared storage with three differnet types:
 - NFS VM with exported nfs storage will be mounted on all slurm worker nodes to /mnt/slurm
 - GlusterFS cluster with shared Glusterfs volume mounted to all worke nodes in /mnt/slurm
 
-to create shared storage, please edit variables.tf file before running terraform script:
+to create shared storage, please edit `terraform.tfvars` file before running terraform script:
 
 To enable creation of specific shared storage:
-- variable "filestore" set to "true" to use shared managed FileStorage mounted on /mnt/slurm on every worker node
-- variable "nfs" set to "true" to use shared NFS server mounted on /mnt/slurm on every worker node
-- variable "gluster" set to "true" to use shared GlusterFS cluster mounted on /mnt/slurm on every worker node
+- variable "shared_fs_type" set to:
+  - "filestore" to use shared managed FileStorage mounted on /mnt/slurm on every worker node
+  - "nfs" to use shared NFS server mounted on /mnt/slurm on every worker node
+  - "gluster" to use shared GlusterFS cluster mounted on /mnt/slurm on every worker node
+  - `null` or remove it to use without shared storage
 - variable "fs_size" - size of shared FileStorage or NFS size (number should be x930)
 
 In case of Glusterfs you may change single node disk size
