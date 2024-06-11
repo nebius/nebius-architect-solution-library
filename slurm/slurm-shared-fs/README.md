@@ -46,8 +46,10 @@ or you may define a Terraform configuration for example file `terraform.tfvars` 
 
 ```hcl
 folder_id = "<folder_id>" # folder where you want to create your resources
-ssh_public_key = "<ssh_key>" # public part of your SSH key used to connect to VMs in cluster later
-ssh_public_key_path = "<ssh_public_key_path>" # path to public part of your SSH key used to connect to VMs in cluster later (`ssh_public_key` has priority and should be `null`)
+ssh_public_key = {
+  key = "<ssh_public_key>", # public part of your SSH key used to connect to VMs in cluster later (has more priority than path)
+  path = "<ssh_public_key_path>" # path to public part of your SSH key used to connect to VMs in cluster later
+}
 cluster_nodes_count = 4 # amount of worker nodes in slurm cluster
 platform_id = gpu-h100  # gpu-h100 or gpu-h100-b
 shared_fs_type = "<type>" should be one of "nfs", "gluster", "filestore" or null

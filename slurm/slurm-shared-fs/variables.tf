@@ -27,15 +27,16 @@ variable "cluster_nodes_count" {
 }
 
 variable "ssh_public_key" {
-  description = "Public SSH key to access the cluster nodes"
-  type        = string
-  default     = null
-}
-
-variable "ssh_public_key_path" {
-  description = "Path to a SSH public key to access the cluster nodes"
-  type        = string
-  default     = "~/.ssh/id_rsa.pub"
+  description = "SSH Public Key to access the cluster nodes"
+  type = object({
+    key  = optional(string),
+    path = optional(string, "~/.ssh/id_rsa.pub")
+  })
+  default = {}
+  validation {
+    condition     = var.ssh_public_key.key != null || fileexists(var.ssh_public_key.path)
+    error_message = "SSH Public Key must be set by `key` or file `path` ${var.ssh_public_key.path}"
+  }
 }
 
 variable "platform_id" {
