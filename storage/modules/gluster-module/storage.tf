@@ -8,7 +8,7 @@ resource "nebius_compute_instance" "storage_node" {
   allow_recreate            = true
   allow_stopping_for_update = true
   zone                      = var.zone_id
-  platform_id               = "standard-v2"
+  platform_id               = "standard-v3"
   name                      = format("gluster%02d", count.index + 1)
   hostname                  = format("gluster%02d", count.index + 1)
 
@@ -27,6 +27,7 @@ resource "nebius_compute_instance" "storage_node" {
     initialize_params {
       image_id = data.nebius_compute_image.ubuntu.image_id
       type     = "network-ssd"
+      size     = "93"
     }
   }
 
@@ -48,6 +49,8 @@ resource "nebius_compute_instance" "storage_node" {
       master_pubkey  = trimspace(tls_private_key.master_key.public_key_openssh)
       master_privkey = split("\n", tls_private_key.master_key.private_key_openssh)
       nodes_count    = var.storage_nodes
+      disk_count     = var.disk_count_per_vm
+      index_to_letter  = { for i in range(1, var.disk_count_per_vm + 1) : i => element(["b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"], i - 1) }
     })
   }
 }

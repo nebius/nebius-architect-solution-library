@@ -35,6 +35,9 @@ packages:
   - libslurm-dev
   - nfs-common
   - glusterfs-client
+  - openmpi-bin
+  - openmpi-common
+  - libopenmpi-dev
 
 apt:
   conf: |
@@ -47,7 +50,7 @@ runcmd:
   - systemctl disable apt-daily-upgrade.timer
   - sudo systemctl stop unattended-upgrades
   - wget -O - https://monitoring.api.nemax.nebius.cloud/monitoring/v2/gpu-metrics-exporter/install.sh | bash;
-  - while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done; apt-get install -o Dpkg::Lock::Timeout=300 -o Acquire::Retries=100 -y munge slurmd slurm-client ca-certificates curl gnupg jq numactl make gcc libelf-dev libssl-dev bc flex bison squashfs-tools parallel libnvidia-container-tools pigz squashfuse fuse-overlayfs bsdmainutils ncal libslurm-dev nfs-common glusterfs-client
+  - while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done; apt-get install -o Dpkg::Lock::Timeout=300 -o Acquire::Retries=100 -y munge slurmd slurm-client ca-certificates curl gnupg jq numactl make gcc libelf-dev libssl-dev bc flex bison squashfs-tools parallel libnvidia-container-tools pigz squashfuse fuse-overlayfs bsdmainutils ncal libslurm-dev nfs-common glusterfs-client openmpi-bin openmpi-common libopenmpi-dev
   - export DEBIAN_FRONTEND=noninteractive
   - wget https://github.com/NVIDIA/enroot/releases/download/v${ENROOT_VERSION}/enroot_${ENROOT_VERSION}-1_amd64.deb
   - wget https://github.com/NVIDIA/enroot/releases/download/v${ENROOT_VERSION}/enroot+caps_${ENROOT_VERSION}-1_amd64.deb
@@ -105,7 +108,7 @@ write_files:
     # See the slurm.conf man page for more information.
     #
     ClusterName=Slurm-cluster
-    SlurmctldHost=node-master
+    SlurmctldHost=${node_prefix}-master
 
     SlurmUser=slurm
     SlurmdUser=root
@@ -152,8 +155,8 @@ write_files:
     GresTypes=gpu
     SelectType=select/cons_tres
     # COMPUTE NODES
-    # NodeName=node-[1-${cluster_nodes_count}] CPUs=16 RealMemory=32090 State=idle State=UNKNOWN
-    NodeName=node-[1-${cluster_nodes_count}] Gres=gpu:8 CPUs=160 RealMemory=1290080 State=idle State=UNKNOWN
+    # NodeName=${node_prefix}-[1-${cluster_nodes_count}] CPUs=16 RealMemory=32090 State=idle State=UNKNOWN
+    NodeName=${node_prefix}-[1-${cluster_nodes_count}] Gres=gpu:8 CPUs=160 RealMemory=1290080 State=idle State=UNKNOWN
     PartitionName=debug Nodes=ALL Default=YES MaxTime=INFINITE State=UP
 - path: /etc/slurm/cgroup.conf
   content: |
@@ -162,7 +165,7 @@ write_files:
   permissions: '0600'
   content: |
     AuthType=auth/munge
-    DbdHost=node-master
+    DbdHost=${node_prefix}-master
     DebugLevel=info
     LogFile=/var/log/slurm/slurmdbd.log
     PidFile=/run/slurmdbd.pid

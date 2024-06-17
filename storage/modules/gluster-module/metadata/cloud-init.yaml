@@ -41,9 +41,12 @@ runcmd:
   - sudo systemctl stop unattended-upgrades
   - sudo apt-get update
   - while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done; apt-get install -o Dpkg::Lock::Timeout=300 -o Acquire::Retries=100 -y glusterfs-server
-  - mkfs.xfs -f -i size=512 /dev/vdb
-  - mkdir -p /bricks/brick1
-  - [ sh, -c, echo '/dev/vdb /bricks/brick1 xfs defaults 1 2' >> /etc/fstab ]
+%{ for x in range(1, disk_count + 1) ~}
+  - echo "This is disk number ${x}, device is vd${index_to_letter[x]}"
+  - mkfs.xfs -f -i size=512 /dev/vd${index_to_letter[x]}
+  - mkdir -p /bricks/brick${x}
+  - [ sh, -c, "echo '/dev/vd${index_to_letter[x]} /bricks/brick${x} xfs defaults 1 2' >> /etc/fstab" ]
+%{ endfor ~}
   - mount -a
   - systemctl enable glusterd
   - for r in $(seq 1 10); do systemctl start glusterd && break || sleep 5; done
@@ -54,7 +57,9 @@ runcmd:
       i=1
       while [ $i -le ${nodes_count} ]; do
         for r in $(seq 1 50); do gluster peer probe gluster$(printf "%02d" $i) && break || sleep 15; done
-        result="gluster$(printf "%02d" $i):/bricks/brick1/vol0 $result"
+%{ for y in range(1, disk_count + 1) ~}
+        result="gluster$(printf "%02d" $i):/bricks/brick${y}/vol0 $result"
+%{ endfor ~} 
         i=$((i + 1))
       done
       echo "GLUSTER volume create for nodes: $result"

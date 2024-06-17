@@ -1,12 +1,22 @@
 locals {
   ssh_public_key = var.ssh_public_key.key != null ? var.ssh_public_key.key : (
   fileexists(var.ssh_public_key.path) ? file(var.ssh_public_key.path) : null)
+  cluster_nodes = [for node_num in range(1, var.cluster_nodes_count + 1): "${var.node_name_prefix}-${node_num}"]
+}
+
+data "nebius_compute_image" "ubuntu-gpu" {
+  family = "ubuntu-2204-lts-gpu-cluster-cuda-12"
+}
+
+data "nebius_compute_image" "ubuntu" {
+  family = "ubuntu-2204-lts"
 }
 
 resource "nebius_compute_gpu_cluster" "slurm-cluster" {
   folder_id         = var.folder_id
   name              = "slurm-cluster"
   interconnect_type = "InfiniBand"
+  interconnect_physical_cluster = var.ib_fabric
   zone              = var.zone
 }
 
@@ -17,8 +27,8 @@ resource "tls_private_key" "master_key" {
 resource "nebius_compute_instance" "master" {
   depends_on  = [nebius_mdb_mysql_user.slurmuser, nebius_compute_instance.slurm-node]
   folder_id   = var.folder_id
-  name        = "node-master"
-  hostname    = "node-master"
+  name        = "${var.node_name_prefix}-master"
+  hostname    = "${var.node_name_prefix}-master"
   platform_id = "standard-v2"
   zone        = var.zone
 
@@ -29,7 +39,7 @@ resource "nebius_compute_instance" "master" {
 
   boot_disk {
     initialize_params {
-      image_id = "arls69uskrp9psdjjtou"
+      image_id = data.nebius_compute_image.ubuntu.image_id
       size     = "1024"
       type     = "network-ssd"
     }
@@ -53,16 +63,17 @@ resource "nebius_compute_instance" "master" {
         password            = random_password.mysql.result
         master_pubkey       = trimspace(tls_private_key.master_key.public_key_openssh)
         master_privkey      = tls_private_key.master_key.private_key_openssh
+        node_prefix         = var.node_name_prefix
       }
     )
   }
 }
 
 resource "nebius_compute_instance" "slurm-node" {
-  count              = var.cluster_nodes_count
+  for_each           = toset( local.cluster_nodes )
+  name               = "${each.key}"
+  hostname           = "${each.key}"
   folder_id          = var.folder_id
-  name               = "slurm-node-${count.index}"
-  hostname           = "slurm-node-${count.index}"
   platform_id        = var.platform_id
   zone               = var.zone
   gpu_cluster_id     = nebius_compute_gpu_cluster.slurm-cluster.id
@@ -76,8 +87,8 @@ resource "nebius_compute_instance" "slurm-node" {
 
   boot_disk {
     initialize_params {
-      image_id = var.ib_image_id
-      size     = "1024"
+      image_id = data.nebius_compute_image.ubuntu-gpu.image_id
+      size     = "1280"
       type     = "network-ssd"
     }
   }
@@ -113,6 +124,7 @@ resource "nebius_compute_instance" "slurm-node" {
         hostname            = var.mysql_accounting_backend ? "c-${nebius_mdb_mysql_cluster.slurm-mysql-cluster[0].id}.rw.mdb.nemax.nebius.cloud" : ""
         password            = random_password.mysql.result
         master_pubkey       = trimspace(tls_private_key.master_key.public_key_openssh)
+        node_prefix         = var.node_name_prefix
       }
     )
   }

@@ -19,7 +19,7 @@ variable "storage_nodes" {
 
 variable "disk_count_per_vm" {
   type        = number
-  default     = 1
+  default     = 2
   description = "Number disks for GlusterFS per VM"
 }
 
@@ -32,7 +32,7 @@ variable "disk_type" {
 
 variable "disk_size" {
   type        = number
-  default     = 1000
+  default     = 930
   description = "Disk size GB"
 }
 

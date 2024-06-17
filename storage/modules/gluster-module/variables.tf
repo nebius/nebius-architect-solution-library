@@ -48,7 +48,7 @@ variable "disk_type" {
 
 variable "disk_size" {
   type        = number
-  default     = 1000
+  default     = 930
   description = "Disk size GB"
 }
 

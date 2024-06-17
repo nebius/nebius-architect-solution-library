@@ -35,6 +35,10 @@ packages:
   - libslurm-dev
   - nfs-common
   - glusterfs-client
+  - clustershell
+  - openmpi-bin
+  - openmpi-common
+  - libopenmpi-dev
 
 apt:
   conf: |
@@ -46,7 +50,7 @@ runcmd:
   - systemctl disable apt-daily.timer
   - systemctl disable apt-daily-upgrade.timer
   - sudo systemctl stop unattended-upgrades
-  - while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done; apt-get install -o Dpkg::Lock::Timeout=300 -o Acquire::Retries=100 -y munge slurmdbd slurm-client slurmctld ca-certificates curl gnupg jq numactl make gcc libelf-dev libssl-dev bc flex bison squashfs-tools parallel pigz squashfuse fuse-overlayfs bsdmainutils ncal libslurm-dev nfs-common glusterfs-client
+  - while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done; apt-get install -o Dpkg::Lock::Timeout=300 -o Acquire::Retries=100 -y munge slurmdbd slurm-client slurmctld ca-certificates curl gnupg jq numactl make gcc libelf-dev libssl-dev bc flex bison squashfs-tools parallel pigz squashfuse fuse-overlayfs bsdmainutils ncal libslurm-dev nfs-common glusterfs-client openmpi-bin openmpi-common libopenmpi-dev clustershell 
   - systemctl disable slurmd; systemctl enable slurmctld;
   - export DEBIAN_FRONTEND=noninteractive
   - wget https://github.com/NVIDIA/enroot/releases/download/v${ENROOT_VERSION}/enroot_${ENROOT_VERSION}-1_amd64.deb
@@ -62,7 +66,9 @@ runcmd:
   - chown slurm:slurm /etc/slurm/slurmdbd.conf
   - chown slurm:slurm /var/lib/slurm/slurmctld
   - echo 'export NCCL_TOPO_FILE=/etc/nccl-topo-h100-v1.xml' >> /home/slurm/.bashrc
+  - echo 'ssh_options: -oStrictHostKeyChecking=no' >> /etc/clustershell/clush.conf
   - sudo bash /tmp/setup_auth.sh
+  - sleep 600; sudo bash /tmp/setup_auth.sh
 
 write_files:
 - content: |
@@ -92,7 +98,7 @@ write_files:
     # See the slurm.conf man page for more information.
     #
     ClusterName=Slurm-cluster
-    SlurmctldHost=node-master
+    SlurmctldHost=${node_prefix}-master
 
     SlurmUser=slurm
     SlurmdUser=root
@@ -139,8 +145,8 @@ write_files:
     GresTypes=gpu
     SelectType=select/cons_tres
     # COMPUTE NODES
-    # NodeName=node-[1-${cluster_nodes_count}] CPUs=16 RealMemory=32090 State=idle State=UNKNOWN
-    NodeName=node-[1-${cluster_nodes_count}] Gres=gpu:8 CPUs=160 RealMemory=1290080 State=idle State=UNKNOWN
+    # NodeName=${node_prefix}-[1-${cluster_nodes_count}] CPUs=16 RealMemory=32090 State=idle State=UNKNOWN
+    NodeName=${node_prefix}-[1-${cluster_nodes_count}] Gres=gpu:8 CPUs=160 RealMemory=1290080 State=idle State=UNKNOWN
     PartitionName=debug Nodes=ALL Default=YES MaxTime=INFINITE State=UP
 - path: /etc/slurm/cgroup.conf
   content: |
@@ -149,7 +155,7 @@ write_files:
   permissions: '0600'
   content: |
     AuthType=auth/munge
-    DbdHost=node-master
+    DbdHost=${node_prefix}-master
     DebugLevel=info
     LogFile=/var/log/slurm/slurmdbd.log
     PidFile=/run/slurmdbd.pid
@@ -186,8 +192,8 @@ write_files:
 
     # Loop from 1 to N and perform operations on each node
     for ((i=1; i<=N; i++)); do
-        node="node-$i"
-        node_address="slurm@node-$i"
+        node="${node_prefix}-$i"
+        node_address="slurm@${node_prefix}-$i"
 
         echo "Loop until cloud-init status is not running on $node." >> /var/log/slurm-startup.log
         while :; do
@@ -222,3 +228,15 @@ write_files:
 - path: /etc/nccl-topo-h100-v1.xml
   content: |
     ${indent(4, file("files/nccl-topo-h100-v1.xml"))}
+- path: /etc/clustershell/groups.conf
+  content: |
+    [Main]
+    default: cluster
+    confdir: /etc/clustershell/groups.conf.d $CFGDIR/groups.conf.d
+    autodir: /etc/clustershell/groups.d $CFGDIR/groups.d  
+- path: /etc/clustershell/groups.d/cluster.yaml
+  content: |
+    cluster:
+      all: '@gluster'
+      clients: 'client[01-${cluster_nodes_count}]'
+      

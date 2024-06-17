@@ -82,3 +82,28 @@ To enable creation of specific shared storage:
 In case of Glusterfs you may change single node disk size
 - variable "gluster_disk_size" - size of disk per each Gluster node (number should be x930)
 - variable "gluster_nodes" - Amount of nodes in Gluster cluster (minimum 3)
+
+## Postinstall steps
+
+After all nodes rolled out. Please login by ssh to master slurm node:
+```
+ssh slurm@<master-node-public-ip> -i private-ssh-key
+```
+
+and run /tmp/setup_auth.sh script
+```
+sudo -i
+bash /tmp/setup_auth.sh
+```
+
+after script run check the slurm cluster status:
+```
+sinfo -Nl
+```
+
+correct status should be like (STATE: idle):
+```
+NODELIST      NODES PARTITION       STATE CPUS    S:C:T MEMORY TMP_DISK WEIGHT AVAIL_FE REASON              
+slurm-node-1      1    debug*        idle 160   160:1:1 129008        0      1   (null) none                
+slurm-node-2      1    debug*        idle 160   160:1:1 129008        0      1   (null) none         
+```

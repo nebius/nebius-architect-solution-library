@@ -3,22 +3,22 @@ variable "folder_id" {
   description = "Id of the folder where the resources going to be created"
 }
 
-variable "ib_image_id" {
-  type        = string
-  description = "ID of Infiniband image"
-  default     = "arljjqhufbo9rrjsonm2"
-}
-
 variable "zone" {
   type        = string
   description = "Availability Zone"
   default     = "eu-north1-c"
 }
 
+variable "ib_fabric" {
+  type        = string
+  description = "InfiniBand fabric. Should be fabric-4 for h100-type-c, fabric-1 for other types"
+  default     = "fabric-4"
+}
+
 variable "ipv4_range" {
   type        = string
   description = "IP address for SLURM segment"
-  default     = "192.168.10.0/24"
+  default     = "172.16.0.0/16"
 }
 
 variable "cluster_nodes_count" {
@@ -41,8 +41,8 @@ variable "ssh_public_key" {
 
 variable "platform_id" {
   type        = string
-  description = "Platform for nodes: gpu-h100-b for Inspur or gpu-h100 for Gigabyte"
-  default     = "gpu-h100"
+  description = "Platform type for GPU nodes"
+  default     = "gpu-h100-c"
 }
 
 variable "mysql_accounting_backend" {
@@ -54,9 +54,9 @@ variable "mysql_accounting_backend" {
 variable "shared_fs_type" {
   type        = string
   description = "Use shared managed FileStorage mounted on /mnt/slurm on every worker node"
-  default     = null
+  default     = "none"
   validation {
-    condition     = var.shared_fs_type == null ? true : contains(["nfs", "gluster", "filestore"], var.shared_fs_type)
+    condition     = var.shared_fs_type == "none" ? true : contains(["nfs", "gluster", "filestore"], var.shared_fs_type)
     error_message = "shared_fs_type must be one of: nfs, gluster, filestore"
   }
 }
@@ -65,6 +65,12 @@ variable "gluster_disk_size" {
   type        = number
   description = "Size of disk per each Gluster node x930"
   default     = 930
+}
+
+variable "gluster_disks_per_vm" {
+  type        = number
+  description = "Number of disks/bricks per gluster VM node"
+  default     = 1
 }
 
 variable "gluster_nodes" {
@@ -77,4 +83,10 @@ variable "fs_size" {
   type        = number
   description = "Shared FileStorage or NFS size x930"
   default     = "930"
+}
+
+variable "node_name_prefix" {
+  type        = string
+  description = "Slurm node name prefix"
+  default     = "slurm-node"
 }
