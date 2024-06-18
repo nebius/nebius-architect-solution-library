@@ -1,0 +1,43 @@
+apiVersion: 1
+groups:
+    - orgId: 1
+      name: GPU number
+      folder: GPU
+      interval: 5m
+      rules:
+        %{~ for node_group_name, node_group_gpus in dcgm_node_groups ~}
+        - uid: ${ node_group_name }
+          title: GPU number has changed in node group ${ node_group_name }
+          condition: A
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: prometheus
+              model:
+                datasource:
+                    type: prometheus
+                    uid: prometheus
+                editorMode: code
+                expr: |
+                  (count by (node) (DCGM_FI_DEV_COUNT)) and on (node)
+                    kube_node_labels{label_nebius_com_group_name="${ node_group_name }"}
+                      < ${ node_group_gpus }
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+          noDataState: NoData
+          execErrState: Error
+          for: 5m
+          annotations:
+            description: ""
+            runbook_url: ""
+            summary: ""
+          labels:
+            "": ""
+          isPaused: false
+        %{~ endfor ~}

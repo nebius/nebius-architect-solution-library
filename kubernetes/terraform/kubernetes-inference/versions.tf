@@ -21,8 +21,3 @@ provider "nebius" {
   endpoint  = "api.nemax.nebius.cloud:443"
   folder_id = var.folder_id
 }
-
-
-# provider "local" {}
-
-# provider "random" {}

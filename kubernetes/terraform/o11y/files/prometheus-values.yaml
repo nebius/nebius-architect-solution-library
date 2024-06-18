@@ -1,0 +1,9 @@
+---
+alertmanager:
+  enabled: false
+prometheus-pushgateway:
+  enabled: false
+
+kube-state-metrics:
+  metricLabelsAllowlist:
+    - nodes=[nebius.com/group-name]

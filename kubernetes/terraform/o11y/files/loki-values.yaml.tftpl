@@ -1,3 +1,4 @@
+---
 loki:
   config:
     ingester:
@@ -32,28 +33,13 @@ loki:
         index:
           prefix: loki_index_
           period: 24h
-
-
-grafana:
-  enabled: true
-  adminPassword: admin
-  persistence:
-    type: pvc
-    enabled: true
-  dashboardProviders: 
-    dashboardproviders.yaml:
-      apiVersion: 1
-      providers:
-      - name: 'default'
-        orgId: 1
-        folder: ''
-        type: file
-        disableDeletion: false
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/default
-  dashboards: 
-    default:
-      loki-logs:
-        gnetId: 15141
-        datasource: Loki
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: http-metrics
+    initialDelaySeconds: 45
+  livenessProbe:
+    httpGet:
+      path: /ready
+      port: http-metrics
+    initialDelaySeconds: 45

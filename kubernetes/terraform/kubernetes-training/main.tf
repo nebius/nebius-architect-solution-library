@@ -51,6 +51,7 @@ module "kube" {
       disk_type       = "network-ssd-nonreplicated"
       disk_size       = 372
       node_labels = {
+        "nebius.com/group-name"     = "h100-8gpu"
         "group"                     = "h100-8gpu"
         "nebius.com/gpu"            = "H100"
         "nebius.com/gpu-h100-a-llm" = "H100"
@@ -63,17 +64,21 @@ module "kube" {
   ssh_public_key_path = var.ssh_public_key_path
 }
 
-module loki {
+module "o11y" {
   providers = {
     nebius = nebius
-    helm = helm
+    helm   = helm
   }
-  count = var.log_aggregation? 1:0
-  source = "../loki"
+  o11y = merge(
+    var.o11y,
+    {
+      dcgm = {
+        node_groups = {
+          h100-8gpu = 8
+        }
+      }
+    }
+  )
+  source    = "../o11y"
   folder_id = var.folder_id
-  kube_cluster_ca_certificate = module.kube.cluster_ca_certificate
-  kube_external_v4_endpoint = module.kube.external_v4_endpoint
 }
-
-
-
