@@ -67,14 +67,17 @@ variable "ssh_public_key_path" {
 
 variable "o11y" {
   type = object({
-    grafana    = optional(bool, true),
-    loki       = optional(bool, true),
-    prometheus = optional(bool, true),
+    grafana = optional(bool, true),
+    loki    = optional(bool, true),
+    prometheus = optional(object({
+      enabled       = optional(bool, true),
+      node_exporter = optional(bool, true),
+    }), {})
     dcgm = optional(object({
       enabled     = optional(bool, true),
       node_groups = optional(map(number), {})
-    }))
+    }), {})
   })
-  description = "Use loki and grafana to aggregate and search logs."
+  description = "Configuration of observability stack."
   default     = {}
 }

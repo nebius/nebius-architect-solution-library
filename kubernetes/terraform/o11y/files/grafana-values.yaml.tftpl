@@ -16,7 +16,7 @@ dashboardProviders:
     apiVersion: 1
     providers:
     %{~ if loki ~}
-    - name: 'loki'
+    - name: loki
       orgId: 1
       folder: 'Loki'
       type: file
@@ -25,8 +25,8 @@ dashboardProviders:
       options:
         path: /var/lib/grafana/dashboards/loki
     %{~ endif ~}
-    %{~ if prometheus ~}
-    - name: 'node-exporter'
+    %{~ if prometheus && prometheus_node_exporter ~}
+    - name: node-exporter
       orgId: 1
       folder: 'Node Exporter'
       type: file
@@ -36,7 +36,7 @@ dashboardProviders:
         path: /var/lib/grafana/dashboards/node-exporter
     %{~ endif ~}
     %{~ if prometheus && dcgm_enabled ~}
-    - name: 'gpu'
+    - name: gpu
       orgId: 1
       folder: 'GPU'
       type: file
@@ -52,7 +52,7 @@ dashboards:
       gnetId: 15141
       datasource: Loki
   %{~ endif ~}
-  %{~ if prometheus ~}
+  %{~ if prometheus && prometheus_node_exporter ~}
   node-exporter:
     node-exporter:
       gnetId: 1860
@@ -65,7 +65,6 @@ dashboards:
   %{~ if prometheus && dcgm_enabled ~}
   gpu:
     dcgm-exporter:
-      folder: GPU
       url: https://raw.githubusercontent.com/NVIDIA/dcgm-exporter/main/grafana/dcgm-exporter-dashboard.json
       datasource: Prometheus
   %{~ endif ~}

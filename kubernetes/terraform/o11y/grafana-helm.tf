@@ -14,9 +14,10 @@ resource "helm_release" "grafana" {
         alert_rules = templatefile("${path.module}/files/grafana-alert-rules.yaml.tftpl", {
           dcgm_node_groups = var.o11y.dcgm.node_groups
         })
-        loki         = var.o11y.loki
-        prometheus   = var.o11y.prometheus
-        dcgm_enabled = var.o11y.dcgm.enabled
+        loki                     = var.o11y.loki
+        prometheus               = var.o11y.prometheus.enabled
+        prometheus_node_exporter = var.o11y.prometheus.node_exporter
+        dcgm_enabled             = var.o11y.dcgm.enabled
       }
     )
   ]

@@ -7,7 +7,7 @@ resource "nebius_compute_gpu_cluster" "k8s_cluster" {
 }
 
 module "kube" {
-  source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.6"
+  source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.7"
 
   network_id = nebius_vpc_network.k8s-network.id
   folder_id  = var.folder_id
@@ -51,7 +51,6 @@ module "kube" {
       disk_type       = "network-ssd-nonreplicated"
       disk_size       = 372
       node_labels = {
-        "nebius.com/group-name"     = "h100-8gpu"
         "group"                     = "h100-8gpu"
         "nebius.com/gpu"            = "H100"
         "nebius.com/gpu-h100-a-llm" = "H100"
@@ -65,20 +64,24 @@ module "kube" {
 }
 
 module "o11y" {
+  source = "../o11y"
+
   providers = {
     nebius = nebius
     helm   = helm
   }
+
   o11y = merge(
     var.o11y,
     {
       dcgm = {
-        node_groups = {
-          h100-8gpu = 8
+        enabled = var.o11y.dcgm.enabled,
+        node_groups = { for node_group_name, node_group in module.kube.cluster_node_groups :
+          node_group_name => node_group.instance_template[0].resources[0].gpus
+          if node_group.instance_template[0].resources[0].gpus > 0
         }
       }
     }
   )
-  source    = "../o11y"
   folder_id = var.folder_id
 }
