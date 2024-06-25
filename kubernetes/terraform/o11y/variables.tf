@@ -26,8 +26,11 @@ variable "o11y" {
       node_exporter = optional(bool, true),
     }), {})
     dcgm = optional(object({
-      enabled     = optional(bool, true),
-      node_groups = optional(map(number), {})
+      enabled = optional(bool, true),
+      node_groups = optional(map(object({
+        gpus              = number
+        instance_group_id = string
+      })), {})
     }), {})
   })
   description = "Configuration of observability stack."

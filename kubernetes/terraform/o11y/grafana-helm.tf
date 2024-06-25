@@ -5,7 +5,7 @@ resource "helm_release" "grafana" {
   chart            = "grafana"
   namespace        = var.namespace
   create_namespace = true
-  version          = "v6.43.0"
+  version          = "v8.0.2"
   atomic           = true
 
   values = [

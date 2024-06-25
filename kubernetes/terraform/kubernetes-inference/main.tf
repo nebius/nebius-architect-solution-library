@@ -45,10 +45,9 @@ module "kube" {
       disk_type       = "network-ssd-nonreplicated"
       disk_size       = 372
       node_labels = {
-        "group"                 = "h100-1gpu"
-        "nebius.com/group-name" = "h100-1gpu"
-        "nebius.com/gpu"        = "H100"
-        "nebius.com/gpu-h100"   = "H100"
+        "group"               = "h100-1gpu"
+        "nebius.com/gpu"      = "H100"
+        "nebius.com/gpu-h100" = "H100"
       }
     }
   }
@@ -73,7 +72,10 @@ module "o11y" {
       dcgm = {
         enabled = var.o11y.dcgm.enabled,
         node_groups = { for node_group_name, node_group in module.kube.cluster_node_groups :
-          node_group_name => node_group.instance_template[0].resources[0].gpus
+          node_group_name => {
+            gpus              = node_group.instance_template[0].resources[0].gpus
+            instance_group_id = node_group.instance_group_id
+          }
           if node_group.instance_template[0].resources[0].gpus > 0
         }
       }
