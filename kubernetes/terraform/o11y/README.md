@@ -98,15 +98,15 @@ All settings of observability could be merged into following configuration:
 
 ```terraform
 o11y = {
-  grafana = false
-  loki    = false
+  grafana = true
+  loki    = true
   prometheus = {
-    enabled = false
+    enabled = true
   }
   dcgm = {
-    enabled = false
+    enabled = true
     node_groups = {
-      h100 = {
+      k8s-ng-h100-8gpu1 = {
         gpus              = 2
         instance_group_id = "a4h6ollme7ijmppk0stu"
       }
@@ -114,6 +114,10 @@ o11y = {
   }
 }
 ```
+
+`node_groups` map should contain node groups that have GPUs. `instance_group_id` is prefix of hostnames in that group before `-` delimiter.
+
+In provided example `k8s-ng-h100-8gpu1` is the node group name, it will be used in alerts. `gpus` is the number of GPU per single node. `a4h6ollme7ijmppk0stu` prefix of the hostnames in that node group.
 
 ## Manual Installation
 It's possible to install Observability stack into a pre-existing cluster.
