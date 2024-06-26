@@ -23,6 +23,7 @@ resource "nebius_iam_service_account_static_access_key" "sa-static-key" {
 
 // Use keys to create bucket
 resource "nebius_storage_bucket" "loki-bucket" {
+  depends_on = [nebius_resourcemanager_folder_iam_member.sa-editor]
   count      = var.o11y.loki ? 1 : 0
   folder_id  = var.folder_id
   bucket     = "loki-bucket-${random_string.loki_unique_id.result}"
