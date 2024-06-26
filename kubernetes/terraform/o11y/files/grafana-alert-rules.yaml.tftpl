@@ -8,9 +8,9 @@ groups:
         %{~ for node_group_name, node_group in dcgm_node_groups ~}
         - uid: ${ node_group_name }
           title: GPU number has changed in the node group ${ node_group_name }
-          condition: C
+          condition: Missing
           data:
-            - refId: A
+            - refId: Number of GPUs
               relativeTimeRange:
                 from: 600
                 to: 0
@@ -30,36 +30,8 @@ groups:
                 legendFormat: __auto
                 maxDataPoints: 43200
                 range: false
-                refId: A
-            - refId: B
-              relativeTimeRange:
-                from: 600
-                to: 0
-              datasourceUid: __expr__
-              model:
-                conditions:
-                    - evaluator:
-                        params: []
-                        type: gt
-                      operator:
-                        type: and
-                      query:
-                        params:
-                            - B
-                      reducer:
-                        params: []
-                        type: last
-                      type: query
-                datasource:
-                    type: __expr__
-                    uid: __expr__
-                expression: A
-                intervalMs: 1000
-                maxDataPoints: 43200
-                reducer: last
-                refId: B
-                type: reduce
-            - refId: C
+                refId: Number of GPUs
+            - refId: Missing
               relativeTimeRange:
                 from: 600
                 to: 0
@@ -68,25 +40,25 @@ groups:
                 conditions:
                     - evaluator:
                         params:
-                            - ${ node_group.gpus }
-                            - ${ node_group.gpus }
-                        type: outside_range
+                            - 2
+                            - 0
+                        type: lt
                       operator:
                         type: and
                       query:
-                        params:
-                            - C
+                        params: []
                       reducer:
                         params: []
                         type: last
                       type: query
                 datasource:
+                    name: Expression
                     type: __expr__
                     uid: __expr__
-                expression: B
+                expression: Number of GPUs
                 intervalMs: 1000
                 maxDataPoints: 43200
-                refId: C
+                refId: Missing
                 type: threshold
           noDataState: OK
           execErrState: Error
