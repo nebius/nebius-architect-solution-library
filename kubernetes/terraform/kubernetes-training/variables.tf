@@ -46,10 +46,22 @@ variable "ssh_public_key_path" {
   default     = "~/.ssh/id_rsa.pub"
 }
 
-
-variable "log_aggregation" {
-  type        = bool
-  description = "Use loki and grafana to aggregate and search logs."
-  default     = true
+variable "o11y" {
+  type = object({
+    grafana = optional(bool, true),
+    loki    = optional(bool, true),
+    prometheus = optional(object({
+      enabled       = optional(bool, true),
+      node_exporter = optional(bool, true),
+    }), {})
+    dcgm = optional(object({
+      enabled = optional(bool, true),
+      node_groups = optional(map(object({
+        gpus              = number
+        instance_group_id = string
+      })), {})
+    }), {})
+  })
+  description = "Configuration of observability stack."
+  default     = {}
 }
-

@@ -1,6 +1,6 @@
 
 module "kube" {
-  source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.6"
+  source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.7"
 
   network_id = nebius_vpc_network.k8s-network.id
   folder_id  = var.folder_id
@@ -58,14 +58,28 @@ module "kube" {
 }
 
 
-module loki {
+module "o11y" {
+  source = "../o11y"
+
   providers = {
     nebius = nebius
-    helm = helm
+    helm   = helm
   }
-  count = var.log_aggregation? 1:0
-  source = "../loki"
+
+  o11y = merge(
+    var.o11y,
+    {
+      dcgm = {
+        enabled = var.o11y.dcgm.enabled,
+        node_groups = { for node_group_name, node_group in module.kube.cluster_node_groups :
+          node_group_name => {
+            gpus              = node_group.instance_template[0].resources[0].gpus
+            instance_group_id = node_group.instance_group_id
+          }
+          if node_group.instance_template[0].resources[0].gpus > 0
+        }
+      }
+    }
+  )
   folder_id = var.folder_id
-  kube_cluster_ca_certificate = module.kube.cluster_ca_certificate
-  kube_external_v4_endpoint = module.kube.external_v4_endpoint
 }

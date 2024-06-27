@@ -38,4 +38,3 @@ output "subnet_id" {
   description = "Connection string to internal Kubernetes cluster."
   value       = try(nebius_vpc_subnet.k8s-subnet.id, null)
 }
-

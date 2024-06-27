@@ -1,40 +1,16 @@
-# Kubernetes for Training in Nebius AI
+# Observability stack Terraform module
 
-## Features
+This repository contains a Terraform module for
+deploying following into an existing cluster.
 
-- Creating a zonal Kubernetes cluster with CPU and GPU nodes and InfiniBand connection.
-- Installing the necessary [Nvidia Gpu Operator](https://github.com/NVIDIA/gpu-operator) and [Network Operator](https://docs.nvidia.com/networking/display/cokan10/network+operator) for running GPU workloads.
 - Installing [Grafana](https://github.com/grafana/helm-charts/tree/main/charts/grafana).
 - Installing [Prometheus](https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus).
 - Installing [Loki](https://github.com/grafana/loki/tree/main/production/helm/loki).
 - Installing [Promtail](https://github.com/grafana/helm-charts/tree/main/charts/promtail).
 
-
-## Defining Kubernetes cluster
-
-Start by creating a VPC network with a subnet in eu-north1-c zone!
-
-The Kubernetes module requires the following input variables:
- - VPC network ID
- - VPC network subnet IDs
-
-## Configuring Terraform for Nebius Cloud
-
-- Install [NCP CLI](https://nebius.ai/docs/cli/quickstart).
-- Add environment variables for Terraform authentication in Nebuis Cloud.
-
-```shell
-export NCP_TOKEN=$(ncp iam create-token)
-export NCP_CLOUD_ID=$(ncp config get cloud-id)
-export NCP_FOLDER_ID=$(ncp config get folder-id)
-```
-
-## Observability
-
-Observability stack is enabled by default. It consist of the following:
- - Grafana
- - Prometheus
- - Loki
+The module creates a Nebius Storage Bucket, a service account with editor rights.
+It's meant to be used as a part of [kubernetes-inference](../kubernetes-inference/README.md)
+or [kubernetes-training](../kubernetes-training/README.md) modules and is enabled there by default.
 
 ### Grafana
 
@@ -48,7 +24,7 @@ o11y = {
 To access Grafana:
 
 1. **Port-Forward to the Grafana Service:** Run the following command to port-forward to the Grafana service:
-   ```sh
+   ```shell
    kubectl --namespace o11y port-forward service/grafana 8080:80
    ```
 
@@ -96,7 +72,6 @@ o11y = {
 
 To access logs navigate to Node exporter folder `http://localhost:8080/f/e6acfbcb-6f13-4a58-8e02-f780811a2404/`
 
-
 ### NVIDIA DCGM Exporter Dashboard and Alerting
 
 NVIDIA DCGM Exporter Dashboard and Alerting rules are enabled by default. If you need to disable it, add the following string to the `terraform.tfvars` file.
@@ -123,29 +98,40 @@ All settings of observability could be merged into following configuration:
 
 ```terraform
 o11y = {
-  grafana = false
-  loki    = false
+  grafana = true
+  loki    = true
   prometheus = {
-    enabled = false
+    enabled = true
   }
   dcgm = {
-    enabled = false
+    enabled = true
+    node_groups = {
+      k8s-ng-h100-8gpu1 = {
+        gpus              = 2
+        instance_group_id = "a4h6ollme7ijmppk0stu"
+      }
+    }
   }
 }
 ```
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-## Requirements
+`node_groups` map should contain node groups that have GPUs. `instance_group_id` is prefix of hostnames in that group before `-` delimiter.
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | > 3.3 |
-| <a name="requirement_nebius"></a> [nebius](#requirement\_nebius) | >= 0.6.0" |
+In provided example `k8s-ng-h100-8gpu1` is the node group name, it will be used in alerts. `gpus` is the number of GPU per single node. `a4h6ollme7ijmppk0stu` prefix of the hostnames in that node group.
 
-## Providers
+## Manual Installation
+It's possible to install Observability stack into a pre-existing cluster.
+Obtain cluster configuration for kubectl [ncp container cluster get-credentials](https://nebius.ai/docs/cli/cli-ref/managed-services/container/cluster/get-credentials)
+Set kubectl configuration path
 
-| Name | Version |
-|------|---------|
-| <a name="provider_random"></a> [random](#provider\_random) | 3.5.1 |
-| <a name="provider_nebius"></a> [nebius](#provider\_nebius) | 0.91.0 |
+```shell
+export KUBE_CONFIG_PATH=~/.kube/config
+```
+
+Configure module settings in `terraform.tfvars`
+
+Run terraform init and apply
+```shell
+terraform init
+terraform apply
+```
