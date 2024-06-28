@@ -18,7 +18,7 @@ resource "nebius_resourcemanager_folder_iam_member" "container-editor" {
 }
 
 resource "nebius_mdb_mysql_user" "slurmuser" {
-  count      = var.mysql_jobs_backend ? 1 : 0
+  count      = var.mysql_accounting_backend ? 1 : 0
   cluster_id = nebius_mdb_mysql_cluster.slurm-mysql-cluster[0].id
   name       = "slurm"
   password   = random_password.mysql.result
@@ -27,4 +27,3 @@ resource "nebius_mdb_mysql_user" "slurmuser" {
     roles         = ["ALL"]
   }
 }
-

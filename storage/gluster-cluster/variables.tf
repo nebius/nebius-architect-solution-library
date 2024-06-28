@@ -1,22 +1,17 @@
-# NETWORKING
-
-variable "network_name" {
+variable "folder_id" {
   type        = string
-  default     = "gfs-network"
-  description = "Name of the network"
+  description = "Id of the folder where the resources going to be created"
 }
 
-variable "subnet_name" {
+variable "zone_id" {
   type        = string
-  default     = "gfs-network"
-  description = "Name of subnet"
+  description = "Availability Zone"
+  default     = "eu-north1-c"
 }
-
-# NUMBER OF VMs for cluster
 
 variable "storage_nodes" {
   type        = number
-  default     = 10
+  default     = 3
   description = "Number of storage nodes"
 }
 
@@ -24,7 +19,7 @@ variable "storage_nodes" {
 
 variable "disk_count_per_vm" {
   type        = number
-  default     = 1
+  default     = 2
   description = "Number disks for GlusterFS per VM"
 }
 
@@ -37,7 +32,7 @@ variable "disk_type" {
 
 variable "disk_size" {
   type        = number
-  default     = 1000
+  default     = 930
   description = "Disk size GB"
 }
 

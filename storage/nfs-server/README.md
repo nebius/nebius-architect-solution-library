@@ -11,7 +11,7 @@ The module includes the following files and directories:
 - `outputs.tf` - outputs obtained after the module has been applied.
 - `provider.tf` - provider configuration file (to be filled out with your provider's details).
 - `files/`
-  - `cloud-config.sh` - shell script that initializes the NFS server on the virtual machine.
+- `cloud-config.sh` - shell script that initializes the NFS server on the virtual machine.
 
 
 ## Configuring Terraform for Nebius Cloud

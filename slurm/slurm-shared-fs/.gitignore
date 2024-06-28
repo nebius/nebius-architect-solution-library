@@ -1,0 +1,8 @@
+.terraform*
+key.json
+*.tfstate*
+files/munge.key
+inventory.yaml
+files/slurmdbd.conf
+files/slurm.conf
+.DS_Store

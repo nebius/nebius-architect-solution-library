@@ -3,10 +3,9 @@ resource "random_password" "mysql" {
   special = false
 }
 
-
-
 resource "nebius_mdb_mysql_cluster" "slurm-mysql-cluster" {
-  count       = var.mysql_jobs_backend ? 1 : 0
+  count       = var.mysql_accounting_backend ? 1 : 0
+  folder_id   = var.folder_id
   name        = "nebius-mysql-cluster"
   environment = "PRODUCTION"
   network_id  = nebius_vpc_network.slurm-network.id
@@ -17,19 +16,20 @@ resource "nebius_mdb_mysql_cluster" "slurm-mysql-cluster" {
     disk_type_id       = "network-ssd"
     disk_size          = "200"
   }
+
   mysql_config = {
     innodb_lock_wait_timeout = 900
   }
 
   host {
-    zone             = var.region
+    zone             = var.zone
     subnet_id        = nebius_vpc_subnet.slurm-subnet.id
     assign_public_ip = false
     priority         = 99
   }
 
   host {
-    zone             = var.region
+    zone             = var.zone
     subnet_id        = nebius_vpc_subnet.slurm-subnet.id
     assign_public_ip = false
     priority         = 1
@@ -37,8 +37,7 @@ resource "nebius_mdb_mysql_cluster" "slurm-mysql-cluster" {
 }
 
 resource "nebius_mdb_mysql_database" "slurm-db" {
-  count      = var.mysql_jobs_backend ? 1 : 0
+  count      = var.mysql_accounting_backend ? 1 : 0
   cluster_id = nebius_mdb_mysql_cluster.slurm-mysql-cluster[0].id
   name       = "slurm-db"
 }
-
