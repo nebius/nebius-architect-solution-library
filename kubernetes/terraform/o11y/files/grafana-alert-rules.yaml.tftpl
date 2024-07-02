@@ -40,7 +40,7 @@ groups:
                 conditions:
                     - evaluator:
                         params:
-                            - 2
+                            - ${node_group.gpus}
                             - 0
                         type: lt
                       operator:
