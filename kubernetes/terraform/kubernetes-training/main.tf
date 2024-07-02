@@ -59,7 +59,6 @@ module "kube" {
       fixed_scale = {
         size = var.gpu_nodes_count
       }
-      preemptible = true
       gpu_cluster_id  = nebius_compute_gpu_cluster.k8s_cluster.id
       platform_id     = var.platform_id
       gpu_environment = "runc"
