@@ -91,6 +91,10 @@ variable "gluster_nodes" {
   default     = 3
 }
 
+variable "glusterfs_mount_host_path" {
+  type    = string
+  default = "/shared"
+}
 
 variable "shared_fs_type" {
   type        = string

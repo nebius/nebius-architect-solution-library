@@ -1,5 +1,8 @@
 data "nebius_client_config" "client" {}
 
+
+
+
 resource "helm_release" "gpu_operator" {
   name             = "gpu-operator"
   repository       = "oci://cr.nemax.nebius.cloud/yc-marketplace/nebius/gpu-operator/chart/"
