@@ -2,7 +2,7 @@ resource "nebius_compute_gpu_cluster" "k8s_cluster" {
   name                          = "k8s-cluster"
   interconnect_type             = "InfiniBand"
   folder_id                     = var.folder_id
-  interconnect_physical_cluster = "fabric-1"
+  interconnect_physical_cluster = var.gpu_cluster
   zone                          = var.zone_id
 }
 
@@ -59,6 +59,7 @@ module "kube" {
       fixed_scale = {
         size = var.gpu_nodes_count
       }
+      preemptible = true
       gpu_cluster_id  = nebius_compute_gpu_cluster.k8s_cluster.id
       platform_id     = var.platform_id
       gpu_environment = "runc"
@@ -105,3 +106,20 @@ module "o11y" {
   )
   folder_id = var.folder_id
 }
+
+
+module "gluster-module" {
+  providers = {
+    nebius = nebius
+  }
+  count             = var.shared_fs_type == "gluster" ? 1 : 0
+  source            = "../../../storage/modules/gluster-module"
+  folder_id         = var.folder_id
+  ext_subnet_id     = nebius_vpc_subnet.k8s-subnet.id
+  disk_size         = var.gluster_disk_size
+  storage_nodes     = var.gluster_nodes
+  disk_count_per_vm = var.gluster_disks_per_vm
+  ssh_pubkey        = var.ssh_public_key
+  is_standalone     = false
+}
+

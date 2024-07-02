@@ -46,6 +46,12 @@ variable "ssh_public_key_path" {
   default     = "~/.ssh/id_rsa.pub"
 }
 
+variable "gpu_cluster" {
+  description = "Gpu cluster name"
+  type        = string
+  default     = "fabric-1"
+}
+
 variable "o11y" {
   type = object({
     grafana = optional(bool, true),
@@ -64,4 +70,34 @@ variable "o11y" {
   })
   description = "Configuration of observability stack."
   default     = {}
+}
+
+
+variable "gluster_disk_size" {
+  type        = number
+  description = "Size of disk per each Gluster node x930"
+  default     = 930
+}
+
+variable "gluster_disks_per_vm" {
+  type        = number
+  description = "Number of disks/bricks per gluster VM node"
+  default     = 1
+}
+
+variable "gluster_nodes" {
+  type        = number
+  description = "Number of Gluster nodes in cluster"
+  default     = 3
+}
+
+
+variable "shared_fs_type" {
+  type        = string
+  description = "Use shared managed FileStorage mounted on /mnt/slurm on every worker node"
+  default     = "none"
+  validation {
+    condition     = var.shared_fs_type == "none" ? true : contains(["gluster", "filestore"], var.shared_fs_type)
+    error_message = "shared_fs_type must be one of: gluster, filestore"
+  }
 }
