@@ -1,8 +1,8 @@
 folder_id       = "<folder-id>"
 k8s_subnet_CIDR = ["192.168.10.0/24"]
 gpu_nodes_count = 2
-gpu_cluster = "fabric-4"
-platform_id= "gpu-h100-c-llm"
+gpu_cluster = "fabric-6"
+platform_id= "gpu-h100-c"
 
 
 shared_fs_type = "gluster"
