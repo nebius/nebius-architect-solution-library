@@ -17,8 +17,22 @@ module "kube" {
       zone      = var.zone_id
       subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
     },
+    {
+      zone      = var.zone_id
+      subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
+    },
+    {
+      zone      = var.zone_id
+      subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
+    },
 
   ]
+
+  node_locations = [
+    {
+      zone      = var.zone_id
+      subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
+    
 
   master_maintenance_windows = [
     {
