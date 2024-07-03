@@ -31,6 +31,12 @@ variable "storage_nodes" {
   description = "Number of storage nodes"
 }
 
+variable "platform_id" {
+  type        = string
+  default     = "standard-v2"
+  description = "compute platform id for gluster node"
+}
+
 # DISK OPTIONS
 
 variable "disk_count_per_vm" {
@@ -42,7 +48,7 @@ variable "disk_count_per_vm" {
 variable "disk_type" {
   type = string
   # network-ssd-io-m3 # network-ssd-nonreplicated # network-ssd
-  default     = "network-ssd"
+  default     = "network-ssd-io-m3"
   description = "Type of GlusterFS disk"
 }
 
@@ -62,13 +68,13 @@ variable "disk_block_size" {
 
 variable "storage_cpu_count" {
   type        = number
-  default     = 8
+  default     = 32
   description = "Number of CPU in Storage Node"
 }
 
 variable "storage_memory_count" {
   type        = number
-  default     = 8
+  default     = 32
   description = "RAM (GB) size in Storage Node"
 }
 

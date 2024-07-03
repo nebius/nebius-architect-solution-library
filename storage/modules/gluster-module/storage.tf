@@ -8,7 +8,7 @@ resource "nebius_compute_instance" "storage_node" {
   allow_recreate            = true
   allow_stopping_for_update = true
   zone                      = var.zone_id
-  platform_id               = "standard-v3"
+  platform_id               = var.platform_id
   name                      = format("gluster%02d", count.index + 1)
   hostname                  = format("gluster%02d", count.index + 1)
 

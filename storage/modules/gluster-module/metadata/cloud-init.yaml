@@ -64,15 +64,24 @@ runcmd:
       done
       echo "GLUSTER volume create for nodes: $result"
       for r in $(seq 1 30); do gluster volume create stripe-volume $(echo "$result" | sed 's/ $//') && break || sleep 10; done
-      for r in $(seq 1 30); do gluster volume set stripe-volume client.event-threads 8 && break || sleep 10; done
-      for r in $(seq 1 30); do gluster volume set stripe-volume server.event-threads 8 && break || sleep 10; done
+      for r in $(seq 1 30); do gluster volume set stripe-volume client.event-threads 24 && break || sleep 10; done
+      for r in $(seq 1 30); do gluster volume set stripe-volume server.event-threads 24 && break || sleep 10; done
+      for r in $(seq 1 30); do gluster volume set stripe-volume server.outstanding-rpc-limit 128 && break || sleep 10; done
+      for r in $(seq 1 30); do gluster volume set stripe-volume server.allow-insecure on && break || sleep 10; done
+      for r in $(seq 1 30); do gluster volume set stripe-volume features.cache-invalidation on && break || sleep 10; done
+      for r in $(seq 1 30); do gluster volume set stripe-volume features.cache-invalidation-timeout 600 && break || sleep 10; done
+      for r in $(seq 1 30); do gluster volume set stripe-volume performance.qr-cache-timeout 600 && break || sleep 10; done
       for r in $(seq 1 30); do gluster volume set stripe-volume performance.read-ahead-page-count 16 && break || sleep 10; done
       for r in $(seq 1 30); do gluster volume set stripe-volume performance.client-io-threads on && break || sleep 10; done
       for r in $(seq 1 30); do gluster volume set stripe-volume performance.quick-read off && break || sleep 10; done
       for r in $(seq 1 30); do gluster volume set stripe-volume performance.parallel-readdir on && break || sleep 10; done
-      for r in $(seq 1 30); do gluster volume set stripe-volume performance.io-thread-count 32 && break || sleep 10; done
-      for r in $(seq 1 30); do gluster volume set stripe-volume performance.cache-size 1GB && break || sleep 10; done
-      for r in $(seq 1 30); do gluster volume set stripe-volume server.allow-insecure on && break || sleep 10; done
+      for r in $(seq 1 30); do gluster volume set stripe-volume performance.io-thread-count 64 && break || sleep 10; done
+      for r in $(seq 1 30); do gluster volume set stripe-volume performance.cache-size 8GB && break || sleep 10; done
+      for r in $(seq 1 30); do gluster volume set stripe-volume performance.cache-invalidation on && break || sleep 10; done
+      for r in $(seq 1 30); do gluster volume set stripe-volume performance.stat-prefetch on && break || sleep 10; done
+      for r in $(seq 1 30); do gluster volume set stripe-volume performance.parallel-readdir on && break || sleep 10; done
+      for r in $(seq 1 30); do gluster volume set stripe-volume performance.nl-cache-positive-entry on && break || sleep 10; done
+      for r in $(seq 1 30); do gluster volume set stripe-volume cluster.lookup-optimize on && break || sleep 10; done
       for r in $(seq 1 30); do gluster volume start stripe-volume && break || sleep 10; done
     fi
   - gluster volume status
