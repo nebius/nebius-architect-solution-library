@@ -14,15 +14,15 @@ module "kube" {
 
   master_locations = [
     {
-      zone      = "eu-north1-c"
+      zone      = var.zone_id
       subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
     },
     {
-      zone      = "eu-north1-c"
+      zone      = var.zone_id
       subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
     },
     {
-      zone      = "eu-north1-c"
+      zone      = var.zone_id
       subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
     },
 
@@ -30,7 +30,7 @@ module "kube" {
 
   node_locations = [
     {
-      zone      = "eu-north1-c"
+      zone      = var.zone_id
       subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
     
 
