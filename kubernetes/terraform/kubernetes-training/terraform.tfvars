@@ -1,6 +1,6 @@
 folder_id       = "bjeq7qmo88loor6p1bac"
 k8s_subnet_CIDR = ["192.168.11.0/24"]
-gpu_nodes_count = 2
+gpu_nodes_count = 0
 gpu_cluster = "fabric-4"
 platform_id= "gpu-h100-c-llm"
 network_id = "btckqjco34lr3c86ck1b"

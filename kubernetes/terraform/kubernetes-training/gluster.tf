@@ -19,7 +19,7 @@ module "gluster-module" {
 }
 
 resource "helm_release" "mount-filesystem" {
-  count             = var.shared_fs_type == "gluster" ? 1 : 0
+  #count             = var.shared_fs_type == "gluster" ? 1 : 0
   depends_on       = [module.kube]
   repository       = "../../helm/"
   name             = "gluster-mount-filesystem"
@@ -30,11 +30,11 @@ resource "helm_release" "mount-filesystem" {
 
   set {
     name  = "shared_volume_host_path"
-    value = var.glusterfs_mount_host_path
+    value = "gluster01"
   }
 
   set {
     name  = "glusterfs_hostname"
-    value = module.gluster-module[0].glusterfs-host
+    value = "/shared"
   }
 }
