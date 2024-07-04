@@ -1,29 +1,30 @@
-resource "nebius_compute_gpu_cluster" "k8s_cluster" {
-  name                          = "k8s-cluster"
-  interconnect_type             = "InfiniBand"
-  folder_id                     = var.folder_id
-  interconnect_physical_cluster = var.gpu_cluster
-  zone                          = var.zone_id
-}
+# resource "nebius_compute_gpu_cluster" "k8s_cluster" {
+#   name                          = "k8s-cluster"
+#   interconnect_type             = "InfiniBand"
+#   folder_id                     = var.folder_id
+#   interconnect_physical_cluster = var.gpu_cluster
+#   zone                          = var.zone_id
+# }
 
 module "kube" {
   source = "github.com/nebius/terraform-nb-kubernetes.git?ref=1.0.7"
-
-  network_id = nebius_vpc_network.k8s-network.id
+  cluster_ipv4_range = "172.19.0.0/16"
+  service_ipv4_range = "172.20.0.0/16"
+  network_id = var.network_id
   folder_id  = var.folder_id
 
   master_locations = [
     {
       zone      = var.zone_id
-      subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
+      subnet_id = "${nebius_vpc_subnet.k8s-subnet-1.id}"
     },
     {
       zone      = var.zone_id
-      subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
+      subnet_id = "${nebius_vpc_subnet.k8s-subnet-1.id}"
     },
     {
       zone      = var.zone_id
-      subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
+      subnet_id = "${nebius_vpc_subnet.k8s-subnet-1.id}"
     },
 
   ]
@@ -32,7 +33,7 @@ module "kube" {
   node_locations = [
     {
       zone      = var.zone_id
-      subnet_id = "${nebius_vpc_subnet.k8s-subnet.id}"
+      subnet_id = "${nebius_vpc_subnet.k8s-subnet-1.id}"
     },
 
   ]
@@ -45,7 +46,7 @@ module "kube" {
     }
   ]
   node_groups = {
-    "k8s-ng-ib-system" = {
+    "k8s-ng-ib-system-1" = {
       description = "Kubernetes nodes group 01 with fixed 1 size scaling"
       fixed_scale = {
         size = 3
@@ -54,13 +55,14 @@ module "kube" {
         "group" = "system"
       }
     }
-    "k8s-ng-h100-8gpu1" = {
+    "k8s-ng-h100-8gpu1-1" = {
       description = "Kubernetes nodes h100-8-gpu nodes with autoscaling"
       fixed_scale = {
         size = var.gpu_nodes_count
       }
-      preemptible = true
-      gpu_cluster_id  = nebius_compute_gpu_cluster.k8s_cluster.id
+      #reemptible = true
+
+     # gpu_cluster_id  = nebius_compute_gpu_cluster.k8s_cluster.id
       platform_id     = var.platform_id
       gpu_environment = "runc"
       node_cores      = 160

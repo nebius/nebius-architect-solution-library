@@ -20,13 +20,13 @@ output "internal_cluster_cmd_str" {
 
 output "network_id" {
   description = "Connection string to internal Kubernetes cluster."
-  value       = try(nebius_vpc_network.k8s-network.id, null)
+  value       = try(var.network_id, null)
 }
 
 
 output "subnet_id" {
   description = "Connection string to internal Kubernetes cluster."
-  value       = try(nebius_vpc_subnet.k8s-subnet.id, null)
+  value       = try(nebius_vpc_subnet.k8s-subnet-1.id, null)
 }
 
 

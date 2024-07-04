@@ -10,7 +10,7 @@ module "gluster-module" {
   count             = var.shared_fs_type == "gluster" ? 1 : 0
   source            = "../../../storage/modules/gluster-module"
   folder_id         = var.folder_id
-  ext_subnet_id     = nebius_vpc_subnet.k8s-subnet.id
+  ext_subnet_id     = nebius_vpc_subnet.k8s-subnet-1.id
   disk_size         = var.gluster_disk_size
   storage_nodes     = var.gluster_nodes
   disk_count_per_vm = var.gluster_disks_per_vm

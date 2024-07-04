@@ -4,6 +4,12 @@ variable "folder_id" {
   type        = string
   default     = null
 }
+# Kubernetes Master parameters
+variable "network_id" {
+  description = "The ID of the network that the Kubernetes cluster belongs to."
+  type        = string
+  default     = null
+}
 
 variable "zone_id" {
   description = "The ID of the zone."
