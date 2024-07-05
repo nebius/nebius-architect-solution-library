@@ -2,7 +2,7 @@ resource "nebius_compute_gpu_cluster" "k8s_cluster" {
   name                          = "k8s-cluster"
   interconnect_type             = "InfiniBand"
   folder_id                     = var.folder_id
-  interconnect_physical_cluster = "fabric-1"
+  interconnect_physical_cluster = var.gpu_cluster
   zone                          = var.zone_id
 }
 
@@ -59,6 +59,7 @@ module "kube" {
       fixed_scale = {
         size = var.gpu_nodes_count
       }
+      preemptible = true
       gpu_cluster_id  = nebius_compute_gpu_cluster.k8s_cluster.id
       platform_id     = var.platform_id
       gpu_environment = "runc"
@@ -105,3 +106,4 @@ module "o11y" {
   )
   folder_id = var.folder_id
 }
+

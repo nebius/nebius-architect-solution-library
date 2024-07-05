@@ -28,6 +28,42 @@ export NCP_TOKEN=$(ncp iam create-token)
 export NCP_CLOUD_ID=$(ncp config get cloud-id)
 export NCP_FOLDER_ID=$(ncp config get folder-id)
 ```
+## Storage
+
+For a shared distributed storage, [GlusterFS](https://www.gluster.org/) cluster can be provisioned with following parameters in [terraform.tfvars](./terraform.tfvars): 
+
+```terraform
+shared_fs_type = "gluster"
+gluster_disk_size = 930 # has to be divisible by 930
+gluster_disks_per_vm = 1
+gluster_nodes= 10
+glusterfs_mount_host_path = "/shared"
+```
+
+This will provision glusterfs, and also mount the gluster volume to each node in th ecluster. You can then use a [hostPath](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath) k8s volume to mount to multiple pods:
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+    volumeMounts:
+      - name: host-volume
+        mountPath: /shared
+  volumes:
+    - name: host-volume
+      hostPath:
+        path: /shared
+        type: Directory
+```
 
 ## Observability
 
