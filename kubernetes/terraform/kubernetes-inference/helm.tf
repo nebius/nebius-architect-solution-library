@@ -2,11 +2,18 @@ data "nebius_client_config" "client" {}
 
 resource "helm_release" "gpu-operator" {
   name             = "gpu-operator"
-  repository       = "oci://cr.nemax.nebius.cloud/yc-marketplace/nebius/nvidia-gpu-operator/chart/"
+  repository       = "oci://cr.nemax.nebius.cloud/yc-marketplace/nebius/elijahk-nvidia-gpu-operator/chart/"
   chart            = "gpu-operator"
   namespace        = "gpu-operator"
   create_namespace = true
-  version          = "v23.9.0"
+  version          = "v24.3.0"
+
+  /* Uncomment to use driver version 550.54.15 instead of default version.
+  set {
+    name  = "driver.version"
+    value = "550.54.15"
+  }
+  */
 }
 
 provider "helm" {
