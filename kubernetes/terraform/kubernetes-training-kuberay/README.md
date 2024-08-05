@@ -143,6 +143,30 @@ Job 'raysubmit_C3wurkv53yLxKwSQ' succeeded
 ------------------------------------------
 ```
 
+### Updating Ray cluster from terraform
+
+*To update ray setting from terraform (pods cpus and memory updates are not supported by kuberay-operator, thus, for changes like this, ray-cluster should re-installed).
+
+Updating replicas settings, or ray-cluster resources limits/requests are permitted by changing /helm/ray-values.yaml, for example, changing replicas and resources max limits&requests to ,axumum replicas=2 and resources limits&requests to 8 per node:
+`ray-values.yaml`:
+```shell
+  maxReplicas: 2
+  minReplicas: 1
+  nodeSelector: {}
+  rayStartParams: {}
+  replicas: 1
+  resources:
+    limits:
+      cpu: '{{ (get .Values.gpuToResourceHelperValues .Values.gpuPlatform).cpu }}'
+      memory: '{{ (get .Values.gpuToResourceHelperValues .Values.gpuPlatform).memory
+        }}Gi'
+      nvidia.com/gpu: "8"
+    requests:
+      cpu: '{{ tpl .Values.worker.resources.limits.cpu . }}'
+      memory: '{{ tpl .Values.worker.resources.limits.memory . }}'
+      nvidia.com/gpu: "8"
+
+```
 
 ## Observability
 
