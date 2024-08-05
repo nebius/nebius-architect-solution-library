@@ -1,4 +1,4 @@
-# Kubernetes for Training in Nebius AI with ray-cluster operator
+# Kubernetes for Training in Nebius AI with kuberay operator
 
 ## Features
 
