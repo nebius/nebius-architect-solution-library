@@ -16,11 +16,43 @@ export NCP_CLOUD_ID=$(ncp config get cloud-id)
 export NCP_FOLDER_ID=$(ncp config get folder-id)
 ```
 
-## Ray Cluster 
+## kuberay module installation steps
 
-Ray cluster operator installation is managed within `helm.tf` file.
+1. To use kuberay as a module, please add the following module call to the end of your root main.tf:
 
-*Before `terraform apply`, please validate that the sizing of the `ray-cluster-redis-master` pod is minimum vcpu=4 and memory=8Gi (smaller sizing will cause inconsistency of redis connectivity); 
+```shell
+module "kuberay" {
+  providers = {
+    nebius = nebius
+    helm   = helm
+  }
+  
+  source                  = "../kuberay"
+  count                   = var.kuberay ? 1 : 0
+  kube_host               = module.kube.external_v4_endpoint
+  cluster_ca_certificate  = module.kube.cluster_ca_certificate
+  kube_token              = data.nebius_client_config.client.iam_token
+  folder_id               = var.folder_id
+  gpu_workers             = var.gpu_nodes_count
+}
+```
+2. Add “kuberay” boolean variable to root variable.tf:
+
+```shell
+variable "kuberay" {
+  type    = bool
+  default = true
+}
+```
+*Set default value to “true“ to actually call the kuberay module.
+
+ ```shell
+Keep in mind that “gpu_nodes_count“ root variable will define the min/maxRelicas for Ray GPU workers.
+
+Important! For ray-cluster-redis-head pod, set 4 vcpus and 8Gi RAM per gpu node!
+```
+
+*Before `terraform apply`, please validate that the sizing of the `ray-cluster-redis-master` pod is minimum vcpu=4 and memory=8Gi per gpu node(smaller sizing will cause inconsistency of redis connectivity); 
 
 Example of minimum redis sizing requirements (reference from ray-values.yaml):
 ```yaml
@@ -54,6 +86,13 @@ redis:
     enabled: false
   serviceAccount:
     create: false
+service:
+  type: ClusterIP
+```
+
+Now you are able to run the solution from your kubernetes root main.tf directory:
+```shell 
+terraform plan&apply
 ```
 
 ### Installation validation
@@ -194,38 +233,8 @@ Job 'raysubmit_C3wurkv53yLxKwSQ' succeeded
 
 ### Updating Ray cluster from terraform
 
-1. To use kuberay as a module, please add the following module call to your root main.tf:
+To scale gpu ray cluster gpu worker pods, please update your root kubernetes variables.tf file with 'gpu_nodes_count'.
+For other ray cluster changes, update ray-cluster.yaml
 
-```shell
-module "kuberay" {
-  providers = {
-    nebius = nebius
-    helm   = helm
-  }
-  
-  source                  = "../kuberay"
-  count                   = var.kuberay ? 1 : 0
-  kube_host               = module.kube.external_v4_endpoint
-  cluster_ca_certificate  = module.kube.cluster_ca_certificate
-  kube_token              = data.nebius_client_config.client.iam_token
-  folder_id               = var.folder_id
-  gpu_workers             = var.gpu_nodes_count
-}
-```
-2. Add “kuberay” boolean variable to root variable.tf:
-
-```shell
-variable "kuberay" {
-  type    = bool
-  default = true
-}
-```
-
-*Set default value to “true“ to actually call the kuberay module.
-
- ```shell
-Keep in mind that “gpu_nodes_count“ will define the min/maxRelicas for Ray GPU workers.
-
-Important! For ray-cluster-redis-head pod, set 4 vcpus and 8Gi RAM per gpu node!
-```
+After each update, run plan and apply.
 
