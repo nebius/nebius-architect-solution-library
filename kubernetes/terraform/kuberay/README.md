@@ -5,14 +5,6 @@
 - Installing ray-cluster based on Nebius AI Marketplace helm chart for [kube-ray](https://nebius.ai/marketplace/products/nebius/ray-cluster).
 
 
-## Defining Kubernetes cluster
-
-Start by creating a VPC network with a subnet in eu-north1-c zone!
-
-The Kubernetes module requires the following input variables:
- - VPC network ID
- - VPC network subnet IDs
-
 ## Configuring Terraform for Nebius Cloud
 
 - Install [NCP CLI](https://nebius.ai/docs/cli/quickstart).
