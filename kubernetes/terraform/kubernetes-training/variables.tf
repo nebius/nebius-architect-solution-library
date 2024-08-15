@@ -19,7 +19,7 @@ variable "k8s_subnet_CIDR" {
 
 variable "gpu_nodes_count" {
   type        = number
-  description = "Amount of slurm nodes"
+  description = "Amount of gpu nodes"
   default     = 2
 }
 
@@ -104,4 +104,8 @@ variable "shared_fs_type" {
     condition     = var.shared_fs_type == "none" ? true : contains(["gluster", "filestore"], var.shared_fs_type)
     error_message = "shared_fs_type must be one of: gluster, filestore"
   }
+}
+variable "kuberay" {
+  type    = bool
+  default = false
 }

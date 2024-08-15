@@ -17,6 +17,9 @@ export NCP_FOLDER_ID=$(ncp config get folder-id)
 ```
 
 ## kuberay module installation steps
+* Important note! *
+ Avoid deploying K8s cluster with kuberay simultanouasly from scratch, instead, start with deploying K8s cluster, only then, when the cluster is healthy, turn kuberay variable to 'true', and deploy kuberay operator.
+* *
 
 1. To use kuberay as a module, please add the following module call to the end of your root main.tf:
 
@@ -54,7 +57,8 @@ Important! For ray-cluster-redis-head pod, set 4 vcpus and 8Gi RAM per gpu node!
 
 *Before `terraform apply`, please validate that the sizing of the `ray-cluster-redis-master` pod is minimum vcpu=4 and memory=8Gi per gpu node(smaller sizing will cause inconsistency of redis connectivity); 
 
-Example of minimum redis sizing requirements (reference from ray-values.yaml):
+Example of a minimum redis sizing requirements (reference from ray-values.yaml):
+* Redis pod sizing is under customer ownership, and it might change based on customer's architecture. *
 ```yaml
 redis:
   architecture: standalone

@@ -113,11 +113,11 @@ redis:
       whenScaled: Retain
     resources:
       limits:
-        cpu: "8" # limits Minimum cpu=8
-        memory: 16Gi # limits Minimum memory=16Gi
+        cpu: "4" # limits Minimum cpu=4 per gpu node
+        memory: 8Gi # limits Minimum memory=8Gi per gpu node
       requests:
-        cpu: "1" # Requests Minimum cpu=1 
-        memory: 512Mi # Requests Minimum memory=512Mi
+        cpu: "1" # Requests Minimum cpu=1 per gpu node
+        memory: 512Mi # Requests Minimum memory=512Mi per gpu node
     serviceAccount:
       create: false
   networkPolicy:
