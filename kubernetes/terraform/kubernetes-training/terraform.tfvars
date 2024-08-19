@@ -1,4 +1,4 @@
-folder_id       = "bjekenpl146964l6d72e"
+folder_id       = "add_folder-id_here"
 k8s_subnet_CIDR = ["192.168.10.0/24"]
 gpu_nodes_count = 2
 
