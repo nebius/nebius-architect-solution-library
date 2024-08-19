@@ -106,3 +106,17 @@ module "o11y" {
   folder_id = var.folder_id
 }
 
+module "kuberay" {
+  providers = {
+    nebius = nebius
+    helm   = helm
+  }
+  
+  source                  = "../kuberay"
+  count                   = var.kuberay ? 1 : 0
+  kube_host               = module.kube.external_v4_endpoint
+  cluster_ca_certificate  = module.kube.cluster_ca_certificate
+  kube_token              = data.nebius_client_config.client.iam_token
+  folder_id               = var.folder_id
+  gpu_workers             = var.gpu_nodes_count
+}

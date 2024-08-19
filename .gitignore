@@ -32,3 +32,4 @@ terraform.rc
 
 # DS_Store
 .DS_Store
+kubernetes/terraform/kubernetes-training/nebius-architect-solution-library_k8s_training.code-workspace
