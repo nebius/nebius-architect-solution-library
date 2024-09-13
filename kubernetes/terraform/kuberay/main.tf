@@ -16,7 +16,7 @@ resource "helm_release" "kuberay-operator" {
   }
   set {
     name  = "worker.minReplicas"
-    value = var.gpu_workers
+    value = 1
   }
 
 }
