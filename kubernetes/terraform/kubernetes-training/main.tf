@@ -120,3 +120,61 @@ module "kuberay" {
   folder_id               = var.folder_id
   gpu_workers             = var.gpu_nodes_count
 }
+
+# File storage disk creation:
+resource "nebius_compute_filesystem" "k8s-shared-storage" {
+  name       = "${module.kube.cluster_name}-shared-storage"
+  folder_id  = var.folder_id
+  type       = "network-ssd"
+  zone       = "eu-north1-c"
+  size       = 1000
+  block_size = 4096
+}
+
+# Attaching (using ncp cli) file storage into each of the instances in the k8s cluster
+resource "null_resource" "attach-filestore" {
+  depends_on = [
+    nebius_compute_filesystem.k8s-shared-storage,
+    module.kube
+  ]
+  provisioner "local-exec" {
+    command = <<EOT
+      # Define the subnet_id to filter the instances
+      subnet_id="${nebius_vpc_subnet.k8s-subnet.id}"
+
+      # Define the filesystem details to attach
+      filesystem_id="${nebius_compute_filesystem.k8s-shared-storage.id}"
+
+      # Fetch the list of instance IDs that are connected to the specified subnet
+      instance_ids=$(ncp compute instance list --format json | jq -r ".[] | select(.network_interfaces[].subnet_id == \"$subnet_id\") | .id")
+
+      # Loop through each instance ID and attach the filesystem
+      for id in $instance_ids; do
+          echo "Attaching filesystem to instance ID: $id"
+          ncp compute instance attach-filesystem $id \
+              --filesystem-id $filesystem_id
+          echo "Filesystem attached to instance ID: $id"
+      done
+
+      echo "All operations have been initiated."
+EOT
+  }
+}
+
+# This helm release responsible for mounting the file storage attached to each instance in the k8s cluster:
+resource "helm_release" "filestorage-mount-filesystem" {
+  name             = "filestorage-mount-filesystem"
+  repository       = "../../helm/"
+  chart            = "filestorage-mount-filesystem"
+  namespace        = "filestorage"
+  create_namespace = true
+  version          = "0.1.0"
+  set {
+    name  = "shared_volume_host_path"
+    value = "/shared"
+  }
+  set {
+    name = "filesystemId"
+    value = nebius_compute_filesystem.k8s-shared-storage.id
+  }
+}
