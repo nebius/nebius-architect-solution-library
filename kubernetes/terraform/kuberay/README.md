@@ -17,9 +17,42 @@ export NCP_FOLDER_ID=$(ncp config get folder-id)
 ```
 
 ## kuberay module installation steps
-* Important note! *
+### Prerequisites
+1. Important note! 
  Avoid deploying K8s cluster with kuberay simultanouasly from scratch, instead, start with deploying K8s cluster, only then, when the cluster is healthy, turn kuberay variable to 'true', and deploy kuberay operator.
-* *
+
+
+2. Validate which type of cpu platfroms generated for your environment: Intel Ice Lake (instance-type=standard-v3) / Intel Cascade (instance-type=standard-v2):
+```shell
+kubectl get nodes --show-labels | grep instance-type
+```
+4. In your ray-cluster.yaml, set the worker node selector accordingly(gpu-h100/gpu-h100-b/c):
+gpu-workers(ray-cluster.yaml):
+```shell
+worker:
+...Rest of configs
+    nodeSelector
+        beta.kubernetes.io/instance-type: gpu-h100
+...Rest of configs
+```
+5. In your ray-cluster.yaml, set the head&redis node selector accordingly
+non-gpu pods (the example below based on if your k8s cpu-only ng using Intel Cascade/standard-v2);
+*If your cluster provisioned standard-v3 cpu platform, please change it accordingly:
+```shell
+redis:
+...Rest of configs
+  nodeSelector:
+    beta.kubernetes.io/instance-type: standard-v2
+...Rest of configs
+
+head:
+...Rest of configs
+  nodeSelector:
+    beta.kubernetes.io/instance-type: standard-v2
+...Rest of configs
+```
+
+## Installation
 
 1. To use kuberay as a module, please add the following module call to the end of your root main.tf:
 
