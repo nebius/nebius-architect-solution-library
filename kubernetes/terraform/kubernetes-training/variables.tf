@@ -20,12 +20,12 @@ variable "k8s_subnet_CIDR" {
 variable "gpu_nodes_count" {
   type        = number
   description = "Amount of gpu nodes"
-  default     = 2
+  default     = 1
 }
 
 variable "platform_id" {
   type    = string
-  default = "gpu-h100"
+  default = "gpu-h100-c"
 }
 
 variable "ssh_username" {
@@ -46,11 +46,11 @@ variable "ssh_public_key_path" {
   default     = "~/.ssh/id_rsa.pub"
 }
 
-variable "gpu_cluster" {
-  description = "Gpu cluster name"
-  type        = string
-  default     = "fabric-1"
-}
+# variable "gpu_cluster" {
+#   description = "Gpu cluster name"
+#   type        = string
+#   default     = "fabric-1"
+# }
 
 variable "o11y" {
   type = object({

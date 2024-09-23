@@ -10,13 +10,13 @@ resource "helm_release" "kuberay-operator" {
   values           = [
     "${file("../kuberay/helm/ray-values.yaml")}"
   ]
-  set {
-    name  = "worker.maxReplicas"
-    value = var.gpu_workers
-  }
-  set {
-    name  = "worker.minReplicas"
-    value = var.gpu_workers
-  }
+  # set {
+  #   name  = "worker.maxReplicas"
+  #   value = var.gpu_workers
+  # }
+  # set {
+  #   name  = "worker.minReplicas"
+  #   value = var.gpu_workers
+  # }
 
 }

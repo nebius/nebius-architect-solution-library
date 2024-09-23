@@ -9,7 +9,7 @@ resource "helm_release" "gpu_operator" {
   chart            = "gpu-operator"
   namespace        = "gpu-operator"
   create_namespace = true
-  version          = "v24.3.0"
+  version          = "v23.9.0"
 
   /* Uncomment to use driver version 550.54.15 instead of default version.
   set {
@@ -19,16 +19,16 @@ resource "helm_release" "gpu_operator" {
   */
 }
 
-resource "helm_release" "network_operator" {
-  name       = "network-operator"
-  repository = "oci://cr.nemax.nebius.cloud/yc-marketplace/nebius/network-operator/chart/"
-  chart      = "network-operator"
-  namespace  = "network-operator"
+# resource "helm_release" "network_operator" {
+#   name       = "network-operator"
+#   repository = "oci://cr.nemax.nebius.cloud/yc-marketplace/nebius/network-operator/chart/"
+#   chart      = "network-operator"
+#   namespace  = "network-operator"
 
-  create_namespace = true
-  version          = "23.7.0"
+#   create_namespace = true
+#   version          = "23.7.0"
 
-}
+# }
 
 provider "helm" {
   kubernetes {
@@ -37,3 +37,6 @@ provider "helm" {
     token                  = data.nebius_client_config.client.iam_token
   }
 }
+
+
+# No gpu cluster!

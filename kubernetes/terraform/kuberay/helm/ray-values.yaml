@@ -10,7 +10,8 @@ additionalWorkerGroups:
     labels: {}
     maxReplicas: 0
     minReplicas: 0
-    nodeSelector: {}
+    nodeSelector:
+      beta.kubernetes.io/instance-type: standard-v2
     rayStartParams: {}
     replicas: 0
     resources:
@@ -58,13 +59,17 @@ head:
   containerEnv:
   - name: RAY_REDIS_ADDRESS
     value: '{{ .Release.Name }}-redis-master:6379'
+  - name: NVIDIA_VISIBLE_DEVICES
+    value: "void"
   enableInTreeAutoscaling: true
   envFrom: []
   headService: {}
   labels: {}
-  nodeSelector: {}
+    nodeSelector:
+      beta.kubernetes.io/instance-type: standard-v2
   rayStartParams:
     dashboard-host: 0.0.0.0
+    # NVIDIA_VISIBLE_DEVICES: void
   resources:
     limits:
       cpu: "4"
@@ -84,10 +89,13 @@ head:
     name: log-volume
 image:
   pullPolicy: IfNotPresent
-  repository: cr.nemax.nebius.cloud/yc-marketplace/nebius/ray-cluster/rayproject/ray-ml1713900777304275129011842529120435612759099215098
-  tag: 2.9.3-gpu
+  repository: docker.io/rayproject/ray-ml
+  tag: 2.35.0.ba2487-gpu
 imagePullSecrets: []
 kuberay-operator:
+  # env:
+  #   - name: CLUSTER_DOMAIN
+  #     value: "pr.mk8scluster-e00by4dhp8r8acnkt7.mk8s.eu-north1.nebius.cloud"
   image:
     pullPolicy: IfNotPresent
     repository: cr.nemax.nebius.cloud/yc-marketplace/nebius/ray-cluster/kuberay/operator1713900777304275129011842529120435612759099215098
@@ -106,7 +114,7 @@ redis:
   master:
     persistence:
       size: 8Gi
-      storageClass: nebius-network-ssd
+      storageClass: nebius-network-ssd # storageClassName? 
     persistentVolumeClaimRetentionPolicy:
       enabled: true
       whenDeleted: Delete
@@ -124,6 +132,8 @@ redis:
     enabled: false
   serviceAccount:
     create: false
+  nodeSelector:
+    beta.kubernetes.io/instance-type: standard-v2
 service:
   type: ClusterIP
 worker:
@@ -135,9 +145,10 @@ worker:
   envFrom: []
   groupName: gpu
   labels: {}
-  maxReplicas: 
-  minReplicas: 
-  nodeSelector: {}
+  maxReplicas: 2
+  minReplicas: 1
+  nodeSelector: 
+    beta.kubernetes.io/instance-type: gpu-h100
   rayStartParams: {}
   replicas: 1
   resources:
